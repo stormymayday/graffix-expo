@@ -8,6 +8,10 @@ export default function Profile({ navigation }) {
         title="Settings"
         onPress={() => navigation.navigate("Settings")}
       />
+      <Button
+        title="Log out"
+        onPress={() => navigation.navigate("Login")}
+      />
     </SafeAreaView>
   );
 }

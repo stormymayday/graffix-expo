@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+import { StyleSheet, Text, Button, SafeAreaView } from "react-native";
 
 export default function Onboarding({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text>Onboarding Screen</Text>
+      <Button title="Start" onPress={() => navigation.navigate("Graffix")} />
     </SafeAreaView>
   );
 }
