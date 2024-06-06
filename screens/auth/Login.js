@@ -7,8 +7,12 @@ export default function Login({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text>Login Screen</Text>
-      <Button title="Login" onPress={login} />
+      <Button title="Login" onPress={() => navigation.navigate("GoOnboarding")} />
       <Button title="Sign Up" onPress={() => navigation.navigate("SignUp")} />
+      <Button
+        title="ForgotPassword"
+        onPress={() => navigation.navigate("ForgotPassword")}
+      />
     </SafeAreaView>
   );
 }

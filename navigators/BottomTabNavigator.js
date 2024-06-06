@@ -1,12 +1,13 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "../screens/bottomTabScreens/Home";
-import ArtVenture from "../screens/bottomTabScreens/ArtVenture";
-import Profile from "../screens/bottomTabScreens/Profile";
+import Home from "../screens/home/Home";
+import ArtVenture from "../screens/home/ArtVenture";
+import Profile from "../screens/home/Profile";
 import { Ionicons } from "@expo/vector-icons";
+import { SettingsNavigator } from "./SettingsNavigator";
 
 const Tab = createBottomTabNavigator();
 
-export function MyTabs() {
+export function BottomTabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -27,9 +28,13 @@ export function MyTabs() {
         tabBarIconStyle: { fontSize: 14 },
       })}
     >
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={Home} options={{ title: "Graffix" }} />
       <Tab.Screen name="ArtVenture" component={ArtVenture} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen
+        name="Profile"
+        component={SettingsNavigator}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   );
 }

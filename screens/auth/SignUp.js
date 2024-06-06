@@ -1,14 +1,10 @@
 import { StyleSheet, Text, View, Button, SafeAreaView } from "react-native";
 
 export default function SignUpScreen({ navigation }) {
-  function signUp() {
-    navigation.navigate("Graffix");
-  }
-
+ 
   return (
     <SafeAreaView style={styles.container}>
       <Text>Sign Up Screen</Text>
-      <Button title="Sign Up" onPress={signUp} />
     </SafeAreaView>
   );
 }
