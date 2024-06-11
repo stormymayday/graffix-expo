@@ -3,6 +3,8 @@ import Login from "../screens/auth/Login";
 import SignUp from "../screens/auth/SignUp";
 import ForgotPassword from "../screens/auth/ForgotPassword";
 import { OnboardingNavigator } from "./OnboardingNavigator";
+import ArtworkFormInput from "../screens/addArtWork/artWorkFormInput";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -13,6 +15,7 @@ export function AuthNavigator() {
         headerTitleAlign: "center",
       }}
     >
+      <Stack.Screen name="ArtWorking" component={ArtworkFormInput} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />

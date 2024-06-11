@@ -1,5 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { AuthNavigator } from "./navigators/AuthNavigator";
+import { AuthNavigator } from "./src/navigators/AuthNavigator";
 
 export default function App() {
   return (
