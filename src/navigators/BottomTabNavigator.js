@@ -4,6 +4,7 @@ import ArtVenture from "../screens/home/ArtVenture";
 import Profile from "../screens/home/Profile";
 import { Ionicons } from "@expo/vector-icons";
 import { SettingsNavigator } from "./SettingsNavigator";
+import Search from "../screens/home/Search";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,6 +16,8 @@ export function BottomTabNavigator() {
           let iconName;
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Search") {
+            iconName = focused ? "search" : "search-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
           } else if (route.name === "ArtVenture") {
@@ -29,6 +32,7 @@ export function BottomTabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={Home} options={{ title: "Graffix" }} />
+      <Tab.Screen name="Search" component={Search} />
       <Tab.Screen name="ArtVenture" component={ArtVenture} />
       <Tab.Screen
         name="Profile"
