@@ -1,37 +1,51 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Button, Image } from 'react-native';
-
-
+import { StyleSheet, View, TextInput, Button } from 'react-native';
+import uploadImage from '../../utils/uploadImage';
 import HorizontalScrollOptions from '../../components/HorizontallScroll/horizontallScrollCategory';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
+import QRCode from 'react-native-qrcode-svg';
 
 export default function ArtworkFormInput() {
-  
-  
-  const [categories,setCategories] = useState(['Painting', 'Ceramics', 'Abstract', 'Nature', 'Photo'])
+  const [categories, setCategories] = useState(['Painting', 'Ceramics', 'Abstract', 'Nature', 'Photo']);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [qrCodeValue, setQrCodeValue] = useState('');
+
+  function handleImage(uri) {
+    setSelectedImage(uri);
+  }
+
+  function generateQrCode(api) {
+    console.log('Generating QR Code');
+    setQrCodeValue(api);
+  }
 
   return (
     <View style={styles.container}>
-      
-      <ImageUpload/>
-
+      <ImageUpload handleImage={handleImage} />
       <TextInput
         style={styles.input}
         placeholder="Name your Artwork"
         placeholderTextColor="#999"
       />
-
       <TextInput
         style={[styles.input, styles.textArea]}
         placeholder="Write about your Artwork"
         placeholderTextColor="#999"
         multiline
       />
-
-      <HorizontalScrollOptions options={categories}/>
-
-      <Button title="Publish" style={styles.button} />
+      <HorizontalScrollOptions options={categories} />
+      <Button title="Publish" style={styles.button} onPress={() => {
+        generateQrCode('www.google.com');
+        uploadImage(selectedImage);
+      }} />
       <Button title="Cancel" style={styles.cancelButton} color="#999" />
+      {qrCodeValue ? (
+        <QRCode
+          value={qrCodeValue}
+          size={200}
+        />
+      ) : null}
     </View>
   );
 }
@@ -108,4 +122,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
-
