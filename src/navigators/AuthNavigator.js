@@ -14,6 +14,8 @@ export function AuthNavigator() {
         headerTitleAlign: "center",
       }}
     >
+      
+      <Stack.Screen name="ArtworkFormInput" component={ArtworkFormInput} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
