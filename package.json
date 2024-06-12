@@ -12,6 +12,7 @@
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
+    "cloudinary": "^2.2.0",
     "expo": "~51.0.12",
     "expo-image": "~1.12.11",
     "expo-image-picker": "~15.0.5",

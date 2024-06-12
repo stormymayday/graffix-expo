@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Button } from 'react-native';
+import { StyleSheet, View, TextInput, Button, Text } from 'react-native';
 import uploadImage from '../../utils/uploadImage';
 import HorizontalScrollOptions from '../../components/HorizontallScroll/horizontallScrollCategory';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
@@ -22,30 +22,33 @@ export default function ArtworkFormInput() {
 
   return (
     <View style={styles.container}>
-      <ImageUpload handleImage={handleImage} />
-      <TextInput
-        style={styles.input}
-        placeholder="Name your Artwork"
-        placeholderTextColor="#999"
-      />
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        placeholder="Write about your Artwork"
-        placeholderTextColor="#999"
-        multiline
-      />
-      <HorizontalScrollOptions options={categories} />
-      <Button title="Publish" style={styles.button} onPress={() => {
-        generateQrCode('www.google.com');
-        uploadImage(selectedImage);
-      }} />
-      <Button title="Cancel" style={styles.cancelButton} color="#999" />
       {qrCodeValue ? (
         <QRCode
           value={qrCodeValue}
           size={200}
         />
-      ) : null}
+      ) : (
+        <View style={styles.container}>
+          <ImageUpload handleImage={handleImage} />
+          <TextInput
+            style={styles.input}
+            placeholder="Name your Artwork"
+            placeholderTextColor="#999"
+          />
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="Write about your Artwork"
+            placeholderTextColor="#999"
+            multiline
+          />
+          <HorizontalScrollOptions options={categories} />
+          <Button title="Publish" style={styles.button} onPress={() => {
+            uploadImage(selectedImage);
+            generateQrCode('www.google.com');
+          }} />
+          <Button title="Cancel" style={styles.cancelButton} color="#999" />
+        </View>
+      )}
     </View>
   );
 }
