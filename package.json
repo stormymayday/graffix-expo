@@ -9,14 +9,13 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.13.0",
+    "@cloudinary/url-gen": "^1.19.0",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
-
-    "cloudinary": "^2.2.0",
-
     "axios": "^1.7.2",
-
+    "cloudinary": "^2.2.0",
     "expo": "~51.0.12",
     "expo-image": "~1.12.11",
     "expo-image-picker": "~15.0.5",

@@ -1,32 +1,61 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Button, Text } from 'react-native';
-import uploadImage from '../../utils/uploadImage';
-import HorizontalScrollOptions from '../../components/HorizontallScroll/horizontallScrollCategory';
+import { StyleSheet, View, TextInput, Button, Platform } from 'react-native';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
 import QRCode from 'react-native-qrcode-svg';
+import uploadImage from '../../utils/uploadImage';
+import HorizontalScrollOptions from '../../components/HorizontallScroll/horizontallScrollCategory';
+import axios from 'axios'; 
 
 export default function ArtworkFormInput() {
   const [categories, setCategories] = useState(['Painting', 'Ceramics', 'Abstract', 'Nature', 'Photo']);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [qrCodeValue, setQrCodeValue] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [QrCodeNeeded, setQrCodeNeeded] = useState(false);
+
+
+  const userId = '6667c69c6d63b3a3edd164f5';
 
   function handleImage(uri) {
     setSelectedImage(uri);
   }
 
+  async function handlePublish() {
+    try {
+      const imageUrl = await uploadImage(selectedImage);
+      console.log('Image URL:', imageUrl);
+      generateQrCode(imageUrl);
+
+      const response = await axios.post('/api/v1/art', {
+        title,
+        description,
+        category: selectedCategory,
+        artworkUrl: imageUrl,
+        artworkPublicID: imageUrl.split('/').pop() ,
+        createdBy: userId
+      });
+
+      console.log('Artwork created:', response.data);
+    } catch (error) {
+      console.error('Error publishing artwork:', error);
+    }
+  }
+
   function generateQrCode(api) {
     console.log('Generating QR Code');
-    setQrCodeValue(api);
+    QrCodeNeeded && setQrCodeValue(api);
+  }
+
+  function handleSelectCategory(category) {
+    setSelectedCategory(category);
   }
 
   return (
     <View style={styles.container}>
       {qrCodeValue ? (
-        <QRCode
-          value={qrCodeValue}
-          size={200}
-        />
+        <QRCode value={qrCodeValue} size={200} />
       ) : (
         <View style={styles.container}>
           <ImageUpload handleImage={handleImage} />
@@ -34,18 +63,19 @@ export default function ArtworkFormInput() {
             style={styles.input}
             placeholder="Name your Artwork"
             placeholderTextColor="#999"
+            value={title}
+            onChangeText={setTitle}
           />
           <TextInput
             style={[styles.input, styles.textArea]}
             placeholder="Write about your Artwork"
             placeholderTextColor="#999"
             multiline
+            value={description}
+            onChangeText={setDescription}
           />
-          <HorizontalScrollOptions options={categories} />
-          <Button title="Publish" style={styles.button} onPress={() => {
-            uploadImage(selectedImage);
-            generateQrCode('www.google.com');
-          }} />
+          <HorizontalScrollOptions options={categories} onSelect={handleSelectCategory} />
+          <Button title="Publish" style={styles.button} onPress={handlePublish} />
           <Button title="Cancel" style={styles.cancelButton} color="#999" />
         </View>
       )}
@@ -58,38 +88,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
-  },
-  imageUpload: {
-    height: 150,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-    position: 'relative',
-  },
-  addArtworkText: {
-    marginTop: 10,
-    color: '#999',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 10,
-  },
-  uploadButton: {
-    position: 'absolute',
-    bottom: 10,
-    left: '50%',
-    transform: [{ translateX: -50 }],
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
-  },
-  uploadButtonText: {
-    color: '#fff',
-    fontSize: 16,
   },
   input: {
     height: 50,
@@ -109,19 +107,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 5,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
   cancelButton: {
     color: '#000',
-  },
-  scrollView: {
-    width: '100%',
-  },
-  contentContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 10,
   },
 });

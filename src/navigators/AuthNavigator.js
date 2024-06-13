@@ -15,11 +15,10 @@ export function AuthNavigator() {
       }}
     >
       
-      <Stack.Screen name="ArtworkFormInput" component={ArtworkFormInput} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-      <Stack.Screen name="ArtWorking" component={ArtworkFormInput} />
+      <Stack.Screen name="ArtworkFormInput" component={ArtworkFormInput} />
       <Stack.Screen
         name="GoOnboarding"
         component={OnboardingNavigator}
