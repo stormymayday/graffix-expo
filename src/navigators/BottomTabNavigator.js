@@ -29,6 +29,7 @@ export function BottomTabNavigator() {
         tabBarActiveTintColor: "black",
         tabBarInactiveTintColor: "gray",
         tabBarIconStyle: { fontSize: 14 },
+        headerTitleAlign: "center",
       })}
     >
       <Tab.Screen name="Home" component={Home} options={{ title: "Graffix" }} />
