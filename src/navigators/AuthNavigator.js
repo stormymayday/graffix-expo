@@ -6,10 +6,10 @@ import { OnboardingNavigator } from "./OnboardingNavigator";
 import ArtworkFormInput from "../screens/addArtWork/artWorkFormInput";
 import Nearby from "../screens/home/Nearby";
 import Categories from "../screens/home/Categories";
-import PersonalDetails from "../screens/home/settings/PersonalDetails";
-import LocationPermission from "../screens/home/settings/LocationPermision";
-import Notifications from "../screens/home/settings/Notifications";
-import ArtistsProfile from "../screens/home/settings/ArtistsProfile";
+// import PersonalDetails from "../screens/home/settings/PersonalDetails";
+// import LocationPermission from "../screens/home/settings/LocationPermision";
+// import Notifications from "../screens/home/settings/Notifications";
+// import ArtistsProfile from "../screens/home/settings/ArtistsProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,10 +32,10 @@ export function AuthNavigator() {
       <Stack.Screen name="ArtworkFormInput" component={ArtworkFormInput} />
       <Stack.Screen name="Categories" component={Categories} />
       <Stack.Screen name="Nearby" component={Nearby} />
-      <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} />
+      {/* <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} />
       <Stack.Screen name="LocationPermission" component={LocationPermission} />
       <Stack.Screen name="Notifications" component={Notifications} />
-      <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+      <Stack.Screen name="PersonalDetails" component={PersonalDetails} /> */}
       <Stack.Screen
         name="GoOnboarding"
         component={OnboardingNavigator}

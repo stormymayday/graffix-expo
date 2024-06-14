@@ -55,12 +55,12 @@ export default function Profile({ navigation }) {
           <Tab.Screen name="Artist" component={Artist} />
         </Tab.Navigator>
       </View>
-      <Button
+      {/* <Button
         title="Log out"
         onPress={() => {
           logout();
         }}
-      />
+      /> */}
     </SafeAreaView>
   );
 }

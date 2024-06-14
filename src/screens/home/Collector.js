@@ -92,13 +92,18 @@ export default function Collector({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
-        <Image source={{ uri: user.imageUrl }} style={styles.image} />
+        <Pressable onPress={() => navigation.navigate("EditProfile", { user })}>
+          <Image source={{ uri: user.imageUrl }} style={styles.avatar} />
+        </Pressable>
+
         <View style={styles.infoContainer}>
           <View style={styles.header}>
-            <Text style={styles.name}>{user.name}</Text>
             <Pressable
               onPress={() => navigation.navigate("EditProfile", { user })}
             >
+              <Text style={styles.name}>{user.name}</Text>
+            </Pressable>
+            <Pressable onPress={() => navigation.navigate("Settings")}>
               <Feather name="edit" size={18} color="black" />
             </Pressable>
           </View>
@@ -144,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
   },
-  image: {
+  avatar: {
     width: 100,
     height: 100,
     borderRadius: 50,
@@ -186,10 +191,5 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 160,
     borderRadius: 8,
-  },
-  artName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
   },
 });
