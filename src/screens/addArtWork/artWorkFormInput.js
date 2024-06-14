@@ -1,8 +1,14 @@
 import React, { useState } from "react";
-import { StyleSheet, View, TextInput, Button, Platform } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Button,
+  Platform,
+  Alert,
+} from "react-native";
 import ImageUpload from "../../components/ImageUpload/ImageUpload";
 import QRCode from "react-native-qrcode-svg";
-import uploadImage from "../../utils/uploadImage";
 import HorizontalScrollOptions from "../../components/HorizontallScroll/horizontallScrollCategory";
 import axios from "axios";
 
@@ -21,30 +27,59 @@ export default function ArtworkFormInput() {
   const [description, setDescription] = useState("");
   const [QrCodeNeeded, setQrCodeNeeded] = useState(false);
 
-  const userId = "6667c69c6d63b3a3edd164f5";
-
   function handleImage(uri) {
     setSelectedImage(uri);
   }
 
   async function handlePublish() {
-    try {
-      // const imageUrl = await uploadImage(selectedImage);
-      // generateQrCode(imageUrl);
+    console.log(title, description, selectedCategory, selectedImage);
+    if (!title || !description || !selectedCategory || !selectedImage) {
+      Alert.alert("Please fill in all fields");
+      return;
+    }
 
-      console.log("Image URL:", imageUrl);
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("category", selectedCategory);
 
-      const response = await axios.post("/api/v1/art", {
-        title,
-        description,
-        category: selectedCategory,
-        artworkUrl: selectedImage,
-        artworkPublicID: imageUrl.split("/").pop(),
+    if (selectedImage) {
+      formData.append("file", {
+        uri: selectedImage,
+        name: `${title}.jpg`,
+        type: "image/jpeg",
       });
+    }
 
-      console.log("Artwork created:", response.data);
+    try {
+      const response = await axios.post(
+        "https://graffix-server.onrender.com/api/v1/art",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response);
+      Alert.alert("Artwork published successfully");
     } catch (error) {
-      console.error("Error publishing artwork:", error);
+      if (error.response) {
+        console.log("Error response data:", error.response.data);
+        console.log("Error response status:", error.response.status);
+        console.log("Error response headers:", error.response.headers);
+        Alert.alert(
+          "Failed to publish artwork",
+          error.response.data.msg || "Server responded with an error"
+        );
+      } else if (error.request) {
+        console.log("Error request:", error.request);
+        Alert.alert("Failed to publish artwork", "No response from server");
+      } else {
+        console.log("Error message:", error.message);
+        Alert.alert("Failed to publish artwork", error.message);
+      }
+      console.log("Error config:", error.config);
     }
   }
 
@@ -81,7 +116,7 @@ export default function ArtworkFormInput() {
           />
           <HorizontalScrollOptions
             options={categories}
-            onSelect={handleSelectCategory}
+            handleSelectCategory={handleSelectCategory}
           />
           <Button
             title="Publish"
