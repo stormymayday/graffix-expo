@@ -97,7 +97,7 @@ export default function Collector({ navigation, route }) {
           <View style={styles.header}>
             <Text style={styles.name}>{user.name}</Text>
             <Pressable
-              onPress={() => navigation.navigate("Settings", { user })}
+              onPress={() => navigation.navigate("EditProfile", { user })}
             >
               <Feather name="edit" size={18} color="black" />
             </Pressable>

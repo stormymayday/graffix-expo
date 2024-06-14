@@ -24,7 +24,7 @@ export default function Artist({ navigation }) {
           <View style={styles.infoContainer}>
             <View style={styles.header}>
               <Text style={styles.name}>Ferando Buritto</Text>
-              <Pressable onPress={() => navigation.navigate("Setting")}>
+              <Pressable onPress={() => navigation.navigate("EditProfile")}>
                 <Feather name="edit" size={18} color="black" />
               </Pressable>
             </View>

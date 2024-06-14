@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Settings from "../screens/home/Settings"
+import EditProfile from "../screens/home/EditProfile";
 import Profile from "../screens/home/Profile";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ArtDetail from "../screens/home/ArtDetail"
@@ -20,7 +20,7 @@ export function SettingsNavigator() {
         options={{ title: "Profile" }}
       />
       <Stack.Screen name="ArtDetail" component={ArtDetail} />
-      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
     </Stack.Navigator>
   );
 }
