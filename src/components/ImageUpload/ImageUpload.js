@@ -64,3 +64,24 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
+
+
+// 1) ART - just send the picture (DONE)
+// 2) Redirect user to profile page
+// ---------------------Treasure-----------------------------------
+// 1) Send the Tresure to the backend
+// 2) Recive a responce as an (CLOUNIDARY URL | IMAGE | API END POINT |"idTreasure" => "api/v1/idTresure" => QRCODE => JSON.TRASURE URL OF THE CLOUDINARY) => ADD TO USER TREASURE COLECTION => MAP.IDTresure.link CLOUDINARY
+// 
+// ________________________AIDAR____________________________________
+// 1) Wrap up ArtWork END POINT
+// 2) Treasure END POINT
+// __________________________Leo_________________________________
+// 1) Change the code send Image URI to the backend
+// 
+// ___________________________Henry________________________________
+// 
+// 
+// ___________________________Charls________________________________
+// Should
+// 
+// 

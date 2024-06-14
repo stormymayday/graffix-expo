@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Button, Platform } from 'react-native';
-import ImageUpload from '../../components/ImageUpload/ImageUpload';
-import QRCode from 'react-native-qrcode-svg';
-import uploadImage from '../../utils/uploadImage';
-import HorizontalScrollOptions from '../../components/HorizontallScroll/horizontallScrollCategory';
-import axios from 'axios'; 
+import React, { useState } from "react";
+import { StyleSheet, View, TextInput, Button, Platform } from "react-native";
+import ImageUpload from "../../components/ImageUpload/ImageUpload";
+import QRCode from "react-native-qrcode-svg";
+import uploadImage from "../../utils/uploadImage";
+import HorizontalScrollOptions from "../../components/HorizontallScroll/horizontallScrollCategory";
+import axios from "axios";
 
 export default function ArtworkFormInput() {
-  const [categories, setCategories] = useState(['Painting', 'Ceramics', 'Abstract', 'Nature', 'Photo']);
+  const [categories, setCategories] = useState([
+    "Painting",
+    "Ceramics",
+    "Abstract",
+    "Nature",
+    "Photo",
+  ]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [qrCodeValue, setQrCodeValue] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [qrCodeValue, setQrCodeValue] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [QrCodeNeeded, setQrCodeNeeded] = useState(false);
 
-
-  const userId = '6667c69c6d63b3a3edd164f5';
+  const userId = "6667c69c6d63b3a3edd164f5";
 
   function handleImage(uri) {
     setSelectedImage(uri);
@@ -24,27 +29,27 @@ export default function ArtworkFormInput() {
 
   async function handlePublish() {
     try {
-      const imageUrl = await uploadImage(selectedImage);
-      console.log('Image URL:', imageUrl);
-      generateQrCode(imageUrl);
+      // const imageUrl = await uploadImage(selectedImage);
+      // generateQrCode(imageUrl);
 
-      const response = await axios.post('/api/v1/art', {
+      console.log("Image URL:", imageUrl);
+
+      const response = await axios.post("/api/v1/art", {
         title,
         description,
         category: selectedCategory,
-        artworkUrl: imageUrl,
-        artworkPublicID: imageUrl.split('/').pop() ,
-        createdBy: userId
+        artworkUrl: selectedImage,
+        artworkPublicID: imageUrl.split("/").pop(),
       });
 
-      console.log('Artwork created:', response.data);
+      console.log("Artwork created:", response.data);
     } catch (error) {
-      console.error('Error publishing artwork:', error);
+      console.error("Error publishing artwork:", error);
     }
   }
 
   function generateQrCode(api) {
-    console.log('Generating QR Code');
+    console.log("Generating QR Code");
     QrCodeNeeded && setQrCodeValue(api);
   }
 
@@ -74,8 +79,15 @@ export default function ArtworkFormInput() {
             value={description}
             onChangeText={setDescription}
           />
-          <HorizontalScrollOptions options={categories} onSelect={handleSelectCategory} />
-          <Button title="Publish" style={styles.button} onPress={handlePublish} />
+          <HorizontalScrollOptions
+            options={categories}
+            onSelect={handleSelectCategory}
+          />
+          <Button
+            title="Publish"
+            style={styles.button}
+            onPress={handlePublish}
+          />
           <Button title="Cancel" style={styles.cancelButton} color="#999" />
         </View>
       )}
@@ -87,27 +99,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
     marginBottom: 20,
-    color: '#000',
+    color: "#000",
   },
   textArea: {
     height: 100,
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 10,
     marginHorizontal: 10,
     borderRadius: 5,
   },
   cancelButton: {
-    color: '#000',
+    color: "#000",
   },
 });
