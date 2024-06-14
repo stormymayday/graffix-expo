@@ -5,7 +5,10 @@ export default function Onboarding({ navigation }) {
     <SafeAreaView style={styles.container}>
       <Text>Onboarding Screen</Text>
       <Button title="Start" onPress={() => navigation.navigate("Graffix")} />
-      <Button title="Image Upload" onPress={() => navigation.navigate("ArtworkFormInput")} />
+      <Button
+        title="Image Upload"
+        onPress={() => navigation.navigate("SelectAndUpload")}
+      />
     </SafeAreaView>
   );
 }

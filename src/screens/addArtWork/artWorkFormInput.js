@@ -11,11 +11,17 @@ import ImageUpload from "../../components/ImageUpload/ImageUpload";
 import QRCode from "react-native-qrcode-svg";
 import HorizontalScrollOptions from "../../components/HorizontallScroll/horizontallScrollCategory";
 import axios from "axios";
+import generateQRCode from "../../utils/qrCodeGeneration";
 
-export default function ArtworkFormInput() {
+export default function ArtworkFormInput({ route }) {
+  // IF ARTWORK IS TRUE NO QRCODE NEEDED
+
+  const { artWork } = route.params;
+
+  console.log("ArtWork:", artWork);
   const [categories, setCategories] = useState([
-    "Painting",
-    "Ceramics",
+    "oil",
+    "panting",
     "Abstract",
     "Nature",
     "Photo",
@@ -25,7 +31,7 @@ export default function ArtworkFormInput() {
   const [qrCodeValue, setQrCodeValue] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [QrCodeNeeded, setQrCodeNeeded] = useState(false);
+  const [QrCodeNeeded, setQrCodeNeeded] = useState(!artWork);
 
   function handleImage(uri) {
     setSelectedImage(uri);
@@ -41,10 +47,10 @@ export default function ArtworkFormInput() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("category", selectedCategory);
+    formData.append("category", selectedCategory.toLowerCase());
 
     if (selectedImage) {
-      formData.append("file", {
+      formData.append("artwork", {
         uri: selectedImage,
         name: `${title}.jpg`,
         type: "image/jpeg",
@@ -61,7 +67,8 @@ export default function ArtworkFormInput() {
           },
         }
       );
-      console.log(response);
+      console.log("Artwork published successfully:", response.data);
+      QrCodeNeeded && generateQrCode(response.data.art.artworkUrl);
       Alert.alert("Artwork published successfully");
     } catch (error) {
       if (error.response) {
@@ -84,8 +91,7 @@ export default function ArtworkFormInput() {
   }
 
   function generateQrCode(api) {
-    console.log("Generating QR Code");
-    QrCodeNeeded && setQrCodeValue(api);
+    generateQRCode(api).then(setQrCodeValue);
   }
 
   function handleSelectCategory(category) {
