@@ -202,7 +202,7 @@ export default function Home({ navigation }) {
                     <Pressable
                       style={styles.card}
                       onPress={() =>
-                        navigation.navigate("Categories", {
+                        navigation.navigate("Nearby", {
                           message: "This will show the Nearby Data",
                         })
                       }
