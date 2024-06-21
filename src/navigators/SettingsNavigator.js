@@ -8,6 +8,8 @@ import PersonalDetails from "../screens/home/settings/PersonalDetails";
 import LocationPermission from "../screens/home/settings/LocationPermision";
 import Notifications from "../screens/home/settings/Notifications";
 import ArtistsProfile from "../screens/home/settings/ArtistsProfile";
+import Icon from "react-native-vector-icons/Ionicons";
+import {TouchableOpacity} from "react-native";
 
 const Stack = createNativeStackNavigator();
 const TopTabs = createMaterialTopTabNavigator();
@@ -22,7 +24,17 @@ export function SettingsNavigator() {
       <Stack.Screen
         name="ProfileSettings"
         component={Profile}
-        options={{ title: "Profile" }}
+        options={({ navigation }) => ({
+          title: "Profile",
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Settings")}
+              style={{ marginRight: 10 }}
+            >
+              <Icon name="settings" size={25} color="#000" />
+            </TouchableOpacity>
+          ),
+        })}
       />
       <Stack.Screen name="ArtDetail" component={ArtDetail} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
