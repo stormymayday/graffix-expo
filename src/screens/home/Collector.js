@@ -22,16 +22,15 @@ export default function Collector({ navigation, route }) {
         const response = await graffixAPI.get(
           "https://graffix-server.onrender.com/api/v1/users/current-user"
         );
-        const userData = response.data;
-
+        const userData = response.data.userWithoutPassword;
+        console.log("User data:", userData);
         setUser({
           name: userData.username,
-          imageUrl: userData.imageUrl,
+          avatar: userData.avatar,
           address: userData.address,
           description: userData.bio,
         });
-
-        setFavorites(userData.likes);  
+        setFavorites(userData.likes);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -61,7 +60,7 @@ export default function Collector({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
         <Pressable onPress={() => navigation.navigate("EditProfile", { user })}>
-          <Image source={{ uri: user.imageUrl }} style={styles.avatar} />
+          <Image source={{ uri: user.avatar }} style={styles.avatar} />
         </Pressable>
 
         <View style={styles.infoContainer}>
