@@ -13,6 +13,7 @@ import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState, useEffect } from "react";
 import graffixAPI from "../../api/graffixAPI";
+import { haversineDistanceBetweenPoints } from "../../utils/calculateDistance";
 
 export default function Home({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
@@ -223,7 +224,13 @@ export default function Home({ navigation }) {
                       </Text>
                       <Text>
                         <Ionicons name="location" style={{ padding: 10 }} />
-                        200 m
+                        {haversineDistanceBetweenPoints(
+                          item.location.coordinates[1],
+                          item.location.coordinates[0],
+                          49.225084624107566,
+                          -123.10763364103961
+                        )}{" "}
+                        m
                       </Text>
                     </Pressable>
                   );
