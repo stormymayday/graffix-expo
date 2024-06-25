@@ -10,15 +10,35 @@ import {
   Pressable,
 } from "react-native";
 import { Image } from "expo-image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import graffixAPI from "../../api/graffixAPI";
 
 export default function SearchResultsScreen({ navigation }) {
   const [artistName, setArtistName] = useState("");
   const [artistsData, setArtistsData] = useState([]);
+  const [randomArtistsData, setRandomArtistsData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(false);
   const [noResults, setNoResults] = useState(false);
+
+  const fetchRandomArtist = async () => {
+    try {
+      const response = await graffixAPI.get("/api/v1/users/artists");
+
+      const filterArr = response.data
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 2);
+
+      setRandomArtistsData(filterArr);
+    } catch (error) {
+      console.log("Error fetching data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRandomArtist();
+  }, []);
 
   const fetchData = async () => {
     setNoResults(false);
@@ -30,14 +50,10 @@ export default function SearchResultsScreen({ navigation }) {
     }
 
     try {
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/users"
-      );
+      const response = await graffixAPI.get("/api/v1/users/artists");
 
-      const data = await response.json();
-
-      const filterArr = data.filter((item) =>
-        item.name.toLowerCase().includes(artistName.trim().toLowerCase())
+      const filterArr = response.data.filter((item) =>
+        item.username.toLowerCase().includes(artistName.trim().toLowerCase())
       );
 
       if (filterArr.length == 0) {
@@ -122,26 +138,32 @@ export default function SearchResultsScreen({ navigation }) {
             <Text style={styles.trendingTitle}>
               You may want to check this out
             </Text>
-            <View style={styles.box}>
-              <Pressable onPress={dummyFunction}>
-                <Image
-                  style={styles.image}
-                  source="https://picsum.photos/200"
-                  contentFit="fill"
-                  transition={1000}
-                />
-                <Text style={styles.trendingCardTitle}>Random Artist</Text>
-              </Pressable>
-              <Pressable onPress={dummyFunction}>
-                <Image
-                  style={styles.image}
-                  source="https://picsum.photos/200"
-                  contentFit="fill"
-                  transition={1000}
-                />
-                <Text style={styles.trendingCardTitle}>Random Artist</Text>
-              </Pressable>
-            </View>
+            {randomArtistsData.length > 0 && (
+              <View style={styles.box}>
+                <Pressable onPress={dummyFunction}>
+                  <Image
+                    style={styles.image}
+                    source={randomArtistsData[0].avatar}
+                    contentFit="fill"
+                    transition={1000}
+                  />
+                  <Text style={styles.trendingCardTitle}>
+                    {randomArtistsData[0].username}
+                  </Text>
+                </Pressable>
+                <Pressable onPress={dummyFunction}>
+                  <Image
+                    style={styles.image}
+                    source={randomArtistsData[1].avatar}
+                    contentFit="fill"
+                    transition={1000}
+                  />
+                  <Text style={styles.trendingCardTitle}>
+                    {randomArtistsData[1].username}
+                  </Text>
+                </Pressable>
+              </View>
+            )}
           </View>
         </View>
       ) : (
@@ -158,7 +180,7 @@ export default function SearchResultsScreen({ navigation }) {
                   alert(`Goes to a screen with ${item.name} details`)
                 }
               >
-                <Text style={{ width: "95%" }}>{item.name}</Text>
+                <Text style={{ width: "95%" }}>{item.username}</Text>
                 <Ionicons
                   style={{ alignSelf: "center" }}
                   name="chevron-forward"
@@ -171,26 +193,32 @@ export default function SearchResultsScreen({ navigation }) {
             !noResults && (
               <View>
                 <Text style={styles.trendingTitle}>Trending Artists</Text>
-                <View style={styles.box}>
-                  <Pressable onPress={dummyFunction}>
-                    <Image
-                      style={styles.image}
-                      source="https://picsum.photos/200"
-                      contentFit="fill"
-                      transition={1000}
-                    />
-                    <Text style={styles.trendingCardTitle}>Random Artist</Text>
-                  </Pressable>
-                  <Pressable onPress={dummyFunction}>
-                    <Image
-                      style={styles.image}
-                      source="https://picsum.photos/200"
-                      contentFit="fill"
-                      transition={1000}
-                    />
-                    <Text style={styles.trendingCardTitle}>Random Artist</Text>
-                  </Pressable>
-                </View>
+                {randomArtistsData.length > 0 && (
+                  <View style={styles.box}>
+                    <Pressable onPress={dummyFunction}>
+                      <Image
+                        style={styles.image}
+                        source={randomArtistsData[0].avatar}
+                        contentFit="fill"
+                        transition={1000}
+                      />
+                      <Text style={styles.trendingCardTitle}>
+                        {randomArtistsData[0].username}
+                      </Text>
+                    </Pressable>
+                    <Pressable onPress={dummyFunction}>
+                      <Image
+                        style={styles.image}
+                        source={randomArtistsData[1].avatar}
+                        contentFit="fill"
+                        transition={1000}
+                      />
+                      <Text style={styles.trendingCardTitle}>
+                        {randomArtistsData[1].username}
+                      </Text>
+                    </Pressable>
+                  </View>
+                )}
               </View>
             )
           }
