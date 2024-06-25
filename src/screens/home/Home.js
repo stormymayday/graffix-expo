@@ -25,15 +25,13 @@ export default function Home({ navigation }) {
 
   const fetchData = async () => {
     try {
-      const artResponse = await graffixAPI.get(
-        `https://graffix-server.onrender.com/api/v1/art`
-      );
+      const artResponse = await graffixAPI.get(`/api/v1/art`);
 
       setGalleryData(artResponse.data.allArt.slice(0, 4));
       setRecentlyAddedData(artResponse.data.allArt.reverse().slice(0, 4));
 
       const nearbyResponse = await graffixAPI.get(
-        `https://graffix-server.onrender.com/api/v1/users/artists/nearby?longitude=-123.10763364103961&latitude=49.225084624107566&maxDistance=1000`
+        `/api/v1/users/artists/nearby?longitude=-123.10763364103961&latitude=49.225084624107566&maxDistance=1000`
       );
 
       setNearbyData(nearbyResponse.data.slice(0, 4));
