@@ -1,24 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   StyleSheet,
   View,
   TextInput,
   Button,
-  Platform,
   Alert,
+  ScrollView,
+  Dimensions,
 } from "react-native";
 import ImageUpload from "../../components/ImageUpload/ImageUpload";
 import QRCode from "react-native-qrcode-svg";
 import HorizontalScrollOptions from "../../components/HorizontallScroll/horizontallScrollCategory";
 import axios from "axios";
-import generateQRCode from "../../utils/qrCodeGeneration";
+import ViewShot from "react-native-view-shot";
 
 export default function ArtworkFormInput({ route }) {
-  // IF ARTWORK IS TRUE NO QRCODE NEEDED
-
   const { artWork } = route.params;
 
-  console.log("ArtWork:", artWork);
   const [categories, setCategories] = useState([
     "oil",
     "panting",
@@ -31,14 +29,24 @@ export default function ArtworkFormInput({ route }) {
   const [qrCodeValue, setQrCodeValue] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [message, setMessage] = useState("");
   const [QrCodeNeeded, setQrCodeNeeded] = useState(!artWork);
+  const viewShotRef = useRef(null);
+  let treasureId = "123456";
+
+  let flagApi = "art";
+  let flagApi2 = "artwork";
+
+  if (QrCodeNeeded) {
+    flagApi = "treasure";
+    flagApi2 = "treasure";
+  }
 
   function handleImage(uri) {
     setSelectedImage(uri);
   }
 
   async function handlePublish() {
-    console.log(title, description, selectedCategory, selectedImage);
     if (!title || !description || !selectedCategory || !selectedImage) {
       Alert.alert("Please fill in all fields");
       return;
@@ -49,8 +57,14 @@ export default function ArtworkFormInput({ route }) {
     formData.append("description", description);
     formData.append("category", selectedCategory.toLowerCase());
 
+    if (QrCodeNeeded) {
+      formData.append("message", message);
+      formData.append("longitude", -73.935242);
+      formData.append("latitude", 40.73061);
+    }
+
     if (selectedImage) {
-      formData.append("artwork", {
+      formData.append(flagApi2, {
         uri: selectedImage,
         name: `${title}.jpg`,
         type: "image/jpeg",
@@ -59,7 +73,7 @@ export default function ArtworkFormInput({ route }) {
 
     try {
       const response = await axios.post(
-        "https://graffix-server.onrender.com/api/v1/art",
+        `https://graffix-server.onrender.com/api/v1/${flagApi}`,
         formData,
         {
           headers: {
@@ -67,80 +81,129 @@ export default function ArtworkFormInput({ route }) {
           },
         }
       );
-      console.log("Artwork published successfully:", response.data);
-      QrCodeNeeded && generateQrCode(response.data.art.artworkUrl);
+      console.log(response.data);
+      if (QrCodeNeeded) {
+        treasureId = response.data.treasure._id;
+        setQrCodeValue(treasureId);
+        // Wait for the state to update and QR code to render
+        setTimeout(captureQRCode, 1000);
+      }
       Alert.alert("Artwork published successfully");
     } catch (error) {
       if (error.response) {
-        console.log("Error response data:", error.response.data);
-        console.log("Error response status:", error.response.status);
-        console.log("Error response headers:", error.response.headers);
         Alert.alert(
           "Failed to publish artwork",
           error.response.data.msg || "Server responded with an error"
         );
       } else if (error.request) {
-        console.log("Error request:", error.request);
         Alert.alert("Failed to publish artwork", "No response from server");
       } else {
-        console.log("Error message:", error.message);
         Alert.alert("Failed to publish artwork", error.message);
       }
-      console.log("Error config:", error.config);
     }
-  }
-
-  function generateQrCode(api) {
-    generateQRCode(api).then(setQrCodeValue);
   }
 
   function handleSelectCategory(category) {
     setSelectedCategory(category);
   }
 
+  const captureQRCode = async () => {
+    if (viewShotRef.current) {
+      const uri = await viewShotRef.current.capture();
+      uploadQRCodeImage(uri);
+    }
+  };
+
+  const uploadQRCodeImage = async (uri) => {
+    const formData = new FormData();
+    console.log("Treasure URI is: " + uri);
+    formData.append("category", selectedCategory.toLowerCase());
+    formData.append("qrcode", {
+      uri,
+      name: "qr-code.png",
+      type: "image/png",
+    });
+
+    try {
+      console.log("Treasure ID is: " + treasureId);
+      const response = await axios.patch(
+        `https://graffix-server.onrender.com/api/v1/treasure/${treasureId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      Alert.alert("QR code uploaded successfully");
+    } catch (error) {
+      Alert.alert("Failed to upload QR code", error.message);
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      {qrCodeValue ? (
-        <QRCode value={qrCodeValue} size={200} />
-      ) : (
-        <View style={styles.container}>
-          <ImageUpload handleImage={handleImage} />
-          <TextInput
-            style={styles.input}
-            placeholder="Name your Artwork"
-            placeholderTextColor="#999"
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Write about your Artwork"
-            placeholderTextColor="#999"
-            multiline
-            value={description}
-            onChangeText={setDescription}
-          />
-          <HorizontalScrollOptions
-            options={categories}
-            handleSelectCategory={handleSelectCategory}
-          />
-          <Button
-            title="Publish"
-            style={styles.button}
-            onPress={handlePublish}
-          />
-          <Button title="Cancel" style={styles.cancelButton} color="#999" />
-        </View>
-      )}
-    </View>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        {qrCodeValue ? (
+          <ViewShot ref={viewShotRef} options={{ format: "png", quality: 1.0 }}>
+            <QRCode value={qrCodeValue} size={200} />
+          </ViewShot>
+        ) : (
+          <View style={styles.container}>
+            <ImageUpload handleImage={handleImage} />
+            <TextInput
+              style={styles.input}
+              placeholder="Name your Artwork"
+              placeholderTextColor="#999"
+              value={title}
+              onChangeText={setTitle}
+            />
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Write about your Artwork"
+              placeholderTextColor="#999"
+              multiline
+              value={description}
+              onChangeText={setDescription}
+            />
+            {QrCodeNeeded && (
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Message for the treasure hunter"
+                placeholderTextColor="#999"
+                multiline
+                value={message}
+                onChangeText={setMessage}
+              />
+            )}
+            <HorizontalScrollOptions
+              options={categories}
+              handleSelectCategory={handleSelectCategory}
+            />
+            <Button
+              title="Publish"
+              style={styles.button}
+              onPress={handlePublish}
+            />
+            <Button title="Cancel" style={styles.cancelButton} color="#999" />
+          </View>
+        )}
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     padding: 20,
     backgroundColor: "#fff",
+    width: Dimensions.get("window").width,
   },
   input: {
     height: 50,
