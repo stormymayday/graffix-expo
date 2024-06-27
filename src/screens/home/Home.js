@@ -28,6 +28,7 @@ export default function Home({ navigation }) {
       const artResponse = await graffixAPI.get(`/api/v1/art`);
 
       setGalleryData(artResponse.data.allArt.slice(0, 4));
+
       setRecentlyAddedData(artResponse.data.allArt.reverse().slice(0, 4));
 
       const nearbyResponse = await graffixAPI.get(
@@ -124,10 +125,10 @@ export default function Home({ navigation }) {
                   <View style={styles.artDescription}>
                     <Text style={styles.white}>Art of the Day</Text>
                     <Text style={[styles.artworkName, styles.white]}>
-                      {galleryData[index].title.toUpperCase()}
+                      {galleryData[index].title}
                     </Text>
                     <Text style={styles.white}>
-                      {galleryData[index].category.toUpperCase()}
+                      {galleryData[index].artistName}
                     </Text>
                   </View>
                 </View>
@@ -272,7 +273,9 @@ export default function Home({ navigation }) {
                           >
                             {item.title.toUpperCase()}
                           </Text>
-                          <Text>{item.category.toUpperCase()}</Text>
+                          <Text style={{ textTransform: "capitalize" }}>
+                            {item.artistName}
+                          </Text>
                         </View>
                         <Ionicons
                           name="heart-outline"
@@ -328,6 +331,7 @@ const styles = StyleSheet.create({
   artworkName: {
     fontSize: 20,
     fontWeight: "bold",
+    textTransform: "capitalize",
   },
   sectionTitle: {
     fontSize: 20,
