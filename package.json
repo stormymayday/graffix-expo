@@ -21,6 +21,8 @@
     "expo": "^51.0.14",
     "expo-image": "~1.12.12",
     "expo-image-picker": "~15.0.5",
+    "expo-location": "^17.0.1",
+    "expo-media-library": "~16.0.3",
     "expo-status-bar": "~1.12.1",
     "mime": "^4.0.3",
     "qrcode": "^1.5.3",
