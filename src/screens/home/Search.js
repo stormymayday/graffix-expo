@@ -177,7 +177,7 @@ export default function SearchResultsScreen({ navigation }) {
               <Pressable
                 style={styles.card}
                 onPress={() =>
-                  alert(`Goes to a screen with ${item.name} details`)
+                  navigation.navigate("ArtistDetail", { artist: item })
                 }
               >
                 <Text style={{ width: "95%" }}>{item.username}</Text>
