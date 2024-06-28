@@ -13,7 +13,7 @@ import {
 export default function Login({ navigation }) {
     const { state, login, clearMessage } = useContext(AuthContext);
 
-    const [email, setEmail] = useState("john@gmail.com");
+    const [email, setEmail] = useState("user1@example.com");
     const [password, setPassword] = useState("password123");
 
     useEffect(() => {
