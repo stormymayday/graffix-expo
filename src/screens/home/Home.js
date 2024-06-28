@@ -186,6 +186,7 @@ export default function Home({ navigation }) {
                   onPress={() =>
                     navigation.navigate("Nearby", {
                       message: "This will show the Nearby Data",
+                      nearbyData,
                     })
                   }
                 >
@@ -206,7 +207,7 @@ export default function Home({ navigation }) {
                     >
                       <Image
                         style={[styles.image, styles.cardImage]}
-                        source={item.avatar}
+                        source={item.featuredArtUrl}
                         contentFit="cover"
                         transition={1000}
                       />
@@ -270,7 +271,11 @@ export default function Home({ navigation }) {
                           >
                             {item.title.toUpperCase()}
                           </Text>
-                          <Text style={{ textTransform: "capitalize" }}>
+                          <Text
+                            style={{
+                              textTransform: "capitalize",
+                            }}
+                          >
                             {item.artistName}
                           </Text>
                         </View>

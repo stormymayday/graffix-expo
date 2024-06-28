@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   FlatList,
   Pressable,
+  ScrollView,
 } from "react-native";
 import { useState, useEffect } from "react";
 import graffixAPI from "../../api/graffixAPI";
@@ -49,52 +50,81 @@ export default function Categories({ navigation, route }) {
   const numColumns = 2;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text>Categories Screen</Text>
-      <Text>{route.params.category}</Text>
-      {categoriesData.length > 0 && (
-        <FlatList
-          bounces={false}
-          numColumns={numColumns}
-          data={categoriesData}
-          renderItem={({ item }) => {
-            return (
-              <Pressable
-                style={styles.card}
-                onPress={() => alert(`Goes to a screen with the item details`)}
-              >
-                <Image
-                  style={[styles.image, styles.cardImage]}
-                  source={item.artworkUrl}
-                  contentFit="cover"
-                  transition={1000}
-                />
-                <View style={styles.flexSection}>
-                  <View>
-                    <Text
-                      style={{
-                        textTransform: "capitalize",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {item.title.toUpperCase()}
-                    </Text>
-                    <Text>{item.category.toUpperCase()}</Text>
-                  </View>
-                  <Ionicons name="heart-outline" style={{ padding: 10 }} />
-                </View>
-              </Pressable>
-            );
-          }}
-          ItemSeparatorComponent={<View style={{ width: 16 }} />}
-          ListEmptyComponent={
-            <Text style={styles.trendingCardTitle}>Nothing to show</Text>
-          }
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-        />
-      )}
-    </SafeAreaView>
+    categoriesData.length > 0 && (
+      <SafeAreaView style={styles.container}>
+        <ScrollView bounces={false} style={{ minWidth: "95%" }}>
+          <View
+            style={{
+              flex: 1,
+              marginBottom: 50,
+              width: "100%",
+            }}
+          >
+            <View style={styles.imageContainer}>
+              <Image
+                style={styles.featuredImage}
+                source={categoriesData[0].artworkUrl}
+                contentFit="fill"
+                transition={1000}
+              />
+            </View>
+            <View style={styles.artDescription}>
+              <Text style={styles.white}>{categoriesData[0].artistName}</Text>
+              <Text style={[styles.artworkName, styles.white]}>
+                {categoriesData[0].title}
+              </Text>
+            </View>
+          </View>
+
+          <View>
+            <FlatList
+              // style={{ minHeight: 1000 }}
+              bounces={false}
+              numColumns={numColumns}
+              data={categoriesData.slice(1)}
+              renderItem={({ item }) => {
+                return (
+                  <Pressable
+                    style={styles.card}
+                    onPress={() =>
+                      alert(`Goes to a screen with the item details`)
+                    }
+                  >
+                    <Image
+                      style={[styles.image, styles.cardImage]}
+                      source={item.artworkUrl}
+                      contentFit="cover"
+                      transition={1000}
+                    />
+                    <View style={styles.flexSection}>
+                      <View>
+                        <Text
+                          style={{
+                            textTransform: "capitalize",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {item.title.toUpperCase()}
+                        </Text>
+                        <Text>{item.artistName}</Text>
+                      </View>
+                      <Ionicons name="heart-outline" style={{ padding: 10 }} />
+                    </View>
+                  </Pressable>
+                );
+              }}
+              ItemSeparatorComponent={<View style={{ width: 16 }} />}
+              ListEmptyComponent={
+                <Text style={styles.trendingCardTitle}>Nothing to show</Text>
+              }
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              scrollEnabled={false}
+            />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    )
   );
 }
 
@@ -104,14 +134,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    paddingBottom: 30,
+  },
+  imageContainer: {
+    flex: 1,
   },
   image: {
     flex: 1,
     width: "100%",
     backgroundColor: "#0553",
   },
+  featuredImage: {
+    flex: 1,
+    width: "100%",
+    height: 300,
+    backgroundColor: "#0553",
+  },
   artDescription: {
-    marginTop: -100,
+    marginTop: -80,
     paddingHorizontal: 16,
   },
   white: {
@@ -120,6 +160,7 @@ const styles = StyleSheet.create({
   artworkName: {
     fontSize: 20,
     fontWeight: "bold",
+    textTransform: "capitalize",
   },
   sectionTitle: {
     fontSize: 20,
