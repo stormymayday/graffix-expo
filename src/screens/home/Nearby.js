@@ -1,12 +1,13 @@
 import { useState } from "react";
 
 import {
-    StyleSheet,
-    Text,
-    View,
-    SafeAreaView,
-    FlatList,
-    Image,
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  FlatList,
+  Image,
+  TouchableOpacity,
 } from "react-native";
 
 import { haversineDistanceBetweenPoints } from "../../utils/calculateDistance";
@@ -32,54 +33,64 @@ export default function Nearby({ navigation, route }) {
 
     // Move to a separate component later
     const renderItem = ({ item }) => (
-        <View style={styles.card}>
-            <Image
-                style={styles.image}
-                source={{ uri: item.featuredArtUrl }}
-                contentFit="cover"
-                transition={1000}
-            />
-            <Text style={styles.username}>{item.username}</Text>
-            <Text style={styles.distance}>
-                {haversineDistanceBetweenPoints(
-                    item.location.coordinates[1],
-                    item.location.coordinates[0],
-                    currentLocation.latitude,
-                    currentLocation.longitude
-                )}{" "}
-                m
-            </Text>
-        </View>
+      <View style={styles.card}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("ArtistDetail", { artist: item, })}
+        >
+          <Image
+            style={styles.image}
+            source={{ uri: item.featuredArtUrl }}
+            contentFit="cover"
+            transition={1000}
+          />
+          <Text style={styles.username}>{item.username}</Text>
+          <Text style={styles.distance}>
+            {haversineDistanceBetweenPoints(
+              item.location.coordinates[1],
+              item.location.coordinates[0],
+              currentLocation.latitude,
+              currentLocation.longitude
+            )}{" "}
+            m
+          </Text>
+        </TouchableOpacity>
+      </View>
     );
 
     return (
-        <SafeAreaView style={styles.container}>
-            <MapView style={styles.map} initialRegion={currentLocation}>
-                <Marker coordinate={currentLocation} title="You are here" />
-                {nearbyData.map((item) => (
-                    <Marker
-                        key={item._id}
-                        coordinate={{
-                            latitude: item.location.coordinates[1],
-                            longitude: item.location.coordinates[0],
-                        }}
-                        title={item.username}
-                        description={item.bio}
-                    >
-                        {renderMarkerImage(item.avatar)}
-                    </Marker>
-                ))}
-            </MapView>
+      <SafeAreaView style={styles.container}>
+        <MapView style={styles.map} initialRegion={currentLocation}>
+          <Marker coordinate={currentLocation} title="You are here" />
+          {nearbyData.map((item) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("ArtistDetail", { artist: item })
+              }
+            >
+              <Marker
+                key={item._id}
+                coordinate={{
+                  latitude: item.location.coordinates[1],
+                  longitude: item.location.coordinates[0],
+                }}
+                title={item.username}
+                description={item.bio}
+              >
+                {renderMarkerImage(item.avatar)}
+              </Marker>
+            </TouchableOpacity>
+          ))}
+        </MapView>
 
-            <FlatList
-                data={nearbyData}
-                renderItem={renderItem}
-                keyExtractor={(item) => item._id}
-                ItemSeparatorComponent={<View style={{ height: 16 }} />}
-                numColumns={2}
-                columnWrapperStyle={styles.row}
-            />
-        </SafeAreaView>
+        <FlatList
+          data={nearbyData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item._id}
+          ItemSeparatorComponent={<View style={{ height: 16 }} />}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+        />
+      </SafeAreaView>
     );
 }
 
