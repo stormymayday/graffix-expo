@@ -49,7 +49,6 @@ export default function Home({ navigation }) {
   useEffect(() => {
     fetchData();
   }, []);
-
   const categoryOptions = [
     {
       id: 1,
@@ -202,9 +201,7 @@ export default function Home({ navigation }) {
                     <Pressable
                       style={styles.card}
                       onPress={() =>
-                        navigation.navigate("Nearby", {
-                          message: "This will show the Nearby Data",
-                        })
+                        navigation.navigate("ArtistDetail", { artist: item, })
                       }
                     >
                       <Image

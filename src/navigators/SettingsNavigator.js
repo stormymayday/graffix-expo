@@ -10,6 +10,8 @@ import Notifications from "../screens/home/settings/Notifications";
 import ArtistsProfile from "../screens/home/settings/ArtistsProfile";
 import Icon from "react-native-vector-icons/Ionicons";
 import {TouchableOpacity} from "react-native";
+import SelectAndUpload from "../screens/addArtWork/selectAndUpload";
+import ArtworkFormInput from "../screens/addArtWork/artWorkFormInput";
 
 const Stack = createNativeStackNavigator();
 const TopTabs = createMaterialTopTabNavigator();
@@ -43,6 +45,8 @@ export function SettingsNavigator() {
       <Stack.Screen name="LocationPermission" component={LocationPermission} />
       <Stack.Screen name="Notifications" component={Notifications} />
       <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+      <Stack.Screen name="SelectAndUpload" component={SelectAndUpload} />
+      <Stack.Screen name="ArtworkFormInput" component={ArtworkFormInput} />
     </Stack.Navigator>
   );
 }
