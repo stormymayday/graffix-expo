@@ -3,10 +3,9 @@ import Login from "../screens/auth/Login";
 import SignUp from "../screens/auth/SignUp";
 import ForgotPassword from "../screens/auth/ForgotPassword";
 import { OnboardingNavigator } from "./OnboardingNavigator";
-import ArtworkFormInput from "../screens/addArtWork/artWorkFormInput";
 import Nearby from "../screens/home/Nearby";
 import Categories from "../screens/home/Categories";
-import SelectAndUpload from "../screens/addArtWork/selectAndUpload";
+import ArtistDetail from "../screens/home/ArtistDetail";
 // import PersonalDetails from "../screens/home/settings/PersonalDetails";
 // import LocationPermission from "../screens/home/settings/LocationPermision";
 // import Notifications from "../screens/home/settings/Notifications";
@@ -30,10 +29,9 @@ export function AuthNavigator() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-      <Stack.Screen name="SelectAndUpload" component={SelectAndUpload} />
       <Stack.Screen name="Categories" component={Categories} />
       <Stack.Screen name="Nearby" component={Nearby} />
-      <Stack.Screen name="ArtworkFormInput" component={ArtworkFormInput} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
       {/* <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} />
       <Stack.Screen name="LocationPermission" component={LocationPermission} />
       <Stack.Screen name="Notifications" component={Notifications} />

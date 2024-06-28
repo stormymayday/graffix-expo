@@ -14,14 +14,12 @@ import graffixAPI from "../../api/graffixAPI";
 
 export default function Collector({ navigation, route }) {
   const [user, setUser] = useState(null);
-  const [favorites, setFavorites] = useState([]);
+  // const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await graffixAPI.get(
-          "https://graffix-server.onrender.com/api/v1/users/current-user"
-        );
+        const response = await graffixAPI.get("/api/v1/users/current-user");
         const userData = response.data.userWithoutPassword;
         console.log("User data:", userData);
         setUser({
@@ -30,14 +28,70 @@ export default function Collector({ navigation, route }) {
           address: userData.address,
           description: userData.bio,
         });
-        setFavorites(userData.likes);
+        // setFavorites(userData.likes);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
-    fetchUserData();
-  }, [route.params?.updatedUser]);
+    const unsubscribe = navigation.addListener("focus", () => {
+      fetchUserData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  // Dummy data for favorites
+  const favorites = [
+    {
+      id: "1",
+      imageUrl: "https://picsum.photos/id/55/4608/3072",
+      artType: "Painting",
+      artName: "Sunset Overdrive",
+      description: "A beautiful sunset over the hills.",
+      author: "John Doe",
+    },
+    {
+      id: "2",
+      imageUrl: "https://picsum.photos/id/58/1280/853",
+      artType: "Sculpture",
+      artName: "The Thinker",
+      description: "A thought-provoking sculpture.",
+      author: "Jane Doe",
+    },
+    {
+      id: "3",
+      imageUrl: "https://picsum.photos/id/57/2448/3264",
+      artType: "Drawing",
+      artName: "Nature Sketch",
+      description: "A sketch of the wilderness.",
+      author: "John Smith",
+    },
+    {
+      id: "4",
+      imageUrl: "https://picsum.photos/id/72/2448/3064",
+      artType: "Digital Art",
+      artName: "Cyberpunk City",
+      description: "A digital art of a futuristic city.",
+      author: "Anna Smith",
+    },
+    {
+      id: "5",
+      imageUrl: "https://picsum.photos/id/826/200/300",
+      artType: "Photography",
+      artName: "Mountain View",
+      description: "A stunning photograph of mountain scenery.",
+      author: "Mark Johnson",
+    },
+    {
+      id: "6",
+      imageUrl: "https://picsum.photos/id/1061/200/300",
+      artType: "Mixed Media",
+      artName: "Abstract Thoughts",
+      description: "A mixed media artwork with abstract elements.",
+      author: "Laura Brown",
+    },
+  ];
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -70,7 +124,9 @@ export default function Collector({ navigation, route }) {
             >
               <Text style={styles.name}>{user.name}</Text>
             </Pressable>
-            <Pressable onPress={() => navigation.navigate("EditProfile")}>
+            <Pressable
+              onPress={() => navigation.navigate("EditProfile", { user })}
+            >
               <Feather name="edit" size={18} color="black" />
             </Pressable>
           </View>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,40 +10,96 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import graffixAPI from "../../api/graffixAPI";
 
-export default function Setting({ navigation, route }) {
-  const [name, setName] = useState("Ferando Buritto");
-  const [pronouns, setPronouns] = useState("She / Her");
-  const [location, setLocation] = useState("Vancouver");
-  const [bio, setBio] = useState(
-    "Eccentric painter with a knack for nature. I enjoy hiking and nature walks."
-  );
-  const [instagram, setInstagram] = useState("Instagram Link");
-  const [behance, setBehance] = useState("Behance link");
-  const [website, setWebsite] = useState("Website");
-  const [saved, setSaved] = useState(false);
+export default function EditProfile({ navigation }) {
+  const [name, setName] = useState("");
+  const [pronouns, setPronouns] = useState("");
+  const [location, setLocation] = useState({ type: "Point", coordinates: [] }); // Updated to match database structure
+  const [bio, setBio] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [behance, setBehance] = useState("");
+  const [website, setWebsite] = useState("");
+  const [avatar, setAvatar] = useState("");
 
-  const saveChanges = () => {
-    const updatedUser = {
-      name,
-      imageUrl: "https://via.placeholder.com/100", // Update the image URL as needed
-      address: location,
-      description: bio,
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await graffixAPI.get("api/v1/users/current-user");
+        const userData = response.data.userWithoutPassword;
+        console.log("User data:", userData);
+        setName(userData.username || "");
+        setPronouns(userData.pronouns || "");
+        setLocation(userData.location || { type: "Point", coordinates: [] }); // Update location state
+        setBio(userData.bio || "");
+        setInstagram(userData.instagram || "https://www.instagram.com/");
+        setBehance(userData.behance || "https://www.instagram.com/");
+        setWebsite(userData.website || "https://dribbble.com/");
+        setAvatar(userData.avatar || "https://via.placeholder.com/100");
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
     };
-    navigation.navigate("Collector", { updatedUser });
-    setSaved(true);
+
+    fetchUserData();
+  }, []);
+
+  const selectImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      console.log("ImagePicker result:", result);
+
+      if (!result.cancelled) {
+        if (result.assets && result.assets.length > 0 && result.assets[0].uri) {
+          console.log("Selected image URI:", result.assets[0].uri);
+          setAvatar(result.assets[0].uri);
+        } else {
+          console.log("Selected image URI not found in result assets.");
+        }
+      } else {
+        console.log("Image selection cancelled");
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
+    }
+  };
+
+  const saveChanges = async () => {
+    try {
+      const updatedUser = {
+        username: name,
+        pronouns: pronouns,
+        location: location, // Update location to include type and coordinates
+        bio: bio,
+        instagram: instagram,
+        behance: behance,
+        website: website,
+        avatar: avatar,
+      };
+
+      await graffixAPI.patch("/api/v1/users/update-user", updatedUser);
+
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error saving user data:", error);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.profileContainer}>
-          <Image
-            source={{ uri: "https://via.placeholder.com/100" }}
-            style={styles.profileImage}
-          />
+          <TouchableOpacity onPress={selectImage}>
+            <Image source={{ uri: avatar }} style={styles.profileImage} />
+          </TouchableOpacity>
         </View>
-
         <View style={styles.inputContainer}>
           <View style={styles.iconLabelContainer}>
             <Ionicons
@@ -56,7 +112,6 @@ export default function Setting({ navigation, route }) {
           </View>
           <TextInput style={styles.input} value={name} onChangeText={setName} />
         </View>
-
         <View style={styles.inputContainer}>
           <View style={styles.iconLabelContainer}>
             <Ionicons
@@ -73,7 +128,6 @@ export default function Setting({ navigation, route }) {
             onChangeText={setPronouns}
           />
         </View>
-
         <View style={styles.inputContainer}>
           <View style={styles.iconLabelContainer}>
             <Ionicons
@@ -86,11 +140,16 @@ export default function Setting({ navigation, route }) {
           </View>
           <TextInput
             style={styles.input}
-            value={location}
-            onChangeText={setLocation}
+            value={`${location.coordinates[1]}, ${location.coordinates[0]}`} 
+            onChangeText={(text) => {
+              const [lat, lon] = text.split(", ");
+              setLocation({
+                type: "Point",
+                coordinates: [parseFloat(lon), parseFloat(lat)],
+              });
+            }}
           />
         </View>
-
         <View style={styles.inputContainer}>
           <View style={styles.iconLabelContainer}>
             <Ionicons
@@ -109,14 +168,12 @@ export default function Setting({ navigation, route }) {
             numberOfLines={4}
           />
         </View>
-
         <View style={styles.inputContainer}>
           <View style={styles.iconLabelContainer}>
             <Ionicons name="link" size={20} color="black" style={styles.icon} />
             <Text style={styles.label}>Contact Links</Text>
           </View>
         </View>
-
         <TextInput
           style={styles.input}
           value={instagram}
@@ -132,12 +189,9 @@ export default function Setting({ navigation, route }) {
           value={website}
           onChangeText={setWebsite}
         />
-
         <TouchableOpacity style={styles.saveButton} onPress={saveChanges}>
           <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>
-
-        {saved && <Text style={styles.savedMessage}>Changes saved!</Text>}
       </ScrollView>
     </SafeAreaView>
   );
@@ -159,14 +213,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-  },
-  editIconContainer: {
-    position: "absolute",
-    bottom: 0,
-    right: 10,
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 4,
   },
   inputContainer: {
     marginBottom: 16,
