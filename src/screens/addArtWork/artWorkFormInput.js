@@ -124,7 +124,7 @@ export default function ArtworkFormInput({ route, navigation }) {
       }
     } finally {
       if (!QrCodeNeeded) {
-        navigation.navigate("ArtistsProfile");
+        navigation.navigate("Artist");
       }
     }
   }
@@ -209,7 +209,7 @@ export default function ArtworkFormInput({ route, navigation }) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.profileButton}
-              onPress={() => navigation.navigate("ArtistsProfile")}
+              onPress={() => navigation.navigate("Artist")}
             >
               <Text style={styles.buttonText}>Profile</Text>
             </TouchableOpacity>
