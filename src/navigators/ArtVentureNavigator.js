@@ -16,9 +16,11 @@ const Stack = createNativeStackNavigator();
 export function ArtVentureNavigator() {
     return (
         <Stack.Navigator
-            screenOptions={{
-                headerShown: false,
-            }}
+            screenOptions={
+                {
+                    // headerShown: false,
+                }
+            }
             initialRouteName="AVTutorialScreen1"
         >
             <Stack.Screen
