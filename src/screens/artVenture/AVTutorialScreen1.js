@@ -7,6 +7,7 @@ import {
     SafeAreaView,
     Button,
     Image,
+    ScrollView,
 } from "react-native";
 
 export default function AVTutorialScreen1({ navigation }) {
@@ -16,30 +17,32 @@ export default function AVTutorialScreen1({ navigation }) {
     }, []);
     return (
         <SafeAreaView style={styles.container}>
-            <Text>ArtVenture Tutorial Screen 1</Text>
-            {state.errorMessage ? <Text>{state.errorMessage}</Text> : null}
-            <View>
-                {state.treasures.map((treasure) => (
-                    <View key={treasure._id} style={styles.treasure}>
-                        <Text style={styles.title}>{treasure.title}</Text>
-                        <Text>{treasure.description}</Text>
-                        <Text>{treasure.message}</Text>
-                        <Text>Category: {treasure.category}</Text>
-                        <Image
-                            source={{ uri: treasure.treasureUrl }}
-                            style={styles.image}
-                        />
-                    </View>
-                ))}
-            </View>
-            <Button
-                title="Next"
-                onPress={() => navigation.navigate("AVTutorialScreen2")}
-            />
-            <Button
-                title="Skip"
-                onPress={() => navigation.navigate("AVFilterScreen")}
-            />
+            <ScrollView>
+                <Text>ArtVenture Tutorial Screen 1</Text>
+                {state.errorMessage ? <Text>{state.errorMessage}</Text> : null}
+                <View>
+                    {state.treasures.map((treasure) => (
+                        <View key={treasure._id} style={styles.treasure}>
+                            <Text style={styles.title}>{treasure.title}</Text>
+                            <Text>{treasure.description}</Text>
+                            <Text>{treasure.message}</Text>
+                            <Text>Category: {treasure.category}</Text>
+                            <Image
+                                source={{ uri: treasure.treasureUrl }}
+                                style={styles.image}
+                            />
+                        </View>
+                    ))}
+                </View>
+                <Button
+                    title="Next"
+                    onPress={() => navigation.navigate("AVTutorialScreen2")}
+                />
+                <Button
+                    title="Skip"
+                    onPress={() => navigation.navigate("AVFilterScreen")}
+                />
+            </ScrollView>
         </SafeAreaView>
     );
 }
