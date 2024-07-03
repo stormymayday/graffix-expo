@@ -6,6 +6,7 @@ import { OnboardingNavigator } from "./OnboardingNavigator";
 import Nearby from "../screens/home/Nearby";
 import Categories from "../screens/home/Categories";
 import ArtistDetail from "../screens/home/ArtistDetail";
+import ArtDetail from "../screens/home/ArtDetail";
 // import PersonalDetails from "../screens/home/settings/PersonalDetails";
 // import LocationPermission from "../screens/home/settings/LocationPermision";
 // import Notifications from "../screens/home/settings/Notifications";
@@ -32,6 +33,7 @@ export function AuthNavigator() {
       <Stack.Screen name="Categories" component={Categories} />
       <Stack.Screen name="Nearby" component={Nearby} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
+      <Stack.Screen name="ArtDetail" component={ArtDetail} />
       {/* <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} />
       <Stack.Screen name="LocationPermission" component={LocationPermission} />
       <Stack.Screen name="Notifications" component={Notifications} />

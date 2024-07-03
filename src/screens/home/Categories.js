@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import graffixAPI from "../../api/graffixAPI";
 import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { center } from "@cloudinary/url-gen/qualifiers/textAlignment";
 
 export default function Categories({ navigation, route }) {
   const [isLoading, setisLoading] = useState(false);
@@ -23,8 +24,6 @@ export default function Categories({ navigation, route }) {
       const artResponse = await graffixAPI.get(
         `https://graffix-server.onrender.com/api/v1/art/category/${route.params.category}`
       );
-
-      console.log(artResponse.data);
 
       setCategoriesData(artResponse.data);
 
@@ -86,9 +85,7 @@ export default function Categories({ navigation, route }) {
                 return (
                   <Pressable
                     style={styles.card}
-                    onPress={() =>
-                      alert(`Goes to a screen with the item details`)
-                    }
+                    onPress={() => navigation.navigate("ArtDetail", { item })}
                   >
                     <Image
                       style={[styles.image, styles.cardImage]}
@@ -104,7 +101,7 @@ export default function Categories({ navigation, route }) {
                             fontWeight: "bold",
                           }}
                         >
-                          {item.title.toUpperCase()}
+                          {item.title}
                         </Text>
                         <Text>{item.artistName}</Text>
                       </View>
@@ -178,7 +175,7 @@ const styles = StyleSheet.create({
   card: {
     width: 160,
     height: 160,
-    margin: 3,
+    margin: 5,
   },
   section: {
     paddingVertical: 16,

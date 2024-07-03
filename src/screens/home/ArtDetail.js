@@ -5,14 +5,17 @@ export default function ArtDetail({ route, navigation }) {
   const { item } = route.params;
 
   useEffect(() => {
-    navigation.setOptions({ title: item.artName });
-  }, [navigation, item.artName]);
+    navigation.setOptions({ title: item.artName || item.title });
+  }, [navigation, item.artName || item.title]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={{ uri: item.imageUrl }} style={styles.image} />
-      <Text style={styles.artName}>{item.artName}</Text>
-      <Text style={styles.author}>By: {item.author}</Text>
+      <Image
+        source={{ uri: item.imageUrl || item.artworkUrl }}
+        style={styles.image}
+      />
+      <Text style={styles.artName}>{item.artName || item.title}</Text>
+      <Text style={styles.author}>By: {item.author || item.artistName}</Text>
       <Text style={styles.artType}>{item.artType}</Text>
       <Text style={styles.description}>{item.description}</Text>
     </SafeAreaView>
@@ -34,6 +37,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 8,
+    textTransform: "capitalize",
   },
   author: {
     fontSize: 18,

@@ -202,7 +202,7 @@ export default function Home({ navigation }) {
                     <Pressable
                       style={styles.card}
                       onPress={() =>
-                        navigation.navigate("ArtistDetail", { artist: item, })
+                        navigation.navigate("ArtistDetail", { artist: item })
                       }
                     >
                       <Image
@@ -251,9 +251,7 @@ export default function Home({ navigation }) {
                   return (
                     <Pressable
                       style={styles.card}
-                      onPress={() =>
-                        alert(`Goes to a screen with the item details`)
-                      }
+                      onPress={() => navigation.navigate("ArtDetail", { item })}
                     >
                       <Image
                         style={[styles.image, styles.cardImage]}
@@ -300,7 +298,7 @@ export default function Home({ navigation }) {
               <Text style={styles.sectionTitle}>ArtVenture</Text>
               <Pressable
                 style={styles.artVentureBox}
-                onPress={() => alert("I will go to this screen")}
+                onPress={() => navigation.navigate("ArtVenture")}
               >
                 <Text style={styles.sectionTitle}>Play the Hunt Game!</Text>
                 <Text>Get exciting stories and more!</Text>
