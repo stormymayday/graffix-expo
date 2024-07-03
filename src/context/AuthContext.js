@@ -1,10 +1,9 @@
 import createDataContext from "./createDataContext.js";
 import graffixAPI from "../api/graffixAPI.js";
+import * as Location from "expo-location";
 
 const authReducer = (state, action) => {
     switch (action.type) {
-        // case "test_call":
-        //     return { ...state, successMessage: action.payload };
         case "register_success":
             return {
                 ...state,
@@ -40,6 +39,11 @@ const authReducer = (state, action) => {
                 ...state,
                 logoutErrorMessage: action.payload,
                 logoutSuccessMessage: "",
+            };
+        case "set_current_location":
+            return {
+                ...state,
+                currentLocation: action.payload,
             };
         case "clear_message":
             return {
@@ -96,6 +100,9 @@ const login = (dispatch) => {
                 payload: response.data.msg,
             });
 
+            // Fetching Current Location
+            await fetchCurrentLocation(dispatch);
+
             // Clear all messages
             dispatch({ type: "clear_message" });
         } catch (error) {
@@ -129,29 +136,32 @@ const logout = (dispatch) => {
     };
 };
 
+const fetchCurrentLocation = async (dispatch) => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    dispatch({
+        type: "set_current_location",
+        payload: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+        },
+    });
+};
+
 const clearMessage = (dispatch) => () => {
     dispatch({ type: "clear_message" });
 };
 
-const authTest = (dispatch) => {
-    return async () => {
-        try {
-            const response = await graffixAPI.get("/api/v1/art");
-
-            console.log(response.data);
-            dispatch({
-                type: "test_call",
-                payload: response.data.msg,
-            });
-        } catch (error) {
-            dispatch({ type: "add_error", payload: error.response.data.msg });
-        }
-    };
-};
-
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { register, login, logout, clearMessage, authTest },
+    { register, login, logout, clearMessage },
     {
         isSignedIn: false,
         registerSuccessMessage: "",
@@ -160,5 +170,6 @@ export const { Provider, Context } = createDataContext(
         loginErrorMessage: "",
         logoutSuccessMessage: "",
         logoutErrorMessage: "",
+        currentLocation: null,
     }
 );
