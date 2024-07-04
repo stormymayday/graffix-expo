@@ -1,5 +1,6 @@
 import { useEffect, useContext } from "react";
 import { Context as ArtVentureContext } from "../../context/ArtVentureContext";
+import { Context as AuthContext } from "../../context/AuthContext";
 import {
     StyleSheet,
     Text,
@@ -11,17 +12,25 @@ import {
 } from "react-native";
 
 export default function AVTutorialScreen1({ navigation }) {
-    const { state, fetchTreasures } = useContext(ArtVentureContext);
+    const { state: artVentureState, fetchTreasures } =
+        useContext(ArtVentureContext);
+    const { state: authState } = useContext(AuthContext);
+
     useEffect(() => {
-        fetchTreasures();
-    }, []);
+        if (authState.currentLocation) {
+            fetchTreasures(authState.currentLocation);
+        }
+    }, [authState.currentLocation]);
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
                 <Text>ArtVenture Tutorial Screen 1</Text>
-                {state.errorMessage ? <Text>{state.errorMessage}</Text> : null}
+                {artVentureState.errorMessage ? (
+                    <Text>{artVentureState.errorMessage}</Text>
+                ) : null}
                 <View>
-                    {state.treasures.map((treasure) => (
+                    {artVentureState.treasures.map((treasure) => (
                         <View key={treasure._id} style={styles.treasure}>
                             <Text style={styles.title}>{treasure.title}</Text>
                             <Text>{treasure.description}</Text>
