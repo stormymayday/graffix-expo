@@ -14,49 +14,43 @@ import AVSuccessScreen from "../screens/artVenture/AVSuccessScreen";
 const Stack = createNativeStackNavigator();
 
 export function ArtVentureNavigator() {
-    return (
-        <Stack.Navigator
-            screenOptions={
-                {
-                    // headerShown: false,
-                }
-            }
-            initialRouteName="AVTutorialScreen1"
-        >
-            <Stack.Screen
-                name="AVTutorialScreen1"
-                component={AVTutorialScreen1}
-            />
-            <Stack.Screen
-                name="AVTutorialScreen2"
-                component={AVTutorialScreen2}
-            />
-            <Stack.Screen
-                name="AVTutorialScreen3"
-                component={AVTutorialScreen3}
-            />
-            <Stack.Screen name="AVFilterScreen" component={AVFilterScreen} />
-            <Stack.Screen
-                name="AVMapViewFilterResultsScreen"
-                component={AVMapViewFilterResultsScreen}
-            />
-            <Stack.Screen
-                name="AVMapViewSingleTreasureScreen"
-                component={AVMapViewSingleTreasureScreen}
-            />
-            <Stack.Screen
-                name="AVNavigationScreen"
-                component={AVNavigationScreen}
-            />
-            <Stack.Screen
-                name="AVScanQRCodeScreen"
-                component={AVScanQRCodeScreen}
-            />
-            <Stack.Screen
-                name="AVTreasureContentScreen"
-                component={AVTreasureContentScreen}
-            />
-            <Stack.Screen name="AVSuccessScreen" component={AVSuccessScreen} />
-        </Stack.Navigator>
-    );
+  return (
+    <Stack.Navigator
+      //   screenOptions={
+      //     {
+      //       // headerShown: false,
+      //     }
+      //   }
+      screenOptions={({ route }) => ({
+        headerTitleAlign: "center",
+        headerTitle:
+          (route.name == "AVTutorialScreen1" ||
+            route.name == "AVTutorialScreen2" ||
+            route.name == "AVTutorialScreen3" ||
+            route.name == "AVFilterScreen") &&
+          "",
+      })}
+      initialRouteName="AVTutorialScreen1"
+    >
+      <Stack.Screen name="AVTutorialScreen1" component={AVTutorialScreen1} />
+      <Stack.Screen name="AVTutorialScreen2" component={AVTutorialScreen2} />
+      <Stack.Screen name="AVTutorialScreen3" component={AVTutorialScreen3} />
+      <Stack.Screen name="AVFilterScreen" component={AVFilterScreen} />
+      <Stack.Screen
+        name="AVMapViewFilterResultsScreen"
+        component={AVMapViewFilterResultsScreen}
+      />
+      <Stack.Screen
+        name="AVMapViewSingleTreasureScreen"
+        component={AVMapViewSingleTreasureScreen}
+      />
+      <Stack.Screen name="AVNavigationScreen" component={AVNavigationScreen} />
+      <Stack.Screen name="AVScanQRCodeScreen" component={AVScanQRCodeScreen} />
+      <Stack.Screen
+        name="AVTreasureContentScreen"
+        component={AVTreasureContentScreen}
+      />
+      <Stack.Screen name="AVSuccessScreen" component={AVSuccessScreen} />
+    </Stack.Navigator>
+  );
 }
