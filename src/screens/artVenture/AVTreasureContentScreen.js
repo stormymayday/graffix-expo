@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     StyleSheet,
     Text,
@@ -23,6 +23,29 @@ export default function AVTreasureContentScreen({ navigation, route }) {
 
     // State variable to manage loading status
     const [isLoading, setIsLoading] = useState(false);
+
+    // State variable for Artist data
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
+    // Fetching Artist data
+    const fetchUserData = async () => {
+        try {
+            const response = await graffixAPI.get(
+                `/api/v1/users/${treasureData.createdBy}`
+            );
+            if (response.status === 200) {
+                setUserData(response.data.user);
+            } else {
+                console.error("Failed to fetch user data");
+            }
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+        }
+    };
 
     // Function to handle adding treasure to collection
     const handleAddToCollection = async () => {
@@ -49,6 +72,14 @@ export default function AVTreasureContentScreen({ navigation, route }) {
         }
     };
 
+    if (!userData) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -57,7 +88,7 @@ export default function AVTreasureContentScreen({ navigation, route }) {
                     <Text style={styles.mainHeading}>Exclusive Content</Text>
                 </View>
 
-                {/* Full-width treasure image */}
+                {/* Treasure Image */}
                 <Image
                     source={{ uri: treasureData.treasureUrl }}
                     style={styles.fullWidthImage}
@@ -80,18 +111,17 @@ export default function AVTreasureContentScreen({ navigation, route }) {
                     </Text>
                     <Text style={styles.message}>{treasureData.message}</Text>
 
-                    {/* The Artist heading */}
                     <Text style={styles.artistHeading}>The Artist</Text>
 
                     {/* Creator Card */}
                     <View style={styles.creatorCard}>
                         <Image
-                            source={{ uri: treasureData.treasureUrl }}
+                            source={{ uri: userData.avatar }}
                             style={styles.creatorAvatar}
                         />
                         <View style={styles.creatorInfo}>
                             <Text style={styles.creatorName}>
-                                {treasureData.title}
+                                {userData.username}
                             </Text>
                             <TouchableOpacity style={styles.viewProfileButton}>
                                 <Text style={styles.viewProfileButtonText}>
@@ -109,6 +139,7 @@ export default function AVTreasureContentScreen({ navigation, route }) {
                         <Ionicons name="close" size={24} color="black" />
                         <Text style={styles.closeButtonText}>Close</Text>
                     </TouchableOpacity>
+
                     {/* Collect button */}
                     <TouchableOpacity
                         style={styles.collectButton}
@@ -136,11 +167,15 @@ export default function AVTreasureContentScreen({ navigation, route }) {
     );
 }
 
-// Styles for the component
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
     scrollContent: {
         alignItems: "center",
@@ -181,7 +216,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         marginBottom: 15,
         alignSelf: "flex-start",
-        marginBottom: 30,
     },
     category: {
         fontSize: 16,
@@ -194,7 +228,7 @@ const styles = StyleSheet.create({
     message: {
         fontSize: 16,
         textAlign: "left",
-        marginBottom: 35,
+        marginBottom: 15,
     },
     artistHeading: {
         fontSize: 20,
@@ -232,7 +266,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 5,
-        backgroundColor: "#FFF",
     },
     viewProfileButtonText: {
         fontSize: 16,
