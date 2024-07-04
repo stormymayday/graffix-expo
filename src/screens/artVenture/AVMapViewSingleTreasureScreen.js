@@ -12,6 +12,7 @@ import { Context as ArtVentureContext } from "../../context/ArtVentureContext";
 import { Context as AuthContext } from "../../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { haversineDistanceBetweenPoints } from "../../utils/calculateDistance";
+import graffixAPI from "../../api/graffixAPI";
 
 export default function AVMapViewSingleTreasureScreen({ navigation, route }) {
     // Extracting treasureId from route params
@@ -25,12 +26,32 @@ export default function AVMapViewSingleTreasureScreen({ navigation, route }) {
     const [treasure, setTreasure] = useState(null);
     const [distance, setDistance] = useState(null);
 
+    // State variable for storing Artist data
+    const [artistData, setArtistData] = useState(null);
+
+    // Fetching Artist Data
+    const fetchArtistData = async (creatorId) => {
+        try {
+            const response = await graffixAPI.get(`/api/v1/users/${creatorId}`);
+            if (response.status === 200) {
+                setArtistData(response.data.user);
+            } else {
+                console.error("Failed to fetch artist data");
+            }
+        } catch (error) {
+            console.error("Error fetching artist data:", error);
+        }
+    };
+
     // Effect to find and set the current treasure based on treasureId
     useEffect(() => {
         const foundTreasure = artVentureState.treasures.find(
             (t) => t._id === treasureId
         );
         setTreasure(foundTreasure);
+        if (foundTreasure && foundTreasure.createdBy) {
+            fetchArtistData(foundTreasure.createdBy);
+        }
     }, [treasureId, artVentureState.treasures]);
 
     // Effect to calculate distance when treasure or user location changes
@@ -82,6 +103,7 @@ export default function AVMapViewSingleTreasureScreen({ navigation, route }) {
                     />
                 </Marker>
             </MapView>
+
             {/* Card container for treasure details */}
             <View style={styles.cardContainer}>
                 {/* Treasure image */}
@@ -91,13 +113,23 @@ export default function AVMapViewSingleTreasureScreen({ navigation, route }) {
                 />
                 <View style={styles.cardContent}>
                     {/* Treasure title */}
+
                     <Text style={styles.cardTitle}>{treasure.title}</Text>
+
+                    {/* Artist name */}
+                    {artistData && (
+                        <Text style={styles.artistName}>
+                            by {artistData.username}
+                        </Text>
+                    )}
+
                     {/* Treasure category */}
                     <View style={styles.categoryContainer}>
                         <Text style={styles.cardCategory}>
                             {treasure.category}
                         </Text>
                     </View>
+
                     {/* Distance to treasure */}
                     <View style={styles.distanceContainer}>
                         <Ionicons
@@ -111,6 +143,7 @@ export default function AVMapViewSingleTreasureScreen({ navigation, route }) {
                                 : "Calculating..."}
                         </Text>
                     </View>
+
                     {/* Start button */}
                     <View style={styles.buttonWrapper}>
                         <TouchableOpacity
@@ -156,7 +189,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
-        height: 150,
+        height: 160,
     },
     cardImage: {
         width: 100,
@@ -171,6 +204,11 @@ const styles = StyleSheet.create({
     cardTitle: {
         fontSize: 18,
         fontWeight: "bold",
+        marginBottom: 5,
+    },
+    artistName: {
+        fontSize: 14,
+        color: "#666",
         marginBottom: 5,
     },
     categoryContainer: {
