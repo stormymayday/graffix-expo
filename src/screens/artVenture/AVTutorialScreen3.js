@@ -9,14 +9,14 @@ import {
 import { Image } from "expo-image";
 import * as Progress from "react-native-progress";
 
-const image = require("../../../assets/ArtVenture_1.png");
+const image = require("../../../assets/ArtVenture_3.png");
 
 export default function AVTutorialScreen3({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Start Hunting</Text>
+      <Text style={styles.title}>Scan & Collect</Text>
       <Text style={styles.description}>
-        Follow the navigation to discover city, collect favourite artworks.
+        Have fun with a clue. Make artwork collection more interesting.
       </Text>
       <Image
         style={styles.image}
