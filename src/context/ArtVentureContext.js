@@ -13,16 +13,23 @@ const artVentureReducer = (state, action) => {
 };
 
 const fetchTreasures = (dispatch) => {
-    return async () => {
+    return async (currentLocation, maxDistance = 1000) => {
+        if (!currentLocation) {
+            dispatch({
+                type: "fetch_treasures_error",
+                payload: "Location not available",
+            });
+            return;
+        }
+
         try {
             const response = await graffixAPI.get("/api/v1/treasure/nearby", {
                 params: {
-                    longitude: -123.02397950816254,
-                    latitude: 49.233268305837285,
-                    maxDistance: 1000,
+                    latitude: currentLocation.latitude,
+                    longitude: currentLocation.longitude,
+                    maxDistance,
                 },
             });
-            console.log(response.data);
             dispatch({
                 type: "fetch_treasures_success",
                 payload: response.data,
