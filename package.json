@@ -20,6 +20,8 @@
     "babel-preset-expo": "^11.0.10",
     "cloudinary": "^2.2.0",
     "expo": "^51.0.14",
+    "expo-barcode-scanner": "~13.0.1",
+    "expo-camera": "~15.0.13",
     "expo-image": "~1.12.12",
     "expo-image-picker": "~15.0.5",
     "expo-location": "^17.0.1",

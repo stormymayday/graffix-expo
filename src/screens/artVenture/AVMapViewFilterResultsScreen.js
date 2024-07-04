@@ -4,22 +4,28 @@ import * as Location from "expo-location";
 import { StyleSheet, SafeAreaView, Image } from "react-native";
 import { Context as AuthContext } from "../../context/AuthContext";
 import { Context as ArtVentureContext } from "../../context/ArtVentureContext";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AVMapViewFilterResultsScreen({ navigation, route }) {
+    // Reference to the MapView component
     const mapRef = useRef(null);
 
+    // Getting current user location from AuthContext
     const { state: authState } = useContext(AuthContext);
     const { currentLocation } = authState;
 
+    // Getting selected categories from route params
     const { categories } = route.params;
+
+    // Getting treasures from ArtVentureContext
     const { state } = useContext(ArtVentureContext);
 
-    // console.log(categories);
-
+    // Filtering treasures based on selected categories
     const filteredTreasures = state.treasures.filter((item) =>
         categories.includes(item.category)
     );
 
+    // Function to render treasure marker image
     const renderMarkerImage = (treasureUrl) => (
         <Image
             source={{ uri: treasureUrl }}
@@ -27,6 +33,7 @@ export default function AVMapViewFilterResultsScreen({ navigation, route }) {
         />
     );
 
+    // Function to fit map to show all markers and user location
     const fitMapToMarkersAndUser = () => {
         if (currentLocation && filteredTreasures.length > 0) {
             const coordinates = [
@@ -58,6 +65,7 @@ export default function AVMapViewFilterResultsScreen({ navigation, route }) {
         }
     };
 
+    // Effect to fit map when currentLocation or filteredTreasures change
     useEffect(() => {
         if (currentLocation) {
             fitMapToMarkersAndUser();
@@ -71,11 +79,13 @@ export default function AVMapViewFilterResultsScreen({ navigation, route }) {
                 style={styles.map}
                 initialRegion={currentLocation}
             >
-                <Marker
-                    coordinate={currentLocation}
-                    title="You are here"
-                    pinColor="blue"
-                />
+                {/* User location marker */}
+                {currentLocation && (
+                    <Marker coordinate={currentLocation} title="You are here">
+                        <Ionicons name="person" size={30} color="#007AFF" />
+                    </Marker>
+                )}
+                {/* Treasure markers */}
                 {filteredTreasures.map((treasure) => (
                     <Marker
                         key={treasure._id}
