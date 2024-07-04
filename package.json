@@ -27,6 +27,7 @@
     "expo-location": "^17.0.1",
     "expo-media-library": "~16.0.3",
     "expo-status-bar": "~1.12.1",
+    "ios": "^0.0.1",
     "mime": "^4.0.3",
     "qrcode": "^1.5.3",
     "react": "18.2.0",

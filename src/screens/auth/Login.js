@@ -38,7 +38,7 @@ export default function Login({ navigation }) {
                     text: "OK",
                     onPress: () => {
                         clearMessage();
-                        navigation.navigate("GoOnboarding");
+                        navigation.navigate("Onboarding");
                     },
                 },
             ]);
