@@ -2,19 +2,19 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "../screens/auth/Login";
 import SignUp from "../screens/auth/SignUp";
 import ForgotPassword from "../screens/auth/ForgotPassword";
-import { OnboardingNavigator } from "./OnboardingNavigator";
 import Nearby from "../screens/home/Nearby";
 import Categories from "../screens/home/Categories";
 import ArtistDetail from "../screens/home/ArtistDetail";
 import ArtDetail from "../screens/home/ArtDetail";
-// import PersonalDetails from "../screens/home/settings/PersonalDetails";
-// import LocationPermission from "../screens/home/settings/LocationPermision";
-// import Notifications from "../screens/home/settings/Notifications";
-// import ArtistsProfile from "../screens/home/settings/ArtistsProfile";
+import { BottomTabNavigator } from "./BottomTabNavigator";
+import Onboarding from "../screens/home/Onboarding/Onboarding";
+import Onboarding2 from "../screens/home/Onboarding/Onboarding2";
+import Onboarding3 from "../screens/home/Onboarding/Onboarding3";
+import Onboarding4 from "../screens/home/Onboarding/Onboarding4";
 
 const Stack = createNativeStackNavigator();
 
-export function AuthNavigator() {
+export function StackNavigator() {
   return (
     <Stack.Navigator
       screenOptions={({ route }) => ({
@@ -30,22 +30,24 @@ export function AuthNavigator() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-      <Stack.Screen name="Categories" component={Categories} />
-      <Stack.Screen name="Nearby" component={Nearby} />
-      <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
-      <Stack.Screen name="ArtDetail" component={ArtDetail} />
-      {/* <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} />
-      <Stack.Screen name="LocationPermission" component={LocationPermission} />
-      <Stack.Screen name="Notifications" component={Notifications} />
-      <Stack.Screen name="PersonalDetails" component={PersonalDetails} /> */}
+      {/**************************** Onboarding Screen ********************************/}
+      <Stack.Screen name="Onboarding" component={Onboarding} />
+      <Stack.Screen name="Onboarding2" component={Onboarding2} />
+      <Stack.Screen name="Onboarding3" component={Onboarding3} />
+      <Stack.Screen name="Onboarding4" component={Onboarding4} />
       <Stack.Screen
-        name="GoOnboarding"
-        component={OnboardingNavigator}
+        name="Graffix"
+        component={BottomTabNavigator}
         options={{
           headerBackVisible: false,
           headerShown: false,
         }}
       />
+      {/**************************** Home Screen ********************************/}
+      <Stack.Screen name="Categories" component={Categories} />
+      <Stack.Screen name="Nearby" component={Nearby} />
+      <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
+      <Stack.Screen name="ArtDetail" component={ArtDetail} />
     </Stack.Navigator>
   );
 }

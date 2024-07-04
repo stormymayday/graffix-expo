@@ -38,7 +38,7 @@ export function SettingsNavigator() {
           ),
         })}
       />
-      <Stack.Screen name="ArtDetail" component={ArtDetail} />
+      <Stack.Screen name="ArtDetailFromProfile" component={ArtDetail} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} />

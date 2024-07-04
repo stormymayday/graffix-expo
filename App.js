@@ -1,14 +1,14 @@
 import { Provider as AuthProvider } from "./src/context/AuthContext";
 import { Provider as ArtVentureProvider } from "./src/context/ArtVentureContext";
 import { NavigationContainer } from "@react-navigation/native";
-import { AuthNavigator } from "./src/navigators/AuthNavigator";
+import { StackNavigator } from "./src/navigators/StackNavigator";
 
 export default function App() {
     return (
         <AuthProvider>
             <ArtVentureProvider>
                 <NavigationContainer>
-                    <AuthNavigator />
+                    <StackNavigator />
                 </NavigationContainer>
             </ArtVentureProvider>
         </AuthProvider>

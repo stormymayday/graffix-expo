@@ -96,7 +96,7 @@ export default function Collector({ navigation, route }) {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.artContainer}
-      onPress={() => navigation.navigate("ArtDetail", { item })}
+      onPress={() => navigation.navigate("ArtDetailFromProfile", { item })}
     >
       <Image source={{ uri: item.imageUrl }} style={styles.artImage} />
     </TouchableOpacity>
