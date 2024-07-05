@@ -22,6 +22,7 @@ export default function Home({ navigation }) {
   const [galleryData, setGalleryData] = useState([]);
   const [nearbyData, setNearbyData] = useState([]);
   const [recentlyAddedData, setRecentlyAddedData] = useState([]);
+  const [isLiked, setIsLiked] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -36,6 +37,14 @@ export default function Home({ navigation }) {
       );
 
       setNearbyData(nearbyResponse.data.slice(0, 4));
+
+      const isLikedResponse = await graffixAPI.get(
+        `/api/v1/users/current-user`
+      );
+
+      setIsLiked(isLikedResponse.data.userWithoutPassword.likedArtwork);
+
+      // console.log(isLikedResponse.data.userWithoutPassword.likedArtwork);
 
       //  setIsLoading(false);
       //  setError("");
@@ -281,7 +290,12 @@ export default function Home({ navigation }) {
                           </Text>
                         </View>
                         <Ionicons
-                          name="heart-outline"
+                          name={
+                            isLiked.includes(item._id)
+                              ? "heart"
+                              : "heart-outline"
+                          }
+                          // name="heart-outline"
                           style={{ padding: 10 }}
                         />
                       </View>
