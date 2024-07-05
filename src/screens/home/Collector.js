@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,88 +10,74 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import UserDataContext from "../../context/UserDataContext";
 import graffixAPI from "../../api/graffixAPI";
 
 export default function Collector({ navigation, route }) {
-  const [user, setUser] = useState(null);
-  // const [favorites, setFavorites] = useState([]);
+  const { userData, updateUser } = useContext(UserDataContext);
+  const [likedArtwork, setLikedArtwork] = useState([]);
+  const [collectedTreasures, setCollectedTreasures] = useState([]);
+  const [selectedTab, setSelectedTab] = useState("favourite");
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    if (!userData) return;
+
+    const fetchlikedArtWorks = async (userId) => {
       try {
-        const response = await graffixAPI.get("/api/v1/users/current-user");
-        const userData = response.data.userWithoutPassword;
-        console.log("User data:", userData);
-        setUser({
-          name: userData.username,
-          avatar: userData.avatar,
-          address: userData.address,
-          description: userData.bio,
-        });
-        // setFavorites(userData.likes);
+        const response = await graffixAPI.get(
+          `/api/v1/users/${userId}/liked-artworks`
+        );
+        const likedArtWorkData = response.data.likedArtworks;
+        setLikedArtwork(
+          likedArtWorkData.map((likedArtWork) => ({
+            id: likedArtWork._id,
+            artName: likedArtWork.title,
+            description: likedArtWork.description,
+            category: likedArtWork.category,
+            imageUrl: likedArtWork.artworkUrl,
+            author: likedArtWork.artistName,
+            authorId: likedArtWork.createdBy,
+            likes: likedArtWork.likes,
+          }))
+        );
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching artworks data:", error);
       }
     };
 
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchUserData();
-    });
+    fetchlikedArtWorks(userData._id);
+  }, [userData]);
 
-    return unsubscribe;
-  }, [navigation]);
+  useEffect(() => {
+    if (!userData) return;
 
-  // Dummy data for favorites
-  const favorites = [
-    {
-      id: "1",
-      imageUrl: "https://picsum.photos/id/55/4608/3072",
-      artType: "Painting",
-      artName: "Sunset Overdrive",
-      description: "A beautiful sunset over the hills.",
-      author: "John Doe",
-    },
-    {
-      id: "2",
-      imageUrl: "https://picsum.photos/id/58/1280/853",
-      artType: "Sculpture",
-      artName: "The Thinker",
-      description: "A thought-provoking sculpture.",
-      author: "Jane Doe",
-    },
-    {
-      id: "3",
-      imageUrl: "https://picsum.photos/id/57/2448/3264",
-      artType: "Drawing",
-      artName: "Nature Sketch",
-      description: "A sketch of the wilderness.",
-      author: "John Smith",
-    },
-    {
-      id: "4",
-      imageUrl: "https://picsum.photos/id/72/2448/3064",
-      artType: "Digital Art",
-      artName: "Cyberpunk City",
-      description: "A digital art of a futuristic city.",
-      author: "Anna Smith",
-    },
-    {
-      id: "5",
-      imageUrl: "https://picsum.photos/id/826/200/300",
-      artType: "Photography",
-      artName: "Mountain View",
-      description: "A stunning photograph of mountain scenery.",
-      author: "Mark Johnson",
-    },
-    {
-      id: "6",
-      imageUrl: "https://picsum.photos/id/1061/200/300",
-      artType: "Mixed Media",
-      artName: "Abstract Thoughts",
-      description: "A mixed media artwork with abstract elements.",
-      author: "Laura Brown",
-    },
-  ];
+    const fetchCollectedTreasures = async (userId) => {
+      try {
+        const response = await graffixAPI.get(
+          `/api/v1/users/${userId}/collected-treasures`
+        );
+        const collectedTreasureData = response.data;
+        setCollectedTreasures(
+          collectedTreasureData.map((collectedTreasure) => ({
+            id: collectedTreasure._id,
+            artName: collectedTreasure.title,
+            description: collectedTreasure.description,
+            category: collectedTreasure.category,
+            imageUrl: collectedTreasure.treasureUrl,
+            author: collectedTreasure.artistName,
+            authorId: collectedTreasure.createdBy,
+            likes: collectedTreasure.likes,
+            qrcode: collectedTreasure.qrCodeurl,
+            message: collectedTreasure.message,
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching artworks data:", error);
+      }
+    };
+
+    fetchCollectedTreasures(userData._id);
+  }, [userData]);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -102,7 +88,11 @@ export default function Collector({ navigation, route }) {
     </TouchableOpacity>
   );
 
-  if (!user) {
+  const getData = () => {
+    return selectedTab === "favourite" ? likedArtwork : collectedTreasures;
+  };
+
+  if (!userData) {
     return (
       <SafeAreaView style={styles.container}>
         <Text>Loading...</Text>
@@ -113,25 +103,23 @@ export default function Collector({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
-        <Pressable onPress={() => navigation.navigate("EditProfile", { user })}>
-          <Image source={{ uri: user.avatar }} style={styles.avatar} />
+        <Pressable onPress={() => navigation.navigate("EditProfile")}>
+          <Image source={{ uri: userData.avatar }} style={styles.avatar} />
         </Pressable>
 
         <View style={styles.infoContainer}>
           <View style={styles.header}>
-            <Pressable
-              onPress={() => navigation.navigate("EditProfile", { user })}
-            >
-              <Text style={styles.name}>{user.name}</Text>
+            <Pressable onPress={() => navigation.navigate("EditProfile")}>
+              <Text style={styles.name}>{userData.username}</Text>
             </Pressable>
-            <Pressable
-              onPress={() => navigation.navigate("EditProfile", { user })}
-            >
+            <Pressable onPress={() => navigation.navigate("EditProfile")}>
               <Feather name="edit" size={18} color="black" />
             </Pressable>
           </View>
-          <Text style={styles.address}>{user.address}</Text>
-          <Text style={styles.description}>{user.description}</Text>
+          <Text style={styles.address}>
+            {userData.location ? userData.location.coordinates.join(",") : ""}
+          </Text>
+          <Text style={styles.description}>{userData.bio}</Text>
         </View>
       </View>
 
@@ -142,22 +130,46 @@ export default function Collector({ navigation, route }) {
           marginBottom: 16,
         }}
       >
-        <TouchableOpacity>
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>Favourite</Text>
+        <TouchableOpacity onPress={() => setSelectedTab("favourite")}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: selectedTab === "favourite" ? "bold" : "normal",
+            }}
+          >
+            Favourite
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={{ fontSize: 16, color: "gray" }}>Collection</Text>
+        <TouchableOpacity onPress={() => setSelectedTab("collection")}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: selectedTab === "collection" ? "bold" : "normal",
+            }}
+          >
+            Collection
+          </Text>
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={favorites}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={{ paddingBottom: 16 }}
-      />
+      {getData().length > 0 ? (
+        <FlatList
+          data={getData()}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={{ paddingBottom: 16 }}
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>
+            {selectedTab === "favourite"
+              ? "You haven't liked any artwork yet."
+              : "You haven't collected any treasures yet."}
+          </Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -214,5 +226,14 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 160,
     borderRadius: 8,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "gray",
   },
 });

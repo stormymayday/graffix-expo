@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -11,56 +11,37 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import graffixAPI from "../../api/graffixAPI";
+import UserDataContext from "../../context/UserDataContext";
 
 export default function Artist({ navigation, route }) {
-  const [user, setUser] = useState(null);
+  const { userData, updateUser } = useContext(UserDataContext);
   const [artWorks, setArtWorks] = useState([]);
 
- useEffect(() => {
-   const fetchUserData = async () => {
-     try {
-       const response = await graffixAPI.get("/api/v1/users/current-user");
-       const userData = response.data.userWithoutPassword;
-       setUser({
-         name: userData.username,
-         avatar: userData.avatar,
-         address: userData.address,
-         description: userData.bio,
-       });
+  React.useEffect(() => {
+    if (!userData) return;
 
-       // Fetch user's artworks
-       fetchArtWorks(userData._id);
-     } catch (error) {
-       console.error("Error fetching user data:", error);
-     }
-   };
+    const fetchArtWorks = async (userId) => {
+      try {
+        const response = await graffixAPI.get(`/api/v1/art/artist/${userId}`);
+        const artWorkData = response.data;
+        setArtWorks(
+          artWorkData.map((artwork) => ({
+            id: artwork._id,
+            artName: artwork.title,
+            description: artwork.description,
+            category: artwork.category,
+            imageUrl: artwork.artworkUrl,
+            author: artwork.artistName,
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching artworks data:", error);
+      }
+    };
 
-   const fetchArtWorks = async (userId) => {
-     try {
-       const response = await graffixAPI.get(`/api/v1/art/artist/${userId}`);
-       const artWorkData = response.data;
-       setArtWorks(
-         artWorkData.map((artwork) => ({
-           id: artwork._id,
-           artName: artwork.title,
-           description: artwork.description,
-           category: artwork.category,
-           imageUrl: artwork.artworkUrl,
-           author: artwork.artistName,
-         }))
-       );
-       console.log(artWorks);
-     } catch (error) {
-       console.error("Error fetching artworks data:", error);
-     }
-   };
+    fetchArtWorks(userData._id);
+  }, [userData]);
 
-   const unsubscribe = navigation.addListener("focus", () => {
-     fetchUserData();
-   });
-
-   return unsubscribe;
- }, [navigation]);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -71,7 +52,7 @@ export default function Artist({ navigation, route }) {
     </TouchableOpacity>
   );
 
-  if (!user) {
+  if (!userData) {
     return (
       <SafeAreaView style={styles.container}>
         <Text>Loading...</Text>
@@ -82,25 +63,23 @@ export default function Artist({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
-        <Pressable onPress={() => navigation.navigate("EditProfile", { user })}>
-          <Image source={{ uri: user.avatar }} style={styles.avatar} />
+        <Pressable onPress={() => navigation.navigate("EditProfile")}>
+          <Image source={{ uri: userData.avatar }} style={styles.avatar} />
         </Pressable>
 
         <View style={styles.infoContainer}>
           <View style={styles.header}>
-            <Pressable
-              onPress={() => navigation.navigate("EditProfile", { user })}
-            >
-              <Text style={styles.name}>{user.name}</Text>
+            <Pressable onPress={() => navigation.navigate("EditProfile")}>
+              <Text style={styles.name}>{userData.username}</Text>
             </Pressable>
-            <Pressable
-              onPress={() => navigation.navigate("EditProfile", { user })}
-            >
+            <Pressable onPress={() => navigation.navigate("EditProfile")}>
               <Feather name="edit" size={18} color="black" />
             </Pressable>
           </View>
-          <Text style={styles.address}>{user.address}</Text>
-          <Text style={styles.description}>{user.description}</Text>
+          <Text style={styles.address}>
+            {userData.location ? userData.location.coordinates.join(",") : ""}
+          </Text>
+          <Text style={styles.description}>{userData.bio}</Text>
         </View>
       </View>
 
@@ -122,7 +101,7 @@ export default function Artist({ navigation, route }) {
       <FlatList
         data={artWorks}
         renderItem={renderItem}
-        keyExtractor={(item) =>item.id.toString()}
+        keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={{ paddingBottom: 16 }}
