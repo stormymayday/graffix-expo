@@ -140,7 +140,13 @@ export default function SearchResultsScreen({ navigation }) {
             </Text>
             {randomArtistsData.length > 0 && (
               <View style={styles.box}>
-                <Pressable onPress={dummyFunction}>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("ArtistDetail", {
+                      artist: randomArtistsData[0],
+                    })
+                  }
+                >
                   <Image
                     style={styles.image}
                     source={randomArtistsData[0].avatar}
@@ -151,7 +157,13 @@ export default function SearchResultsScreen({ navigation }) {
                     {randomArtistsData[0].username}
                   </Text>
                 </Pressable>
-                <Pressable onPress={dummyFunction}>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("ArtistDetail", {
+                      artist: randomArtistsData[1],
+                    })
+                  }
+                >
                   <Image
                     style={styles.image}
                     source={randomArtistsData[1].avatar}
@@ -195,7 +207,13 @@ export default function SearchResultsScreen({ navigation }) {
                 <Text style={styles.trendingTitle}>Trending Artists</Text>
                 {randomArtistsData.length > 0 && (
                   <View style={styles.box}>
-                    <Pressable onPress={dummyFunction}>
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("ArtistDetail", {
+                          artist: randomArtistsData[0],
+                        })
+                      }
+                    >
                       <Image
                         style={styles.image}
                         source={randomArtistsData[0].avatar}
@@ -206,7 +224,13 @@ export default function SearchResultsScreen({ navigation }) {
                         {randomArtistsData[0].username}
                       </Text>
                     </Pressable>
-                    <Pressable onPress={dummyFunction}>
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("ArtistDetail", {
+                          artist: randomArtistsData[1],
+                        })
+                      }
+                    >
                       <Image
                         style={styles.image}
                         source={randomArtistsData[1].avatar}
