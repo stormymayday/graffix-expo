@@ -1,9 +1,25 @@
+import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, Switch } from "react-native";
-import { useState } from "react";
+import UserDataContext from "../../../context/UserDataContext";
 
 export default function ArtistsProfile({ navigation }) {
+  const { userData, updateUser } = useContext(UserDataContext);
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
+  useEffect(() => {
+    // Initialize switch state based on user's role
+    if (userData?.role === "artist") {
+      setIsEnabled(true);
+    } else {
+      setIsEnabled(false);
+    }
+  }, [userData]);
+
+  const toggleSwitch = () => {
+    const newRole = isEnabled ? "collector" : "artist";
+    setIsEnabled((previousState) => !previousState);
+    updateUser({ role: newRole });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -12,9 +28,7 @@ export default function ArtistsProfile({ navigation }) {
       <View style={styles.flexbox}>
         <View style={{ width: "80%" }}>
           <Text style={styles.subtitle}>Turn on your Artist Profile</Text>
-          <Text>
-            You would be able to toggle between collector and artist .
-          </Text>
+          <Text>You would be able to toggle between collector and artist.</Text>
         </View>
         <Switch
           style={{ width: "15%" }}

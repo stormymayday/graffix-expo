@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -12,38 +12,20 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import graffixAPI from "../../api/graffixAPI";
+import UserDataContext from "../../context/UserDataContext";
 
 export default function EditProfile({ navigation }) {
-  const [name, setName] = useState("");
-  const [pronouns, setPronouns] = useState("");
-  const [location, setLocation] = useState({ type: "Point", coordinates: [] }); // Updated to match database structure
-  const [bio, setBio] = useState("");
-  const [instagram, setInstagram] = useState("");
-  const [behance, setBehance] = useState("");
-  const [website, setWebsite] = useState("");
-  const [avatar, setAvatar] = useState("");
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await graffixAPI.get("api/v1/users/current-user");
-        const userData = response.data.userWithoutPassword;
-        console.log("User data:", userData);
-        setName(userData.username || "");
-        setPronouns(userData.pronouns || "");
-        setLocation(userData.location || { type: "Point", coordinates: [] }); // Update location state
-        setBio(userData.bio || "");
-        setInstagram(userData.instagram || "https://www.instagram.com/");
-        setBehance(userData.behance || "https://www.instagram.com/");
-        setWebsite(userData.website || "https://dribbble.com/");
-        setAvatar(userData.avatar || "https://via.placeholder.com/100");
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+  const { userData, updateUser } = useContext(UserDataContext);
+  const [name, setName] = useState(userData.username || "");
+  const [pronouns, setPronouns] = useState(userData.pronouns || "");
+  const [location, setLocation] = useState(
+    userData.location || { type: "Point", coordinates: [] }
+  );
+  const [bio, setBio] = useState(userData.bio || "");
+  const [instagram, setInstagram] = useState(userData.instagram || "");
+  const [behance, setBehance] = useState(userData.behance || "");
+  const [website, setWebsite] = useState(userData.website || "");
+  const [avatar, setAvatar] = useState(userData.avatar || "");
 
   const selectImage = async () => {
     try {
@@ -76,7 +58,7 @@ export default function EditProfile({ navigation }) {
       const updatedUser = {
         username: name,
         pronouns: pronouns,
-        location: location, // Update location to include type and coordinates
+        location: location,
         bio: bio,
         instagram: instagram,
         behance: behance,
@@ -84,8 +66,13 @@ export default function EditProfile({ navigation }) {
         avatar: avatar,
       };
 
+      // Update userData in context manually
+      const updatedUserData = { ...userData, ...updatedUser };
+      updateUser(updatedUserData); // Update local context with new data
+
       await graffixAPI.patch("/api/v1/users/update-user", updatedUser);
 
+      // Navigate back after successful save
       navigation.goBack();
     } catch (error) {
       console.error("Error saving user data:", error);
@@ -140,7 +127,7 @@ export default function EditProfile({ navigation }) {
           </View>
           <TextInput
             style={styles.input}
-            value={`${location.coordinates[1]}, ${location.coordinates[0]}`} 
+            value={`${location.coordinates[1]}, ${location.coordinates[0]}`}
             onChangeText={(text) => {
               const [lat, lon] = text.split(", ");
               setLocation({
@@ -170,25 +157,52 @@ export default function EditProfile({ navigation }) {
         </View>
         <View style={styles.inputContainer}>
           <View style={styles.iconLabelContainer}>
-            <Ionicons name="link" size={20} color="black" style={styles.icon} />
-            <Text style={styles.label}>Contact Links</Text>
+            <Ionicons
+              name="logo-instagram"
+              size={20}
+              color="black"
+              style={styles.icon}
+            />
+            <Text style={styles.label}>Instagram</Text>
           </View>
+          <TextInput
+            style={styles.input}
+            value={instagram}
+            onChangeText={setInstagram}
+          />
         </View>
-        <TextInput
-          style={styles.input}
-          value={instagram}
-          onChangeText={setInstagram}
-        />
-        <TextInput
-          style={styles.input}
-          value={behance}
-          onChangeText={setBehance}
-        />
-        <TextInput
-          style={styles.input}
-          value={website}
-          onChangeText={setWebsite}
-        />
+        <View style={styles.inputContainer}>
+          <View style={styles.iconLabelContainer}>
+            <Ionicons
+              name="logo-behance"
+              size={20}
+              color="black"
+              style={styles.icon}
+            />
+            <Text style={styles.label}>Behance</Text>
+          </View>
+          <TextInput
+            style={styles.input}
+            value={behance}
+            onChangeText={setBehance}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <View style={styles.iconLabelContainer}>
+            <Ionicons
+              name="globe"
+              size={20}
+              color="black"
+              style={styles.icon}
+            />
+            <Text style={styles.label}>Website</Text>
+          </View>
+          <TextInput
+            style={styles.input}
+            value={website}
+            onChangeText={setWebsite}
+          />
+        </View>
         <TouchableOpacity style={styles.saveButton} onPress={saveChanges}>
           <Text style={styles.saveButtonText}>Save</Text>
         </TouchableOpacity>

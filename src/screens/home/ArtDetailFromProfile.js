@@ -5,6 +5,7 @@ import {
   Image,
   StyleSheet,
   SafeAreaView,
+  ScrollView,
   FlatList,
   TouchableOpacity,
 } from "react-native";
@@ -12,16 +13,17 @@ import graffixAPI from "../../api/graffixAPI";
 
 export default function ArtDetail({ route, navigation }) {
   const { item } = route.params;
+  console.log(item);
   const [otherArtworks, setOtherArtworks] = useState([]);
 
   useEffect(() => {
-    const title = item.title;
+    const title = item.artName;
     navigation.setOptions({ title });
 
     const fetchOtherArtworks = async () => {
       try {
         const response = await graffixAPI.get(
-          `/api/v1/art/artist/${item.createdBy}`
+          `/api/v1/art/artist/${item.authorId}`
         );
         setOtherArtworks(response.data);
       } catch (error) {
@@ -34,19 +36,16 @@ export default function ArtDetail({ route, navigation }) {
 
   const renderHeader = () => (
     <>
-      <Image source={{ uri: item.artworkUrl }} style={styles.image} />
-      <Text style={styles.artName}>{item.title}</Text>
-      <Text style={styles.author}>By: {item.artistName}</Text>
+      <Image source={{ uri: item.imageUrl }} style={styles.image} />
+      <Text style={styles.artName}>{item.artName}</Text>
+      <Text style={styles.author}>By: {item.author}</Text>
       <Text style={styles.artType}>{item.category}</Text>
       <Text style={styles.description}>{item.description}</Text>
 
       <View style={styles.artistContainer}>
-        <Image
-          source={{ uri: "/" }}
-          style={styles.artistImage}
-        />
+        <Image source={{ uri: "/" }} style={styles.artistImage} />
         <View>
-          <Text style={styles.artistName}>{item.artistName}</Text>
+          <Text style={styles.artistName}>{item.author}</Text>
           <TouchableOpacity style={styles.visitProfileButton}>
             <Text style={styles.visitProfileButtonText}>Visit Profile</Text>
           </TouchableOpacity>
@@ -164,3 +163,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+
