@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     // alignItems: "center",
     // justifyContent: "space-between",
-    padding: 30,
+    paddingHorizontal: 30,
+    paddingVertical: 30,
   },
   text: { marginTop: 20, marginBottom: 20, fontSize: 30, fontWeight: "bold" },
   input: {

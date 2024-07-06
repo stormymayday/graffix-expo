@@ -7,6 +7,7 @@ import {
   ScrollView,
   Pressable,
   FlatList,
+  ImageBackground,
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { Image } from "expo-image";
@@ -14,6 +15,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState, useEffect } from "react";
 import graffixAPI from "../../api/graffixAPI";
 import { haversineDistanceBetweenPoints } from "../../utils/calculateDistance";
+
+const image = require("../../../assets/backgroundImage.png");
 
 export default function Home({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
@@ -295,7 +298,6 @@ export default function Home({ navigation }) {
                               ? "heart"
                               : "heart-outline"
                           }
-                          // name="heart-outline"
                           style={{ padding: 10 }}
                         />
                       </View>
@@ -317,8 +319,18 @@ export default function Home({ navigation }) {
                 style={styles.artVentureBox}
                 onPress={() => navigation.navigate("ArtVenture")}
               >
-                <Text style={styles.sectionTitle}>Play the Hunt Game!</Text>
-                <Text>Get exciting stories and more!</Text>
+                <ImageBackground
+                  source={image}
+                  resizeMode="cover"
+                  style={styles.backgroundImage}
+                >
+                  <Text style={[styles.sectionTitle, styles.artVentureTitle]}>
+                    Probe into Art-filled Adventure
+                  </Text>
+                  <Text style={styles.artVentureText}>
+                    Earn artworks and story behind
+                  </Text>
+                </ImageBackground>
               </Pressable>
             </View>
           </View>
@@ -352,7 +364,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: "700",
+    lineHeight: 30,
   },
   flexSection: {
     flexDirection: "row",
@@ -368,6 +381,7 @@ const styles = StyleSheet.create({
     height: 200,
   },
   section: {
+    flex: 1,
     paddingVertical: 16,
   },
   cardImage: {
@@ -379,10 +393,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     height: 200,
-    alignContent: "center",
-    alignItems: "center",
+  },
+  backgroundImage: {
+    flex: 1,
     justifyContent: "center",
+  },
+  artVentureText: {
     textAlign: "center",
-    backgroundColor: "lightgray",
+    color: "white",
+    fontSize: 14,
+  },
+  artVentureTitle: {
+    color: "white",
+    textAlign: "center",
   },
 });
