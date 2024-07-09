@@ -18,16 +18,24 @@ export default function Artist({ navigation, route }) {
     const { userData, updateUser } = useContext(UserDataContext);
     const [artWorks, setArtWorks] = useState([]);
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [treasures, setTreasures] = useState([]);
 
-    const fetchArtWorks = useCallback(async (userId) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState("ArtWork");
+
+    const fetchUserData = useCallback(async (userId) => {
         if (!userId) return;
+
         setIsLoading(true);
+
         try {
-            const response = await graffixAPI.get(
+            // Fetching artworks
+            const artResponse = await graffixAPI.get(
                 `/api/v1/art/artist/${userId}`
             );
-            const artWorkData = response.data;
+
+            const artWorkData = artResponse.data;
+
             setArtWorks(
                 artWorkData.map((artwork) => ({
                     id: artwork._id,
@@ -38,8 +46,17 @@ export default function Artist({ navigation, route }) {
                     author: artwork.artistName,
                 }))
             );
+
+            // Fetching treasures
+            const treasureResponse = await graffixAPI.get(
+                `/api/v1/treasure/artist/${userId}`
+            );
+            // Storing treasures in state
+            setTreasures(treasureResponse.data);
+            // Console log for debugging
+            // console.log("Fetched treasures:", treasureResponse.data);
         } catch (error) {
-            console.error("Error fetching artworks data:", error);
+            console.error("Error fetching data:", error);
         } finally {
             setIsLoading(false);
         }
@@ -48,12 +65,12 @@ export default function Artist({ navigation, route }) {
     useFocusEffect(
         useCallback(() => {
             if (userData) {
-                fetchArtWorks(userData._id);
+                fetchUserData(userData._id);
             }
-        }, [userData, fetchArtWorks])
+        }, [userData, fetchUserData])
     );
 
-    const renderItem = ({ item }) => (
+    const renderArtworkItem = ({ item }) => (
         <TouchableOpacity
             style={styles.artContainer}
             onPress={() =>
@@ -61,6 +78,21 @@ export default function Artist({ navigation, route }) {
             }
         >
             <Image source={{ uri: item.imageUrl }} style={styles.artImage} />
+        </TouchableOpacity>
+    );
+
+    const renderTreasureItem = ({ item }) => (
+        <TouchableOpacity
+            style={styles.treasureContainer}
+            // Need to Implement the navigation:
+            // onPress={() =>
+            //     navigation.navigate("TreasureDetailFromProfile", { item })
+            // }
+        >
+            <Image
+                source={{ uri: item.treasureUrl }}
+                style={styles.treasureImage}
+            />
         </TouchableOpacity>
     );
 
@@ -111,26 +143,43 @@ export default function Artist({ navigation, route }) {
                     marginBottom: 16,
                 }}
             >
-                <TouchableOpacity>
-                    <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                <TouchableOpacity onPress={() => setActiveTab("ArtWork")}>
+                    <Text
+                        style={
+                            activeTab === "ArtWork"
+                                ? styles.activeTabText
+                                : styles.inactiveTabText
+                        }
+                    >
                         ArtWork
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <Text style={{ fontSize: 16, color: "gray" }}>
+                <TouchableOpacity onPress={() => setActiveTab("ArtVenture")}>
+                    <Text
+                        style={
+                            activeTab === "ArtVenture"
+                                ? styles.activeTabText
+                                : styles.inactiveTabText
+                        }
+                    >
                         ArtVenture
                     </Text>
                 </TouchableOpacity>
             </View>
 
             <FlatList
-                data={artWorks}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id.toString()}
+                data={activeTab === "ArtWork" ? artWorks : treasures}
+                renderItem={
+                    activeTab === "ArtWork"
+                        ? renderArtworkItem
+                        : renderTreasureItem
+                }
+                // keyExtractor={(item) => item._id.toString()}
                 numColumns={2}
                 columnWrapperStyle={styles.row}
                 contentContainerStyle={{ paddingBottom: 16 }}
             />
+
             <TouchableOpacity
                 style={styles.fab}
                 onPress={() => navigation.navigate("SelectAndUpload")}
@@ -204,5 +253,39 @@ const styles = StyleSheet.create({
         borderRadius: 32,
         justifyContent: "center",
         alignItems: "center",
+    },
+    // New Styles
+    tabContainer: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        marginBottom: 16,
+    },
+    activeTabText: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "black",
+    },
+    inactiveTabText: {
+        fontSize: 16,
+        color: "gray",
+    },
+    treasureContainer: {
+        width: "48%",
+        backgroundColor: "white",
+        marginBottom: 16,
+        borderRadius: 8,
+        overflow: "hidden",
+        alignItems: "center",
+        padding: 8,
+    },
+    treasureImage: {
+        width: "100%",
+        height: 160,
+        borderRadius: 8,
+    },
+    treasureTitle: {
+        marginTop: 8,
+        fontSize: 14,
+        fontWeight: "bold",
     },
 });
