@@ -19,7 +19,7 @@ export function FlatListComponent({
       renderItem={({ item }) => {
         return type == "Categories" ? (
           <Pressable
-            style={styles.card}
+            style={[styles.card, styles.marginBottom]}
             onPress={() =>
               navigation.navigate("Categories", {
                 category: item.category,
@@ -32,14 +32,7 @@ export function FlatListComponent({
               contentFit="cover"
               transition={1000}
             />
-            <Text
-              style={{
-                textTransform: "capitalize",
-                fontWeight: "bold",
-              }}
-            >
-              {item.category}
-            </Text>
+            <Text style={styles.categoryText}>{item.category}</Text>
           </Pressable>
         ) : type == "Nearby" ? (
           <Pressable
@@ -135,61 +128,29 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#0553",
   },
-  artDescription: {
-    marginTop: -100,
-    paddingHorizontal: 16,
-  },
-  white: {
-    color: "white",
-  },
-  artworkName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textTransform: "capitalize",
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    lineHeight: 30,
-  },
   flexSection: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  sectionsContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 10,
-  },
   card: {
     width: 200,
     height: 200,
   },
-  section: {
-    flex: 1,
-    paddingVertical: 16,
-  },
   cardImage: {
     borderRadius: 5,
   },
-  artVentureBox: {
-    flex: 1,
-    gap: 10,
-    borderWidth: 1,
+  categoryText: {
+    textTransform: "capitalize",
+    fontWeight: "bold",
+    marginTop: -30,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
     borderRadius: 5,
-    height: 200,
-  },
-  backgroundImage: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  artVentureText: {
-    textAlign: "center",
     color: "white",
-    fontSize: 14,
+    fontSize: 16,
   },
-  artVentureTitle: {
-    color: "white",
-    textAlign: "center",
+  marginBottom: {
+    marginBottom: 15,
   },
 });
