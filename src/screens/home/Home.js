@@ -6,16 +6,12 @@ import {
   Dimensions,
   ScrollView,
   Pressable,
-  FlatList,
   ImageBackground,
 } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
-import { Image } from "expo-image";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState, useEffect } from "react";
 import graffixAPI from "../../api/graffixAPI";
-import { haversineDistanceBetweenPoints } from "../../utils/calculateDistance";
 import { CarouselComponent } from "../../components/Home/CarouselComponent";
+import { FlatListComponent } from "../../components/Home/FlatListComponent";
 
 const image = require("../../../assets/backgroundImage.png");
 
@@ -118,43 +114,13 @@ export default function Home({ navigation }) {
             {/* Categories Section */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Categories</Text>
-              <FlatList
-                horizontal
-                bounces={false}
+
+              <FlatListComponent
                 data={categoryOptions}
-                renderItem={({ item }) => {
-                  return (
-                    <Pressable
-                      style={styles.card}
-                      onPress={() =>
-                        navigation.navigate("Categories", {
-                          category: item.category,
-                        })
-                      }
-                    >
-                      <Image
-                        style={[styles.image, styles.cardImage]}
-                        source={item.image}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                      <Text
-                        style={{
-                          textTransform: "capitalize",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {item.category}
-                      </Text>
-                    </Pressable>
-                  );
-                }}
-                ItemSeparatorComponent={<View style={{ width: 16 }} />}
-                ListEmptyComponent={
-                  <Text style={styles.trendingCardTitle}>Nothing to show</Text>
-                }
+                type="Categories"
                 refreshing={refreshing}
-                onRefresh={handleRefresh}
+                handleRefresh={handleRefresh}
+                navigation={navigation}
               />
             </View>
             {/* Nearby Section */}
@@ -172,111 +138,26 @@ export default function Home({ navigation }) {
                   <Text>View All</Text>
                 </Pressable>
               </View>
-              <FlatList
-                horizontal
-                bounces={false}
+
+              <FlatListComponent
                 data={nearbyData}
-                renderItem={({ item }) => {
-                  return (
-                    <Pressable
-                      style={styles.card}
-                      onPress={() =>
-                        navigation.navigate("Nearby", {
-                          message: "This will show the Nearby Data",
-                          nearbyData,
-                        })
-                      }
-                    >
-                      <Image
-                        style={[styles.image, styles.cardImage]}
-                        source={item.featuredArtUrl}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                      <Text
-                        style={{
-                          textTransform: "capitalize",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {item.username}
-                      </Text>
-                      <Text>
-                        <Ionicons name="location" style={{ padding: 10 }} />
-                        {haversineDistanceBetweenPoints(
-                          item.location.coordinates[1],
-                          item.location.coordinates[0],
-                          49.225084624107566,
-                          -123.10763364103961
-                        )}{" "}
-                        m
-                      </Text>
-                    </Pressable>
-                  );
-                }}
-                ItemSeparatorComponent={<View style={{ width: 16 }} />}
-                ListEmptyComponent={
-                  <Text style={styles.trendingCardTitle}>Nothing to show</Text>
-                }
+                type="Nearby"
                 refreshing={refreshing}
-                onRefresh={handleRefresh}
+                handleRefresh={handleRefresh}
+                navigation={navigation}
               />
             </View>
             {/* Recently Added Section */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Recently Added</Text>
-              <FlatList
-                horizontal
-                bounces={false}
+
+              <FlatListComponent
                 data={recentlyAddedData}
-                renderItem={({ item }) => {
-                  return (
-                    <Pressable
-                      style={styles.card}
-                      onPress={() => navigation.navigate("ArtDetail", { item })}
-                    >
-                      <Image
-                        style={[styles.image, styles.cardImage]}
-                        source={item.artworkUrl}
-                        contentFit="cover"
-                        transition={1000}
-                      />
-                      <View style={styles.flexSection}>
-                        <View>
-                          <Text
-                            style={{
-                              textTransform: "capitalize",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {item.title.toUpperCase()}
-                          </Text>
-                          <Text
-                            style={{
-                              textTransform: "capitalize",
-                            }}
-                          >
-                            {item.artistName}
-                          </Text>
-                        </View>
-                        <Ionicons
-                          name={
-                            isLiked.includes(item._id)
-                              ? "heart"
-                              : "heart-outline"
-                          }
-                          style={{ padding: 10 }}
-                        />
-                      </View>
-                    </Pressable>
-                  );
-                }}
-                ItemSeparatorComponent={<View style={{ width: 16 }} />}
-                ListEmptyComponent={
-                  <Text style={styles.trendingCardTitle}>Nothing to show</Text>
-                }
+                type="Recently Added"
                 refreshing={refreshing}
-                onRefresh={handleRefresh}
+                handleRefresh={handleRefresh}
+                isLiked={isLiked}
+                navigation={navigation}
               />
             </View>
             {/* Art Venture Section */}
