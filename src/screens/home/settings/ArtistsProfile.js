@@ -16,7 +16,7 @@ export default function ArtistsProfile({ navigation }) {
   }, [userData]);
 
   const toggleSwitch = () => {
-    const newRole = isEnabled ? "collector" : "artist";
+    const newRole = isEnabled ? "artlover" : "artist";
     setIsEnabled((previousState) => !previousState);
     updateUser({ role: newRole });
   };
