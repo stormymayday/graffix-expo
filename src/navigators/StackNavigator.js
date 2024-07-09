@@ -23,11 +23,16 @@ export function StackNavigator() {
           (route.name == "ArtistsProfile" ||
             route.name == "LocationPermission" ||
             route.name == "Notifications" ||
-            route.name == "PersonalDetails") &&
+            route.name == "PersonalDetails" ||
+            route.name == "Login") &&
           "",
       })}
     >
-      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        // options={{ headerShown: false }}
+      />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       {/**************************** Onboarding Screen ********************************/}

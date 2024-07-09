@@ -15,6 +15,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState, useEffect } from "react";
 import graffixAPI from "../../api/graffixAPI";
 import { haversineDistanceBetweenPoints } from "../../utils/calculateDistance";
+import { CarouselComponent } from "../../components/Home/CarouselComponent";
 
 const image = require("../../../assets/backgroundImage.png");
 
@@ -46,8 +47,6 @@ export default function Home({ navigation }) {
       );
 
       setIsLiked(isLikedResponse.data.userWithoutPassword.likedArtwork);
-
-      // console.log(isLikedResponse.data.userWithoutPassword.likedArtwork);
 
       //  setIsLoading(false);
       //  setError("");
@@ -112,39 +111,7 @@ export default function Home({ navigation }) {
       <SafeAreaView style={styles.container}>
         <ScrollView bounces={false}>
           <View style={{ flex: 1 }}>
-            <Carousel
-              loop
-              width={width}
-              height={width}
-              autoPlay={true}
-              data={galleryData}
-              scrollAnimationDuration={3000}
-              renderItem={({ index }) => (
-                <View
-                  style={{
-                    flex: 1,
-                  }}
-                >
-                  <View style={styles.container}>
-                    <Image
-                      style={styles.image}
-                      source={galleryData[index].artworkUrl}
-                      contentFit="cover"
-                      transition={1000}
-                    />
-                  </View>
-                  <View style={styles.artDescription}>
-                    <Text style={styles.white}>Art of the Day</Text>
-                    <Text style={[styles.artworkName, styles.white]}>
-                      {galleryData[index].title}
-                    </Text>
-                    <Text style={styles.white}>
-                      {galleryData[index].artistName}
-                    </Text>
-                  </View>
-                </View>
-              )}
-            />
+            <CarouselComponent galleryData={galleryData} />
           </View>
           {/* Section below the carousel */}
           <View style={styles.sectionsContainer}>
