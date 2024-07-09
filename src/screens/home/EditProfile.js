@@ -35,18 +35,10 @@ export default function EditProfile({ navigation }) {
         aspect: [1, 1],
         quality: 1,
       });
-
-      console.log("ImagePicker result:", result);
-
-      if (!result.cancelled) {
+      if (!result.canceled) {
         if (result.assets && result.assets.length > 0 && result.assets[0].uri) {
-          console.log("Selected image URI:", result.assets[0].uri);
           setAvatar(result.assets[0].uri);
-        } else {
-          console.log("Selected image URI not found in result assets.");
         }
-      } else {
-        console.log("Image selection cancelled");
       }
     } catch (error) {
       console.error("Error picking image:", error);
@@ -55,7 +47,29 @@ export default function EditProfile({ navigation }) {
 
   const saveChanges = async () => {
     try {
-      const updatedUser = {
+      const formData = new FormData();
+      formData.append("username", name);
+      formData.append("pronouns", pronouns);
+      formData.append("location", JSON.stringify(location));
+      formData.append("bio", bio);
+      formData.append("instagram", instagram);
+      formData.append("behance", behance);
+      formData.append("website", website);
+
+      // Check if avatar is a new image or existing URL
+      if (avatar && avatar.startsWith("file://")) {
+        formData.append("avatar", {
+          uri: avatar,
+          name: `avatar.jpg`,
+          type: `image/jpeg`,
+        });
+      } else {
+        formData.append("avatar", avatar);
+      }
+
+      // Update userData in context manually
+      const updatedUserData = {
+        ...userData,
         username: name,
         pronouns: pronouns,
         location: location,
@@ -65,14 +79,14 @@ export default function EditProfile({ navigation }) {
         website: website,
         avatar: avatar,
       };
-
-      // Update userData in context manually
-      const updatedUserData = { ...userData, ...updatedUser };
       updateUser(updatedUserData); // Update local context with new data
 
-      await graffixAPI.patch("/api/v1/users/update-user", updatedUser);
+      await graffixAPI.patch("/api/v1/users/update-user", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      // Navigate back after successful save
       navigation.goBack();
     } catch (error) {
       console.error("Error saving user data:", error);
