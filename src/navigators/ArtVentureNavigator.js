@@ -1,5 +1,4 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import AVTutorialScreen1 from "../screens/artVenture/AVTutorialScreen1";
 import AVTutorialScreen2 from "../screens/artVenture/AVTutorialScreen2";
 import AVTutorialScreen3 from "../screens/artVenture/AVTutorialScreen3";
@@ -10,6 +9,7 @@ import AVNavigationScreen from "../screens/artVenture/AVNavigationScreen";
 import AVScanQRCodeScreen from "../screens/artVenture/AVScanQRCodeScreen";
 import AVTreasureContentScreen from "../screens/artVenture/AVTreasureContentScreen";
 import AVSuccessScreen from "../screens/artVenture/AVSuccessScreen";
+import { LogoTitle } from "../components/Home/LogoTitle";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,17 +24,37 @@ export function ArtVentureNavigator() {
       screenOptions={({ route }) => ({
         headerTitleAlign: "center",
         headerTitle:
+          (route.name == "AVMapViewFilterResultsScreen" ||
+            route.name == "AVMapViewSingleTreasureScreen" ||
+            route.name == "AVNavigationScreen" ||
+            route.name == "AVScanQRCodeScreen" ||
+            route.name == "AVTreasureContentScreen" ||
+            route.name == "AVFilterScreen") &&
+          "ArtVenture",
+        headerShadowVisible:
           (route.name == "AVTutorialScreen1" ||
             route.name == "AVTutorialScreen2" ||
             route.name == "AVTutorialScreen3" ||
             route.name == "AVFilterScreen") &&
-          "",
+          false,
       })}
       initialRouteName="AVTutorialScreen1"
     >
-      <Stack.Screen name="AVTutorialScreen1" component={AVTutorialScreen1} />
-      <Stack.Screen name="AVTutorialScreen2" component={AVTutorialScreen2} />
-      <Stack.Screen name="AVTutorialScreen3" component={AVTutorialScreen3} />
+      <Stack.Screen
+        name="AVTutorialScreen1"
+        component={AVTutorialScreen1}
+        options={{ headerTitle: "" }}
+      />
+      <Stack.Screen
+        name="AVTutorialScreen2"
+        component={AVTutorialScreen2}
+        options={{ headerTitle: "" }}
+      />
+      <Stack.Screen
+        name="AVTutorialScreen3"
+        component={AVTutorialScreen3}
+        options={{ headerTitle: "" }}
+      />
       <Stack.Screen name="AVFilterScreen" component={AVFilterScreen} />
       <Stack.Screen
         name="AVMapViewFilterResultsScreen"
@@ -50,7 +70,11 @@ export function ArtVentureNavigator() {
         name="AVTreasureContentScreen"
         component={AVTreasureContentScreen}
       />
-      <Stack.Screen name="AVSuccessScreen" component={AVSuccessScreen} />
+      <Stack.Screen
+        name="AVSuccessScreen"
+        component={AVSuccessScreen}
+        options={{ headerTitle: () => <LogoTitle /> }}
+      />
     </Stack.Navigator>
   );
 }
