@@ -24,16 +24,24 @@ export function StackNavigator() {
             route.name == "LocationPermission" ||
             route.name == "Notifications" ||
             route.name == "PersonalDetails" ||
-            route.name == "Login") &&
+            route.name == "Login" ||
+            route.name == "SignUp") &&
           "",
       })}
     >
       <Stack.Screen
         name="Login"
         component={Login}
-        // options={{ headerShown: false }}
+        options={{ headerShadowVisible: false }}
       />
-      <Stack.Screen name="SignUp" component={SignUp} />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{
+          headerShadowVisible: false,
+          headerBackVisible: false,
+        }}
+      />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       {/**************************** Onboarding Screen ********************************/}
       <Stack.Screen name="Onboarding" component={Onboarding} />
