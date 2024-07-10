@@ -11,6 +11,7 @@ import Onboarding from "../screens/home/Onboarding/Onboarding";
 import Onboarding2 from "../screens/home/Onboarding/Onboarding2";
 import Onboarding3 from "../screens/home/Onboarding/Onboarding3";
 import Onboarding4 from "../screens/home/Onboarding/Onboarding4";
+import { LogoTitle } from "../components/Home/LogoTitle";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,27 +28,46 @@ export function StackNavigator() {
             route.name == "Login" ||
             route.name == "SignUp") &&
           "",
+        headerShadowVisible:
+          (route.name == "Login" ||
+            route.name == "SignUp" ||
+            route.name == "Onboarding" ||
+            route.name == "Onboarding2" ||
+            route.name == "Onboarding3" ||
+            route.name == "Onboarding4") &&
+          false,
       })}
     >
-      <Stack.Screen
-        name="Login"
-        component={Login}
-        options={{ headerShadowVisible: false }}
-      />
+      <Stack.Screen name="Login" component={Login} />
       <Stack.Screen
         name="SignUp"
         component={SignUp}
         options={{
-          headerShadowVisible: false,
           headerBackVisible: false,
         }}
       />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       {/**************************** Onboarding Screen ********************************/}
-      <Stack.Screen name="Onboarding" component={Onboarding} />
-      <Stack.Screen name="Onboarding2" component={Onboarding2} />
-      <Stack.Screen name="Onboarding3" component={Onboarding3} />
-      <Stack.Screen name="Onboarding4" component={Onboarding4} />
+      <Stack.Screen
+        name="Onboarding"
+        component={Onboarding}
+        options={{ headerTitle: () => <LogoTitle /> }}
+      />
+      <Stack.Screen
+        name="Onboarding2"
+        component={Onboarding2}
+        options={{ headerTitle: () => <LogoTitle /> }}
+      />
+      <Stack.Screen
+        name="Onboarding3"
+        component={Onboarding3}
+        options={{ headerTitle: () => <LogoTitle /> }}
+      />
+      <Stack.Screen
+        name="Onboarding4"
+        component={Onboarding4}
+        options={{ headerTitle: () => <LogoTitle /> }}
+      />
       <Stack.Screen
         name="Graffix"
         component={BottomTabNavigator}
