@@ -3,15 +3,16 @@ import EditProfile from "../screens/home/EditProfile";
 import Profile from "../screens/home/Profile";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ArtDetailFromProfile from "../screens/home/ArtDetailFromProfile";
-import Settings from "../screens/home/Settings"
+import Settings from "../screens/home/Settings";
 import PersonalDetails from "../screens/home/settings/PersonalDetails";
 import LocationPermission from "../screens/home/settings/LocationPermision";
 import Notifications from "../screens/home/settings/Notifications";
 import ArtistsProfile from "../screens/home/settings/ArtistsProfile";
 import Icon from "react-native-vector-icons/Ionicons";
-import {TouchableOpacity} from "react-native";
+import { TouchableOpacity } from "react-native";
 import SelectAndUpload from "../screens/addArtWork/selectAndUpload";
 import ArtworkFormInput from "../screens/addArtWork/artWorkFormInput";
+import ArtWorkEdit from "../screens/home/ArtWorkEdit";
 
 const Stack = createNativeStackNavigator();
 const TopTabs = createMaterialTopTabNavigator();
@@ -50,6 +51,7 @@ export function SettingsNavigator() {
       <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
       <Stack.Screen name="SelectAndUpload" component={SelectAndUpload} />
       <Stack.Screen name="ArtworkFormInput" component={ArtworkFormInput} />
+      <Stack.Screen name="ArtworkEdit" component={ArtWorkEdit} />
     </Stack.Navigator>
   );
 }
