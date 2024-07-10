@@ -9,10 +9,10 @@ import {
   SafeAreaView,
 } from "react-native";
 import graffixAPI from "../../api/graffixAPI";
+import ArtList from "../../components/Profile/ArtList";
 
 const ArtistDetailScreen = ({ route, navigation }) => {
   const { artist } = route.params;
-
   useEffect(() => {
     navigation.setOptions({ title: artist.username });
     fetchArtWorks(artist._id);
@@ -36,27 +36,19 @@ const ArtistDetailScreen = ({ route, navigation }) => {
       const artWorkData = response.data;
       setArtWorks(
         artWorkData.map((artwork) => ({
-          id: artwork._id,
-          artName: artwork.title,
+          _id: artwork._id,
+          title: artwork.title,
           description: artwork.description,
           category: artwork.category,
-          imageUrl: artwork.artworkUrl,
-          author: artwork.artistName,
+          artworkUrl: artwork.artworkUrl,
+          artistName: artwork.artistName,
+          createdBy: artwork.createdBy
         }))
       );
     } catch (error) {
       console.error("Error fetching artworks data:", error);
     }
   };
-
-  const renderItem = ({ item}) => (
-    <TouchableOpacity
-      style={styles.artContainer}
-      onPress={() => navigation.navigate("ArtDetail", { item })}
-    >
-      <Image source={{ uri: item.imageUrl }} style={styles.artImage} />
-    </TouchableOpacity>
-  );
 
   if (!user) {
     return (
@@ -101,14 +93,7 @@ const ArtistDetailScreen = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={artWorks}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={{ paddingBottom: 16 }}
-      />
+      <ArtList data={artWorks} navigation={navigation} />
     </SafeAreaView>
   );
 };

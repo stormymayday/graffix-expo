@@ -5,13 +5,13 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
-  Pressable,
   SafeAreaView,
+  Pressable,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import UserDataContext from "../../context/UserDataContext";
 import graffixAPI from "../../api/graffixAPI";
+import ArtList from "../../components/Profile/ArtList";
 
 export default function Collector({ navigation, route }) {
   const { userData, updateUser } = useContext(UserDataContext);
@@ -30,13 +30,13 @@ export default function Collector({ navigation, route }) {
         const likedArtWorkData = response.data.likedArtworks;
         setLikedArtwork(
           likedArtWorkData.map((likedArtWork) => ({
-            id: likedArtWork._id,
-            artName: likedArtWork.title,
+            _id: likedArtWork._id,
+            title: likedArtWork.title,
             description: likedArtWork.description,
             category: likedArtWork.category,
-            imageUrl: likedArtWork.artworkUrl,
-            author: likedArtWork.artistName,
-            authorId: likedArtWork.createdBy,
+            artworkUrl: likedArtWork.artworkUrl,
+            artistName: likedArtWork.artistName,
+            createdBy: likedArtWork.createdBy,
             likes: likedArtWork.likes,
           }))
         );
@@ -59,13 +59,13 @@ export default function Collector({ navigation, route }) {
         const collectedTreasureData = response.data;
         setCollectedTreasures(
           collectedTreasureData.map((collectedTreasure) => ({
-            id: collectedTreasure._id,
-            artName: collectedTreasure.title,
+            _id: collectedTreasure._id,
+            title: collectedTreasure.title,
             description: collectedTreasure.description,
             category: collectedTreasure.category,
-            imageUrl: collectedTreasure.treasureUrl,
-            author: collectedTreasure.artistName,
-            authorId: collectedTreasure.createdBy,
+            artworkUrl: collectedTreasure.treasureUrl,
+            artistName: collectedTreasure.artistName,
+            createdBy: collectedTreasure.createdBy,
             likes: collectedTreasure.likes,
             qrcode: collectedTreasure.qrCodeurl,
             message: collectedTreasure.message,
@@ -79,26 +79,13 @@ export default function Collector({ navigation, route }) {
     fetchCollectedTreasures(userData._id);
   }, [userData]);
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.artContainer}
-      onPress={() => navigation.navigate("ArtDetailFromProfile", { item })}
-    >
-      <Image source={{ uri: item.imageUrl }} style={styles.artImage} />
-    </TouchableOpacity>
-  );
-
-  const getData = () => {
-    return selectedTab === "favourite" ? likedArtwork : collectedTreasures;
-  };
-
-  if (!userData) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <Text>Loading...</Text>
-      </SafeAreaView>
-    );
-  }
+  // if (!userData) {
+  //   return (
+  //     <SafeAreaView style={styles.container}>
+  //       <Text>Loading...</Text>
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -117,7 +104,9 @@ export default function Collector({ navigation, route }) {
             </Pressable>
           </View>
           <Text style={styles.address}>
-            {userData.location ? userData.location.coordinates.join(",") : ""}
+            {userData.location
+              ? userData.location.coordinates.join(",")
+              : ""}
           </Text>
           <Text style={styles.description}>{userData.bio}</Text>
         </View>
@@ -134,7 +123,8 @@ export default function Collector({ navigation, route }) {
           <Text
             style={{
               fontSize: 16,
-              fontWeight: selectedTab === "favourite" ? "bold" : "normal",
+              fontWeight:
+                selectedTab === "favourite" ? "bold" : "normal",
             }}
           >
             Favourite
@@ -144,7 +134,8 @@ export default function Collector({ navigation, route }) {
           <Text
             style={{
               fontSize: 16,
-              fontWeight: selectedTab === "collection" ? "bold" : "normal",
+              fontWeight:
+                selectedTab === "collection" ? "bold" : "normal",
             }}
           >
             Collection
@@ -152,23 +143,10 @@ export default function Collector({ navigation, route }) {
         </TouchableOpacity>
       </View>
 
-      {getData().length > 0 ? (
-        <FlatList
-          data={getData()}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          contentContainerStyle={{ paddingBottom: 16 }}
-        />
+      {selectedTab === "favourite" ? (
+        <ArtList data={likedArtwork} navigation={navigation} />
       ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>
-            {selectedTab === "favourite"
-              ? "You haven't liked any artwork yet."
-              : "You haven't collected any treasures yet."}
-          </Text>
-        </View>
+        <ArtList data={collectedTreasures} navigation={navigation} />
       )}
     </SafeAreaView>
   );
