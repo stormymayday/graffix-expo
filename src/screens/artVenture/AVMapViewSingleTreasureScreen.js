@@ -26,6 +26,8 @@ export default function AVMapViewSingleTreasureScreen({ navigation, route }) {
     const [treasure, setTreasure] = useState(null);
     const [distance, setDistance] = useState(null);
 
+    const [isCalculatingDistance, setIsCalculatingDistance] = useState(true);
+
     // State variable for storing Artist data
     const [artistData, setArtistData] = useState(null);
 
@@ -57,13 +59,17 @@ export default function AVMapViewSingleTreasureScreen({ navigation, route }) {
     // Effect to calculate distance when treasure or user location changes
     useEffect(() => {
         if (treasure && authState.currentLocation) {
+            setIsCalculatingDistance(true);
+
             const dist = haversineDistanceBetweenPoints(
                 authState.currentLocation.latitude,
                 authState.currentLocation.longitude,
                 treasure.location.coordinates[1],
                 treasure.location.coordinates[0]
             );
-            setDistance(dist);
+            // setDistance(dist);
+            setDistance(Math.round(dist));
+            setIsCalculatingDistance(false);
         }
     }, [treasure, authState.currentLocation]);
 
@@ -138,9 +144,11 @@ export default function AVMapViewSingleTreasureScreen({ navigation, route }) {
                             color="black"
                         />
                         <Text style={styles.distanceText}>
-                            {distance
-                                ? `${Math.round(distance)} m`
-                                : "Calculating..."}
+                            {isCalculatingDistance
+                                ? "Calculating..."
+                                : distance !== null
+                                ? `${distance} m`
+                                : "Unable to calculate distance"}{" "}
                         </Text>
                     </View>
 
