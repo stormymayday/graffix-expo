@@ -60,12 +60,14 @@ const authReducer = (state, action) => {
 };
 
 const register = (dispatch) => {
-    return async ({ username, email, password }) => {
+    return async ({ username, email, password, longitude, latitude }) => {
         try {
             const response = await graffixAPI.post("/api/v1/auth/register", {
                 username,
                 email,
                 password,
+                longitude,
+                latitude,
             });
 
             console.log(response.data);
