@@ -26,6 +26,9 @@ export default function AVNavigationScreen({ navigation, route }) {
     // State variable to store distance between user and treasure
     const [distance, setDistance] = useState(null);
 
+    // Tracking calculation status
+    const [isCalculating, setIsCalculating] = useState(true);
+
     // Ref to access the MapView component
     const mapRef = useRef(null);
 
@@ -33,46 +36,82 @@ export default function AVNavigationScreen({ navigation, route }) {
         let locationSubscription;
 
         (async () => {
-            // Requesting permission to access device location
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== "granted") {
-                console.error("Permission to access location was denied");
-                return;
-            }
+            try {
+                // Requesting permission to access the device's location
+                let { status } =
+                    await Location.requestForegroundPermissionsAsync();
+                if (status !== "granted") {
+                    console.error("Permission to access location was denied");
 
-            // Watching user's position and updating when it changes
-            locationSubscription = await Location.watchPositionAsync(
-                {
-                    accuracy: Location.Accuracy.High,
-                    distanceInterval: 10, // Update every 10 meters
-                },
-                (location) => {
-                    const { latitude, longitude } = location.coords;
-                    setUserLocation(location.coords);
+                    // Updating calculation status
+                    setIsCalculating(false);
 
-                    // Centering map on user's new location
-                    if (mapRef.current) {
-                        mapRef.current.animateToRegion(
-                            {
+                    return;
+                }
+
+                // Start watching the user's location
+                locationSubscription = await Location.watchPositionAsync(
+                    {
+                        accuracy: Location.Accuracy.High,
+                        distanceInterval: 10, // Updating every 10 meters
+                    },
+                    (location) => {
+                        const { latitude, longitude } = location.coords;
+                        setUserLocation(location.coords);
+
+                        // Animating map to user's new location
+                        if (mapRef.current && mapRef.current.animateToRegion) {
+                            mapRef.current.animateToRegion(
+                                {
+                                    latitude,
+                                    longitude,
+                                    latitudeDelta: 0.01,
+                                    longitudeDelta: 0.01,
+                                },
+                                1000 // Animation duration in ms
+                            );
+                        }
+
+                        // Calculating distance to treasure
+                        if (
+                            treasure &&
+                            treasure.location &&
+                            treasure.location.coordinates
+                        ) {
+                            const dist = haversineDistanceBetweenPoints(
                                 latitude,
                                 longitude,
-                                latitudeDelta: 0.01,
-                                longitudeDelta: 0.01,
-                            },
-                            1000 // Animation duration in ms
-                        );
-                    }
+                                treasure.location.coordinates[1],
+                                treasure.location.coordinates[0]
+                            );
 
-                    // Calculating and updating distance to treasure
-                    const dist = haversineDistanceBetweenPoints(
-                        latitude,
-                        longitude,
-                        treasure.location.coordinates[1],
-                        treasure.location.coordinates[0]
-                    );
-                    setDistance(dist);
-                }
-            );
+                            const roundedDist =
+                                typeof dist === "number"
+                                    ? Math.round(dist)
+                                    : null;
+
+                            console.log("Calculated distance:", roundedDist);
+                            setDistance(roundedDist);
+
+                            // Updating calculation status
+                            setIsCalculating(false);
+                        } else {
+                            console.error(
+                                "Treasure location data is incomplete"
+                            );
+                            setDistance(null);
+
+                            // Updating calculation status
+                            setIsCalculating(false);
+                        }
+                    }
+                );
+            } catch (error) {
+                console.error("Error setting up location tracking:", error);
+
+                // Update calculation status
+                setIsCalculating(false);
+            }
         })();
 
         // Cleanup function to remove location subscription
@@ -81,7 +120,7 @@ export default function AVNavigationScreen({ navigation, route }) {
                 locationSubscription.remove();
             }
         };
-    }, [treasure]); // Re-run effect if treasure changes
+    }, [treasure]);
 
     // Function to render treasure marker image
     const renderMarkerImage = (treasureUrl) => (
@@ -128,13 +167,16 @@ export default function AVNavigationScreen({ navigation, route }) {
                 )}
             </MapView>
             {/* Displaying distance to treasure */}
-            {distance && (
-                <View style={styles.distanceContainer}>
-                    <Text style={styles.distanceText}>
-                        Distance: {Math.round(distance)} m
-                    </Text>
-                </View>
-            )}
+
+            <View style={styles.distanceContainer}>
+                <Text style={styles.distanceText}>
+                    {isCalculating
+                        ? "Calculating distance..."
+                        : distance !== null
+                        ? `Distance: ${distance} m`
+                        : "Unable to calculate distance"}
+                </Text>
+            </View>
             {/* Button to navigate to QR code scanning screen */}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
