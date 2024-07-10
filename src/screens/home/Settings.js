@@ -5,13 +5,12 @@ import {
   SafeAreaView,
   FlatList,
   Pressable,
-  Modal,
-  Button,
   Alert,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useContext, useEffect, useState } from "react";
 import { Context as AuthContext } from "../../context/AuthContext";
+import { ModalComponent } from "../../components/Settings/ModalComponent";
 
 export default function Settings({ navigation }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -115,7 +114,7 @@ export default function Settings({ navigation }) {
         }}
         ItemSeparatorComponent={<View style={{ height: 16 }} />}
       />
-      <Modal
+      {/* <Modal
         visible={isModalVisible}
         onRequestClose={() => setIsModalVisible(false)}
       >
@@ -138,7 +137,12 @@ export default function Settings({ navigation }) {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
+      <ModalComponent
+        logout={logout}
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+      />
     </SafeAreaView>
   );
 }
@@ -161,34 +165,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
-  },
-  button: {
-    paddingVertical: 10,
-  },
-  separator: {
-    height: "100%",
-    width: 1,
-    backgroundColor: "black",
-  },
-  modalText: {
-    fontWeight: "bold",
-    textAlign: "center",
-    borderBottomWidth: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-  },
-  modalContainer: {
-    flex: 1,
-    alignContent: "center",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  modalInnerContainer: {
-    borderWidth: 1,
-    borderRadius: 5,
-  },
-  modalButtonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
   },
 });
