@@ -22,8 +22,8 @@ export default function Nearby({ navigation, route }) {
     const [currentLocation, setCurrentLocation] = useState({
         latitude: authState.currentLocation.latitude,
         longitude: authState.currentLocation.longitude,
-        latitudeDelta: 0.005,
-        longitudeDelta: 0.005,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
     });
     const { nearbyData } = route.params;
 
