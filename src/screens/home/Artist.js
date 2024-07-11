@@ -128,11 +128,9 @@ export default function Artist({ navigation, route }) {
                         </Pressable>
                     </View>
 
-                    {/* <Text style={styles.address}>
-                        {userData.location
-                            ? userData.location.coordinates.join(",")
-                            : ""}
-                    </Text> */}
+                    <Text style={styles.pronouns}>
+                        {userData.pronouns ? userData.pronouns : ""}
+                    </Text>
 
                     <Text style={styles.description}>{userData.bio}</Text>
                 </View>
@@ -220,7 +218,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
-    address: {
+    pronouns: {
         color: "gray",
         marginBottom: 4,
     },

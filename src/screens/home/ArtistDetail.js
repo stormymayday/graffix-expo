@@ -67,6 +67,7 @@ const ArtistDetailScreen = ({ route, navigation }) => {
                 name: artist.username,
                 avatar: artist.avatar,
                 address: artist.address,
+                pronouns: artist.pronouns,
                 description: artist.bio,
             });
         }, [artist, fetchUserData, navigation])
@@ -104,7 +105,9 @@ const ArtistDetailScreen = ({ route, navigation }) => {
                     <View style={styles.header}>
                         <Text style={styles.name}>{user.name}</Text>
                     </View>
-                    <Text style={styles.address}>{user.address}</Text>
+                    <Text style={styles.address}>
+                        {user.pronouns ? user.pronouns : ""}
+                    </Text>
                     <Text style={styles.description}>{user.description}</Text>
                 </View>
             </View>
