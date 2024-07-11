@@ -51,6 +51,7 @@ const ArtistDetailScreen = ({ route, navigation }) => {
                 `/api/v1/users/${artist._id}/collected-treasures`
             );
             setTreasures(treasureResponse.data);
+            console.log(treasures)
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -77,9 +78,9 @@ const ArtistDetailScreen = ({ route, navigation }) => {
     const renderTreasureItem = ({ item }) => (
         <TouchableOpacity
             style={styles.treasureContainer}
-            // onPress={() =>
-            //     navigation.navigate("TreasureDetail", { item })
-            // }
+            onPress={() =>
+                navigation.navigate("TreasureDetail", { item })
+            }
         >
             <Image
                 source={{ uri: item.treasureUrl }}

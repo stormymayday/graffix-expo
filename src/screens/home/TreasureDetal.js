@@ -6,12 +6,10 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  Pressable,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
 
-export default function ArtDetail({ route, navigation }) {
+export default function TreasureDetail({ route, navigation }) {
   const { item } = route.params;
   const [location, setLocation] = useState(null);
   const [pinLocation, setPinLocation] = useState(null);
@@ -35,17 +33,8 @@ export default function ArtDetail({ route, navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Image source={{ uri: item.imageUrl }} style={styles.image} />
-        <View style={styles.titleContainer}>
-          <Text style={styles.label}>Title</Text>
-
-      {/* ********** Eidt artVenture/ artwork *************************** */}
-          <Pressable
-          // onPress={() => navigation.navigate("")}
-          >
-            <Feather name="edit" size={18} color="black" />
-          </Pressable>
-        </View>
+        <Image source={{ uri: item.treasureUrl }} style={styles.image} />
+        <Text style={styles.label}>Title</Text>
         <Text style={styles.artName}>{item.title}</Text>
         <Text style={styles.label}>Description</Text>
         <Text style={styles.description}>{item.description}</Text>
@@ -72,12 +61,6 @@ export default function ArtDetail({ route, navigation }) {
             </>
           )}
         </View>
-
-        {item.qrCode && (
-          <View style={styles.qrCodeWrapper}>
-            <Image source={{ uri: item.qrCode }} style={styles.qrCodeImage} />
-          </View>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -92,12 +75,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
     marginBottom: 16,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginRight: 16,
   },
   label: {
     color: "#7C7C7C",
@@ -160,7 +137,7 @@ const styles = StyleSheet.create({
   qrCodeWrapper: {
     alignItems: "center",
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
 
   qrCodeImage: {

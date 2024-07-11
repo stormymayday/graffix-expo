@@ -58,18 +58,18 @@ export default function Collector({ navigation, route }) {
                 );
                 const collectedTreasureData = response.data;
                 setCollectedTreasures(
-                    collectedTreasureData.map((collectedTreasure) => ({
-                        _id: collectedTreasure._id,
-                        title: collectedTreasure.title,
-                        description: collectedTreasure.description,
-                        category: collectedTreasure.category,
-                        artworkUrl: collectedTreasure.treasureUrl,
-                        artistName: collectedTreasure.artistName,
-                        createdBy: collectedTreasure.createdBy,
-                        likes: collectedTreasure.likes,
-                        qrcode: collectedTreasure.qrCodeurl,
-                        message: collectedTreasure.message,
-                    }))
+                  collectedTreasureData.map((collectedTreasure) => ({
+                    _id: collectedTreasure._id,
+                    title: collectedTreasure.title,
+                    description: collectedTreasure.description,
+                    category: collectedTreasure.category,
+                    artworkUrl: collectedTreasure.treasureUrl,
+                    createdBy: collectedTreasure.createdBy,
+                    likes: collectedTreasure.likes,
+                    qrcode: collectedTreasure.qrCodeUrl,
+                    message: collectedTreasure.message,
+                    collection : true,
+                  }))
                 );
             } catch (error) {
                 console.error("Error fetching artworks data:", error);
@@ -79,13 +79,13 @@ export default function Collector({ navigation, route }) {
         fetchCollectedTreasures(userData._id);
     }, [selectedTab]);
 
-    // if (!userData) {
-    //   return (
-    //     <SafeAreaView style={styles.container}>
-    //       <Text>Loading...</Text>
-    //     </SafeAreaView>
-    //   );
-    // }
+    if (!userData) {
+      return (
+        <SafeAreaView style={styles.container}>
+          <Text>Loading...</Text>
+        </SafeAreaView>
+      );
+    }
 
     return (
         <SafeAreaView style={styles.container}>

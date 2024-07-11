@@ -12,6 +12,7 @@ import Onboarding2 from "../screens/home/Onboarding/Onboarding2";
 import Onboarding3 from "../screens/home/Onboarding/Onboarding3";
 import Onboarding4 from "../screens/home/Onboarding/Onboarding4";
 import { LogoTitle } from "../components/Home/LogoTitle";
+import TreasureDetail from "../screens/home/TreasureDetal";
 
 const Stack = createNativeStackNavigator();
 
@@ -81,6 +82,7 @@ export function StackNavigator() {
       <Stack.Screen name="Nearby" component={Nearby} />
       <Stack.Screen name="ArtistDetail" component={ArtistDetail} />
       <Stack.Screen name="ArtDetail" component={ArtDetail} />
+      <Stack.Screen name="TreasureDetail" component={TreasureDetail} />
     </Stack.Navigator>
   );
 }
