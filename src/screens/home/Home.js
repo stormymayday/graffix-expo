@@ -11,8 +11,9 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useContext } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { Context as AuthContext } from "../../context/AuthContext";
 
 import graffixAPI from "../../api/graffixAPI";
 import { CarouselComponent } from "../../components/Home/CarouselComponent";
@@ -23,9 +24,12 @@ const image = require("../../../assets/backgroundImage.png");
 export default function Home({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
 
-  // State variable to show a loading indicator only on the first load.
-  // Tracks if it's the first load
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
+    const { state: authState } = useContext(AuthContext);
+    const [isLocationLoading, setIsLocationLoading] = useState(true);
+
+    // State variable to show a loading indicator only on the first load.
+    // Tracks if it's the first load
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   const [error, setError] = useState("");
   const [galleryData, setGalleryData] = useState([]);
@@ -36,46 +40,87 @@ export default function Home({ navigation }) {
   // using a useRef hook (isMounted) to prevent state updates if the component unmounts during an async operation.
   const isMounted = useRef(true);
 
-  // Function to fetch data from the API
-  // The fetchData function is wrapped in useCallback for optimization.
-  const fetchData = useCallback(async (showLoading = false) => {
-    if (showLoading) setIsInitialLoading(true);
+    // Function to fetch data from the API
+    // The fetchData function is wrapped in useCallback for optimization.
+    const fetchData = useCallback(
+        async (showLoading = false) => {
+            if (showLoading) setIsInitialLoading(true);
 
-    setError("");
+            setError("");
 
-    try {
-      // Fetching all artworks
-      const artResponse = await graffixAPI.get(`/api/v1/art`);
+            try {
+                // Fetching all artworks
+                const artResponse = await graffixAPI.get(`/api/v1/art`);
 
-      // Fetch nearby artists (Needs to be dynamic)
-      const nearbyResponse = await graffixAPI.get(
-        `/api/v1/users/artists/nearby?longitude=-123.10763364103961&latitude=49.225084624107566&maxDistance=1000`
-      );
+                // Fetch nearby artists (Needs to be dynamic)
+                // const nearbyResponse = await graffixAPI.get(
+                //     `/api/v1/users/artists/nearby?longitude=-123.10763364103961&latitude=49.225084624107566&maxDistance=1000`
+                // );
+                // Fetch nearby artists using location from authState
+                if (authState.currentLocation) {
+                    const nearbyResponse = await graffixAPI.get(
+                        `/api/v1/users/artists/nearby`,
+                        {
+                            params: {
+                                longitude: authState.currentLocation.longitude,
+                                latitude: authState.currentLocation.latitude,
+                                maxDistance: 1000,
+                            },
+                        }
+                    );
 
-      // Fetch user data (for liked artworks)
-      const isLikedResponse = await graffixAPI.get(
-        `/api/v1/users/current-user`
-      );
+                    // setNearbyData(nearbyResponse.data.slice(0, 4));
+                    setNearbyData(nearbyResponse.data);
+                    setIsLocationLoading(false);
+                }
 
-      // Update state if the component is still mounted
-      if (isMounted.current) {
-        setGalleryData(artResponse.data.allArt.slice(0, 4));
+                // Fetch user data (for liked artworks)
+                const isLikedResponse = await graffixAPI.get(
+                    `/api/v1/users/current-user`
+                );
 
-        setRecentlyAddedData(artResponse.data.allArt.reverse().slice(0, 4));
+                // Update state if the component is still mounted
+                if (isMounted.current) {
+                    setGalleryData(artResponse.data.allArt.slice(0, 4));
 
-        setNearbyData(nearbyResponse.data.slice(0, 4));
+                    setRecentlyAddedData(
+                        artResponse.data.allArt.reverse().slice(0, 4)
+                    );
 
-        setIsLiked(isLikedResponse.data.userWithoutPassword.likedArtwork);
-      }
-    } catch (error) {
-      console.log("Error fetching data: ", error);
-      setError("Failed to fetch data");
-    } finally {
-      if (isMounted.current) {
-        setIsInitialLoading(false);
-      }
-    }
-  }, []);
+                    // Causes error
+                    // setNearbyData(nearbyResponse.data.slice(0, 4));
+
+                    setIsLiked(
+                        isLikedResponse.data.userWithoutPassword.likedArtwork
+                    );
+                }
+            } catch (error) {
+                console.log("Error fetching data: ", error);
+                setError("Failed to fetch data");
+            } finally {
+                if (isMounted.current) {
+                    setIsInitialLoading(false);
+                }
+            }
+        },
+        [authState.currentLocation]
+    );
+
+    // Using useFocusEffect to fetch data when the screen comes into focus.
+    useFocusEffect(
+        useCallback(() => {
+            isMounted.current = true;
+            if (isInitialLoading) {
+                fetchData(true);
+            } else {
+                fetchData(false);
+            }
+            // Cleanup function
+            return () => {
+                isMounted.current = false;
+            };
+        }, [fetchData, isInitialLoading, authState.currentLocation])
+    );
 
   // Using useFocusEffect to fetch data when the screen comes into focus.
   useFocusEffect(
@@ -180,41 +225,51 @@ export default function Home({ navigation }) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Categories</Text>
 
-            <FlatListComponent
-              data={categoryOptions}
-              type="Categories"
-              refreshing={refreshing}
-              handleRefresh={handleRefresh}
-              navigation={navigation}
-            />
-          </View>
-          {/* Nearby Section */}
-          <View style={styles.section}>
-            <View style={styles.flexSection}>
-              <Text style={styles.sectionTitle}>Nearby</Text>
-              <Pressable
-                onPress={() =>
-                  navigation.navigate("Nearby", {
-                    message: "This will show the Nearby Data",
-                    nearbyData,
-                  })
-                }
-              >
-                <Text>View All</Text>
-              </Pressable>
-            </View>
+                        <FlatListComponent
+                            data={categoryOptions}
+                            type="Categories"
+                            refreshing={refreshing}
+                            handleRefresh={handleRefresh}
+                            navigation={navigation}
+                        />
+                    </View>
+                    {/* Nearby Section */}
+                    {!isLocationLoading ? (
+                        <View style={styles.section}>
+                            <View style={styles.flexSection}>
+                                <Text style={styles.sectionTitle}>Nearby</Text>
+                                <Pressable
+                                    onPress={() =>
+                                        navigation.navigate("Nearby", {
+                                            message:
+                                                "This will show the Nearby Data",
+                                            nearbyData,
+                                        })
+                                    }
+                                >
+                                    <Text>View All</Text>
+                                </Pressable>
+                            </View>
 
-            <FlatListComponent
-              data={nearbyData}
-              type="Nearby"
-              refreshing={refreshing}
-              handleRefresh={handleRefresh}
-              navigation={navigation}
-            />
-          </View>
-          {/* Recently Added Section */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Recently Added</Text>
+                            <FlatListComponent
+                                data={nearbyData}
+                                type="Nearby"
+                                refreshing={refreshing}
+                                handleRefresh={handleRefresh}
+                                navigation={navigation}
+                                // Real User Location
+                                currentLocation={authState.currentLocation}
+                            />
+                        </View>
+                    ) : (
+                        <Text style={styles.sectionTitle}>
+                            Loading Nearby Artists
+                        </Text>
+                    )}
+
+                    {/* Recently Added Section */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Recently Added</Text>
 
             <FlatListComponent
               data={recentlyAddedData}
