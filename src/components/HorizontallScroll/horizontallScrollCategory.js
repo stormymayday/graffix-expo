@@ -26,72 +26,22 @@ export default function HorizontalScrollOptions(props) {
           </TouchableOpacity>
         ))}
       </ScrollView>
+      <View style={styles.bottomLine} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    margin: 5,
     flex: 1,
-    padding: 20,
     backgroundColor: "#fff",
-  },
-  imageUpload: {
-    height: 150,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
     marginBottom: 20,
-    position: "relative",
   },
-  addArtworkText: {
-    marginTop: 10,
-    color: "#999",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 10,
-  },
-  uploadButton: {
-    position: "absolute",
-    bottom: 10,
-    left: "50%",
-    transform: [{ translateX: -50 }],
-    backgroundColor: "#4CAF50",
-    padding: 10,
-    borderRadius: 5,
-  },
-  uploadButtonText: {
-    color: "#fff",
+  categoryText: {
+    color: "#888",
     fontSize: 16,
-  },
-  input: {
-    height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    color: "#000",
-  },
-  textArea: {
-    height: 100,
-  },
-  button: {
-    backgroundColor: "#4CAF50",
-    padding: 10,
-    marginHorizontal: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  cancelButton: {
-    color: "#000",
+    marginBottom: 10,
   },
   scrollView: {
     width: "100%",
@@ -100,5 +50,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 10,
+  },
+  button: {
+    backgroundColor: "#000",
+    padding: 10,
+    marginHorizontal: 10,
+    borderRadius: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  bottomLine: {
+    height: 2,
+    backgroundColor: "#000",
+    marginTop: 10,
   },
 });
