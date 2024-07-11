@@ -1,14 +1,14 @@
 import {
-    StyleSheet,
-    Text,
-    View,
-    SafeAreaView,
-    Dimensions,
-    ScrollView,
-    Pressable,
-    ImageBackground,
-    RefreshControl,
-    ActivityIndicator,
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Dimensions,
+  ScrollView,
+  Pressable,
+  ImageBackground,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 
 import { useState, useCallback, useRef, useContext } from "react";
@@ -22,7 +22,7 @@ import { FlatListComponent } from "../../components/Home/FlatListComponent";
 const image = require("../../../assets/backgroundImage.png");
 
 export default function Home({ navigation }) {
-    const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
     const { state: authState } = useContext(AuthContext);
     const [isLocationLoading, setIsLocationLoading] = useState(true);
@@ -31,14 +31,14 @@ export default function Home({ navigation }) {
     // Tracks if it's the first load
     const [isInitialLoading, setIsInitialLoading] = useState(true);
 
-    const [error, setError] = useState("");
-    const [galleryData, setGalleryData] = useState([]);
-    const [nearbyData, setNearbyData] = useState([]);
-    const [recentlyAddedData, setRecentlyAddedData] = useState([]);
-    const [isLiked, setIsLiked] = useState([]);
+  const [error, setError] = useState("");
+  const [galleryData, setGalleryData] = useState([]);
+  const [nearbyData, setNearbyData] = useState([]);
+  const [recentlyAddedData, setRecentlyAddedData] = useState([]);
+  const [isLiked, setIsLiked] = useState([]);
 
-    // using a useRef hook (isMounted) to prevent state updates if the component unmounts during an async operation.
-    const isMounted = useRef(true);
+  // using a useRef hook (isMounted) to prevent state updates if the component unmounts during an async operation.
+  const isMounted = useRef(true);
 
     // Function to fetch data from the API
     // The fetchData function is wrapped in useCallback for optimization.
@@ -122,92 +122,108 @@ export default function Home({ navigation }) {
         }, [fetchData, isInitialLoading, authState.currentLocation])
     );
 
-    const categoryOptions = [
-        {
-            id: 1,
-            image: "https://picsum.photos/id/55/4608/3072",
-            category: "abstract",
-        },
-        {
-            id: 2,
-            image: "https://picsum.photos/id/58/1280/853",
-            category: "oil",
-        },
-        {
-            id: 3,
-            image: "https://picsum.photos/id/57/2448/3264",
-            category: "impressionism",
-        },
-        {
-            id: 4,
-            image: "https://picsum.photos/id/28/4928/3264",
-            category: "surrealism",
-        },
-        {
-            id: 5,
-            image: "https://picsum.photos/id/27/3264/1836",
-            category: "pop art",
-        },
-        {
-            id: 6,
-            image: "https://picsum.photos/id/41/1280/805",
-            category: "cubism",
-        },
-        {
-            id: 7,
-            image: "https://picsum.photos/id/56/2880/1920",
-            category: "expressionism",
-        },
-    ];
+  // Using useFocusEffect to fetch data when the screen comes into focus.
+  useFocusEffect(
+    useCallback(() => {
+      isMounted.current = true;
+      if (isInitialLoading) {
+        fetchData(true);
+      } else {
+        fetchData(false);
+      }
+      // Cleanup function
+      return () => {
+        isMounted.current = false;
+      };
+    }, [fetchData, isInitialLoading])
+  );
 
-    // Function to handle pull-to-refresh
-    const handleRefresh = useCallback(() => {
-        setRefreshing(true);
-        fetchData(false).then(() => setRefreshing(false));
-    }, [fetchData]);
+  const categoryOptions = [
+    {
+      id: 1,
+      image: "https://picsum.photos/id/55/4608/3072",
+      category: "abstract",
+    },
+    {
+      id: 2,
+      image: "https://picsum.photos/id/58/1280/853",
+      category: "oil",
+    },
+    {
+      id: 3,
+      image: "https://picsum.photos/id/57/2448/3264",
+      category: "impressionism",
+    },
+    {
+      id: 4,
+      image: "https://picsum.photos/id/28/4928/3264",
+      category: "surrealism",
+    },
+    {
+      id: 5,
+      image: "https://picsum.photos/id/27/3264/1836",
+      category: "pop art",
+    },
+    {
+      id: 6,
+      image: "https://picsum.photos/id/41/1280/805",
+      category: "cubism",
+    },
+    {
+      id: 7,
+      image: "https://picsum.photos/id/56/2880/1920",
+      category: "expressionism",
+    },
+  ];
 
-    const width = Dimensions.get("window").width;
+  // Function to handle pull-to-refresh
+  const handleRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchData(false).then(() => setRefreshing(false));
+  }, [fetchData]);
 
-    // Showing loading indicator for the initial load
-    if (isInitialLoading) {
-        return (
-            <SafeAreaView style={styles.container}>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </SafeAreaView>
-        );
-    }
+  const width = Dimensions.get("window").width;
 
-    // Showing error message if there's an error and no data
-    if (error && !galleryData.length) {
-        return (
-            <SafeAreaView style={styles.container}>
-                <Text>{error}</Text>
-                <Pressable onPress={() => fetchData(true)}>
-                    <Text>Retry</Text>
-                </Pressable>
-            </SafeAreaView>
-        );
-    }
-
+  // Showing loading indicator for the initial load
+  if (isInitialLoading) {
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView
-                bounces={false}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={handleRefresh}
-                    />
-                }
-            >
-                <View style={{ flex: 1 }}>
-                    <CarouselComponent galleryData={galleryData} />
-                </View>
-                {/* Section below the carousel */}
-                <View style={styles.sectionsContainer}>
-                    {/* Categories Section */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Categories</Text>
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </SafeAreaView>
+    );
+  }
+
+  // Showing error message if there's an error and no data
+  if (error && !galleryData.length) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text>{error}</Text>
+        <Pressable onPress={() => fetchData(true)}>
+          <Text>Retry</Text>
+        </Pressable>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        bounces={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        <View style={{ flex: 1 }}>
+          <CarouselComponent
+            galleryData={galleryData}
+            navigation={navigation}
+          />
+        </View>
+        {/* Section below the carousel */}
+        <View style={styles.sectionsContainer}>
+          {/* Categories Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Categories</Text>
 
                         <FlatListComponent
                             data={categoryOptions}
@@ -255,112 +271,107 @@ export default function Home({ navigation }) {
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Recently Added</Text>
 
-                        <FlatListComponent
-                            data={recentlyAddedData}
-                            type="Recently Added"
-                            refreshing={refreshing}
-                            handleRefresh={handleRefresh}
-                            isLiked={isLiked}
-                            navigation={navigation}
-                        />
-                    </View>
-                    {/* Art Venture Section */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>ArtVenture</Text>
-                        <Pressable
-                            style={styles.artVentureBox}
-                            onPress={() => navigation.navigate("ArtVenture")}
-                        >
-                            <ImageBackground
-                                source={image}
-                                resizeMode="cover"
-                                style={styles.backgroundImage}
-                            >
-                                <Text
-                                    style={[
-                                        styles.sectionTitle,
-                                        styles.artVentureTitle,
-                                    ]}
-                                >
-                                    Probe into Art-filled Adventure
-                                </Text>
-                                <Text style={styles.artVentureText}>
-                                    Earn artworks and story behind
-                                </Text>
-                            </ImageBackground>
-                        </Pressable>
-                    </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
+            <FlatListComponent
+              data={recentlyAddedData}
+              type="Recently Added"
+              refreshing={refreshing}
+              handleRefresh={handleRefresh}
+              isLiked={isLiked}
+              navigation={navigation}
+            />
+          </View>
+          {/* Art Venture Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>ArtVenture</Text>
+            <Pressable
+              style={styles.artVentureBox}
+              onPress={() => navigation.navigate("ArtVenture")}
+            >
+              <ImageBackground
+                source={image}
+                resizeMode="cover"
+                style={styles.backgroundImage}
+              >
+                <Text style={[styles.sectionTitle, styles.artVentureTitle]}>
+                  Probe into Art-filled Adventure
+                </Text>
+                <Text style={styles.artVentureText}>
+                  Earn artworks and story behind
+                </Text>
+              </ImageBackground>
+            </Pressable>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-    },
-    image: {
-        flex: 1,
-        width: "100%",
-        backgroundColor: "#0553",
-    },
-    artDescription: {
-        marginTop: -100,
-        paddingHorizontal: 16,
-    },
-    white: {
-        color: "white",
-    },
-    artworkName: {
-        fontSize: 20,
-        fontWeight: "bold",
-        textTransform: "capitalize",
-    },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: "700",
-        lineHeight: 30,
-    },
-    flexSection: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    sectionsContainer: {
-        paddingHorizontal: 16,
-        paddingTop: 10,
-    },
-    card: {
-        width: 200,
-        height: 200,
-    },
-    section: {
-        flex: 1,
-        paddingVertical: 16,
-    },
-    cardImage: {
-        borderRadius: 5,
-    },
-    artVentureBox: {
-        flex: 1,
-        gap: 10,
-        borderWidth: 1,
-        borderRadius: 5,
-        height: 200,
-    },
-    backgroundImage: {
-        flex: 1,
-        justifyContent: "center",
-    },
-    artVentureText: {
-        textAlign: "center",
-        color: "white",
-        fontSize: 14,
-    },
-    artVentureTitle: {
-        color: "white",
-        textAlign: "center",
-    },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  image: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "#0553",
+  },
+  artDescription: {
+    marginTop: -100,
+    paddingHorizontal: 16,
+  },
+  white: {
+    color: "white",
+  },
+  artworkName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textTransform: "capitalize",
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    lineHeight: 30,
+  },
+  flexSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  sectionsContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 10,
+  },
+  card: {
+    width: 200,
+    height: 200,
+  },
+  section: {
+    flex: 1,
+    paddingVertical: 16,
+  },
+  cardImage: {
+    borderRadius: 5,
+  },
+  artVentureBox: {
+    flex: 1,
+    gap: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    height: 200,
+  },
+  backgroundImage: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  artVentureText: {
+    textAlign: "center",
+    color: "white",
+    fontSize: 14,
+  },
+  artVentureTitle: {
+    color: "white",
+    textAlign: "center",
+  },
 });

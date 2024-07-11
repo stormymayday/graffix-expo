@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Pressable } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { Image } from "expo-image";
 
-export function CarouselComponent({ galleryData }) {
+export function CarouselComponent({ galleryData, navigation }) {
   const width = Dimensions.get("window").width;
 
   return (
@@ -14,7 +14,10 @@ export function CarouselComponent({ galleryData }) {
       data={galleryData}
       scrollAnimationDuration={3000}
       renderItem={({ index }) => (
-        <View
+        <Pressable
+          onPress={() =>
+            navigation.navigate("ArtDetail", { item: galleryData[index] })
+          }
           style={{
             flex: 1,
           }}
@@ -34,7 +37,7 @@ export function CarouselComponent({ galleryData }) {
             </Text>
             <Text style={styles.white}>{galleryData[index].artistName}</Text>
           </View>
-        </View>
+        </Pressable>
       )}
     />
   );
@@ -53,6 +56,7 @@ const styles = StyleSheet.create({
   artDescription: {
     marginTop: -100,
     paddingHorizontal: 16,
+    paddingBottom: 15,
   },
   white: {
     color: "white",
