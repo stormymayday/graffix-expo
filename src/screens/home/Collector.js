@@ -110,11 +110,13 @@ export default function Collector({ navigation, route }) {
                             <Feather name="edit" size={18} color="black" />
                         </Pressable>
                     </View>
-                    <Text style={styles.address}>
+
+                    {/* <Text style={styles.address}>
                         {userData.location
                             ? userData.location.coordinates.join(",")
                             : ""}
-                    </Text>
+                    </Text> */}
+
                     <Text style={styles.description}>{userData.bio}</Text>
                 </View>
             </View>
