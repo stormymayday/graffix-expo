@@ -7,44 +7,92 @@ import {
   Pressable,
   ScrollView,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import graffixAPI from "../../api/graffixAPI";
 import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { center } from "@cloudinary/url-gen/qualifiers/textAlignment";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Categories({ navigation, route }) {
-  const [isLoading, setisLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [categoriesData, setCategoriesData] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+  const [isLiked, setIsLiked] = useState([]);
 
-  const fetchData = async () => {
+  const isMounted = useRef(true);
+
+  const fetchData = useCallback(async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
+
+    setError("");
+
     try {
       const artResponse = await graffixAPI.get(
         `https://graffix-server.onrender.com/api/v1/art/category/${route.params.category}`
       );
 
-      setCategoriesData(artResponse.data);
+      // Fetch user data (for liked artworks)
+      const isLikedResponse = await graffixAPI.get(
+        `/api/v1/users/current-user`
+      );
 
-      //  setIsLoading(false);
-      //  setError("");
+      // Update state if the component is still mounted
+      if (isMounted.current) {
+        setCategoriesData(artResponse.data);
+
+        setIsLiked(isLikedResponse.data.userWithoutPassword.likedArtwork);
+      }
     } catch (error) {
       console.log("Error fetching data: ", error);
-      //  setIsLoading(false);
-      //  setError("Failed to fetch Data");
+      setError("Failed to fetch data");
+    } finally {
+      if (isMounted.current) {
+        setIsLoading(false);
+      }
     }
-  };
-
-  useEffect(() => {
-    fetchData();
   }, []);
 
-  const handleRefresh = () => {
+  useFocusEffect(
+    useCallback(() => {
+      isMounted.current = true;
+      if (isLoading) {
+        fetchData(true);
+      } else {
+        fetchData(false);
+      }
+      // Cleanup function
+      return () => {
+        isMounted.current = false;
+      };
+    }, [fetchData, isLoading])
+  );
+
+  const handleRefresh = useCallback(() => {
     setRefreshing(true);
-    fetchData();
-    setRefreshing(false);
-  };
+    fetchData(false).then(() => setRefreshing(false));
+  }, [fetchData]);
+
+  // Showing loading indicator for the initial load
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </SafeAreaView>
+    );
+  }
+
+  // Showing error message if there's an error and no data
+  if (error && !categoriesData.length) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text>{error}</Text>
+        <Pressable onPress={() => fetchData(true)}>
+          <Text>Retry</Text>
+        </Pressable>
+      </SafeAreaView>
+    );
+  }
 
   const numColumns = 2;
 
@@ -52,7 +100,10 @@ export default function Categories({ navigation, route }) {
     categoriesData.length > 0 && (
       <SafeAreaView style={styles.container}>
         <ScrollView bounces={false} style={{ minWidth: "95%" }}>
-          <View
+          <Pressable
+            onPress={() =>
+              navigation.navigate("ArtDetail", { item: categoriesData[0] })
+            }
             style={{
               flex: 1,
               marginBottom: 50,
@@ -73,7 +124,7 @@ export default function Categories({ navigation, route }) {
                 {categoriesData[0].title}
               </Text>
             </View>
-          </View>
+          </Pressable>
 
           <View>
             <FlatList
@@ -105,7 +156,11 @@ export default function Categories({ navigation, route }) {
                         </Text>
                         <Text>{item.artistName}</Text>
                       </View>
-                      <Ionicons name="heart-outline" style={{ padding: 10 }} />
+                      <Ionicons
+                        name={
+                          isLiked.includes(item._id) ? "heart" : "heart-outline"
+                        }
+                      />
                     </View>
                   </Pressable>
                 );
