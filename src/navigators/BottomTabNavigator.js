@@ -5,6 +5,16 @@ import { SettingsNavigator } from "./SettingsNavigator";
 import { ArtVentureNavigator } from "./ArtVentureNavigator";
 import Search from "../screens/home/Search";
 import { LogoTitle } from "../components/Home/LogoTitle";
+import {
+  HomeActive,
+  HomeInactive,
+  SearchActive,
+  SearchInactive,
+  ProfileActive,
+  ProfileInactive,
+  ArtVentureActive,
+  ArtVentureInactive,
+} from "../components/BottomNavigator/Icons";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,16 +25,30 @@ export function BottomTabNavigator() {
         tabBarIcon: ({ color, focused, size }) => {
           let iconName;
           if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
+            return focused ? (
+              <HomeActive size={size} color={color} />
+            ) : (
+              <HomeInactive size={size} color={color} />
+            );
           } else if (route.name === "Search") {
-            iconName = focused ? "search" : "search-outline";
+            return focused ? (
+              <SearchActive size={size} color={color} />
+            ) : (
+              <SearchInactive size={size} color={color} />
+            );
           } else if (route.name === "Profile") {
-            iconName = focused ? "person" : "person-outline";
+            return focused ? (
+              <ProfileActive size={size} color={color} />
+            ) : (
+              <ProfileInactive size={size} color={color} />
+            );
           } else if (route.name === "ArtVenture") {
-            iconName = focused ? "color-palette" : "color-palette-outline";
+            return focused ? (
+              <ArtVentureActive size={size} color={color} />
+            ) : (
+              <ArtVentureInactive size={size} color={color} />
+            );
           }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: "black",
         tabBarInactiveTintColor: "gray",
@@ -37,12 +61,12 @@ export function BottomTabNavigator() {
         component={Home}
         options={{ headerTitle: () => <LogoTitle /> }}
       />
-      <Tab.Screen name="Search" component={Search} />
       <Tab.Screen
         name="ArtVenture"
         component={ArtVentureNavigator}
         options={{ headerShown: false }}
       />
+      <Tab.Screen name="Search" component={Search} />
       <Tab.Screen
         name="Profile"
         component={SettingsNavigator}
