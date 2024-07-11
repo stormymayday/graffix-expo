@@ -38,12 +38,13 @@ export default function Artist({ navigation, route }) {
 
             setArtWorks(
                 artWorkData.map((artwork) => ({
-                    id: artwork._id,
-                    artName: artwork.title,
+                    _id: artwork._id,
+                    title: artwork.title,
                     description: artwork.description,
                     category: artwork.category,
                     imageUrl: artwork.artworkUrl,
-                    author: artwork.artistName,
+                    artistName: artwork.artistName,
+                    createdBy: artwork.createdBy
                 }))
             );
 
@@ -52,9 +53,21 @@ export default function Artist({ navigation, route }) {
                 `/api/v1/treasure/artist/${userId}`
             );
             // Storing treasures in state
-            setTreasures(treasureResponse.data);
+            const treasureData = treasureResponse.data;
+            setTreasures(
+              treasureData.map((treasure) => ({
+                _id: treasure._id,
+                title: treasure.title,
+                description: treasure.description,
+                category: treasure.category,
+                imageUrl: treasure.treasureUrl,
+                createdBy: treasure.createdBy,
+                qrCode: treasure.qrCodeUrl,
+                location: treasure.location,
+              }))
+            );
             // Console log for debugging
-            // console.log("Fetched treasures:", treasureResponse.data);
+            console.log("Fetched treasures:", treasures);
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -82,18 +95,13 @@ export default function Artist({ navigation, route }) {
     );
 
     const renderTreasureItem = ({ item }) => (
-        <TouchableOpacity
-            style={styles.treasureContainer}
-            // Need to Implement the navigation:
-            // onPress={() =>
-            //     navigation.navigate("TreasureDetailFromProfile", { item })
-            // }
-        >
-            <Image
-                source={{ uri: item.treasureUrl }}
-                style={styles.treasureImage}
-            />
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.treasureContainer}
+        // Need to Implement the navigation:
+        onPress={() => navigation.navigate("ArtDetailFromProfile", { item })}
+      >
+        <Image source={{ uri: item.imageUrl }} style={styles.treasureImage} />
+      </TouchableOpacity>
     );
 
     if (!userData || isLoading) {
