@@ -48,7 +48,7 @@ const ArtistDetailScreen = ({ route, navigation }) => {
 
             // Fetching treasures
             const treasureResponse = await graffixAPI.get(
-                `/api/v1/treasure/artist/${artist._id}`
+                `/api/v1/users/${artist._id}/collected-treasures`
             );
             setTreasures(treasureResponse.data);
         } catch (error) {
