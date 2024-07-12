@@ -8,9 +8,12 @@ import {
     StyleSheet,
     FlatList,
     SafeAreaView,
+    Modal,
+    Linking,
 } from "react-native";
 import graffixAPI from "../../api/graffixAPI";
 import ArtList from "../../components/Profile/ArtList";
+import { Ionicons, FontAwesome, Feather } from "@expo/vector-icons";
 
 const ArtistDetailScreen = ({ route, navigation }) => {
     const { artist } = route.params;
@@ -21,6 +24,32 @@ const ArtistDetailScreen = ({ route, navigation }) => {
     const [treasures, setTreasures] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("ArtWork");
+
+    // Contact - start
+    const [modalVisible, setModalVisible] = useState(false);
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+    };
+    const handleEmailPress = (email) => {
+        Linking.openURL(`mailto:${email}`);
+    };
+
+    const handleInstagramPress = (username) => {
+        Linking.openURL(`https://www.instagram.com/${username}`);
+    };
+
+    const handleBehancePress = (username) => {
+        Linking.openURL(`https://www.behance.net/${username}`);
+    };
+
+    const handleWebsitePress = (url) => {
+        Linking.openURL(url);
+    };
+
+    const removeProtocol = (url) => {
+        return url.replace(/^(https?:\/\/)?(www\.)?/, "");
+    };
+    // Contact - end
 
     // Fetching artworks and treasures
     const fetchUserData = useCallback(async () => {
@@ -51,7 +80,7 @@ const ArtistDetailScreen = ({ route, navigation }) => {
                 `/api/v1/users/${artist._id}/collected-treasures`
             );
             setTreasures(treasureResponse.data);
-            console.log(treasures)
+            console.log(treasures);
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -78,9 +107,7 @@ const ArtistDetailScreen = ({ route, navigation }) => {
     const renderTreasureItem = ({ item }) => (
         <TouchableOpacity
             style={styles.treasureContainer}
-            onPress={() =>
-                navigation.navigate("TreasureDetail", { item })
-            }
+            onPress={() => navigation.navigate("TreasureDetail", { item })}
         >
             <Image
                 source={{ uri: item.treasureUrl }}
@@ -115,10 +142,90 @@ const ArtistDetailScreen = ({ route, navigation }) => {
 
             <TouchableOpacity
                 style={styles.contactButton}
-                onPress={() => console.log("Contact pressed")}
+                onPress={toggleModal}
             >
                 <Text style={styles.contactText}>Contact</Text>
             </TouchableOpacity>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={toggleModal}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        {artist.email && (
+                            <TouchableOpacity
+                                onPress={() => handleEmailPress(artist.email)}
+                                style={styles.contactItem}
+                            >
+                                <Ionicons
+                                    name="mail-outline"
+                                    size={24}
+                                    color="black"
+                                />
+                                <Text style={styles.linkText}>
+                                    {artist.email}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                        {artist.instagram && (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    handleInstagramPress(artist.instagram)
+                                }
+                                style={styles.contactItem}
+                            >
+                                <FontAwesome
+                                    name="instagram"
+                                    size={24}
+                                    color="black"
+                                />
+                                <Text style={styles.linkText}>
+                                    @{artist.instagram}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                        {artist.behance && (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    handleBehancePress(artist.behance)
+                                }
+                                style={styles.contactItem}
+                            >
+                                <FontAwesome
+                                    name="behance"
+                                    size={24}
+                                    color="black"
+                                />
+                                <Text style={styles.linkText}>
+                                    {artist.behance}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                        {artist.website && (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    handleWebsitePress(artist.website)
+                                }
+                                style={styles.contactItem}
+                            >
+                                <Feather name="globe" size={24} color="black" />
+                                <Text style={styles.linkText}>
+                                    {removeProtocol(artist.website)}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={toggleModal}
+                        >
+                            <Text style={styles.textStyle}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
 
             {/* Tab Buttons */}
             <View style={styles.tabContainer}>
@@ -260,6 +367,53 @@ const styles = StyleSheet.create({
         marginTop: 8,
         fontSize: 14,
         fontWeight: "bold",
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 10,
+        padding: 35,
+        paddingBottom: 20,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    button: {
+        borderRadius: 10,
+        padding: 10,
+        elevation: 2,
+        marginTop: 20,
+    },
+    buttonClose: {
+        backgroundColor: "black",
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    contactItem: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 15,
+    },
+    linkText: {
+        color: "black",
+        textDecorationLine: "underline",
+        fontSize: 16,
+        marginLeft: 10,
     },
 });
 
