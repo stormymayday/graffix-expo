@@ -267,7 +267,7 @@ export default function ArtworkFormInput({ route, navigation }) {
             />
             <View style={styles.locationWrapper}>
               <Text style={styles.locationLabel}>Location</Text>
-              {location ? (
+              {location && qrCodeValue && (
                 <MapView
                   style={styles.map}
                   initialRegion={{
@@ -280,8 +280,6 @@ export default function ArtworkFormInput({ route, navigation }) {
                 >
                   {pinLocation && <Marker coordinate={pinLocation} />}
                 </MapView>
-              ) : (
-                <Text>Loading map...</Text>
               )}
             </View>
             <TouchableOpacity
@@ -392,7 +390,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cancelButtonText: {
-    color: "#000",
+    color: "black",
     fontSize: 16,
   },
   map: {
