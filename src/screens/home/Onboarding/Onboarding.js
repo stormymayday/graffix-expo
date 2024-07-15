@@ -35,12 +35,20 @@ export default function Onboarding({ navigation }) {
       <View style={{ paddingVertical: 10 }}>
         <Progress.Bar progress={0.33} width={null} color="black" />
       </View>
-      <Button
+      {/* <Button
         style={styles.button}
         color={"black"}
         title="Next"
         onPress={() => navigation.navigate("Onboarding2")}
-      />
+      /> */}
+
+      <Pressable
+        style={styles.button}
+        onPress={() => navigation.navigate("Onboarding2")}
+      >
+        <Text style={styles.buttonText}>Next</Text>
+      </Pressable>
+
       {/* <Button title="Start" onPress={() => navigation.navigate("Graffix")} /> */}
       {/* <Button
         title="Image Upload"
@@ -78,5 +86,12 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "black",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });
