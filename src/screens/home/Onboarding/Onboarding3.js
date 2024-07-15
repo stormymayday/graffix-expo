@@ -1,4 +1,11 @@
-import { StyleSheet, Text, Button, SafeAreaView, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  Button,
+  SafeAreaView,
+  View,
+  Pressable,
+} from "react-native";
 import { Image } from "expo-image";
 import * as Progress from "react-native-progress";
 const image = require("../../../../assets/Artboard_3.png");
@@ -25,12 +32,20 @@ export default function Onboarding3({ navigation }) {
       <View style={{ paddingVertical: 10 }}>
         <Progress.Bar progress={1} width={null} color="black" />
       </View>
-      <Button
+      {/* <Button
         style={styles.button}
         color={"black"}
         title="Get Started"
         onPress={() => navigation.navigate("Onboarding4")}
-      />
+      /> */}
+
+      <Pressable
+        style={styles.button}
+        onPress={() => navigation.navigate("Onboarding4")}
+      >
+        <Text style={styles.buttonText}>Get Started</Text>
+      </Pressable>
+
       {/* <Button title="Start" onPress={() => navigation.navigate("Graffix")} /> */}
       {/* <Button
         title="Image Upload"
@@ -67,5 +82,12 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "black",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });

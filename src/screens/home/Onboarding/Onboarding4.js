@@ -1,4 +1,11 @@
-import { StyleSheet, Text, Button, SafeAreaView, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  Button,
+  SafeAreaView,
+  View,
+  Pressable,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function Onboarding3({ navigation }) {
@@ -18,11 +25,18 @@ export default function Onboarding3({ navigation }) {
         </Text>
       </View>
       <View>
-        <Button
+        {/* <Button
           color={"black"}
           title="Use Current Location"
           onPress={() => navigation.navigate("Graffix")}
-        />
+        /> */}
+
+        <Pressable
+          style={styles.button}
+          onPress={() => navigation.navigate("Graffix")}
+        >
+          <Text style={styles.buttonText}>Use Current Location</Text>
+        </Pressable>
       </View>
       {/* <Button title="Start" onPress={() => navigation.navigate("Graffix")} /> */}
       {/* <Button
@@ -48,5 +62,15 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     paddingVertical: 20,
+  },
+  button: {
+    backgroundColor: "black",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });
