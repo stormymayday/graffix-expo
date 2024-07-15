@@ -16,7 +16,7 @@ import { Image } from "expo-image";
 import { bold } from "@cloudinary/url-gen/qualifiers/fontWeight";
 // import { View } from "react-native-reanimated/lib/typescript/Animated";
 
-const image = require("../../../assets/Logo.png");
+const image = require("../../../assets/Graffix_Logo.svg");
 
 export default function Login({ navigation }) {
   const { state, login, clearMessage } = useContext(AuthContext);
