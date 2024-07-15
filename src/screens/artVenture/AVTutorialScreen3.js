@@ -35,12 +35,18 @@ export default function AVTutorialScreen3({ navigation }) {
       <View style={{ paddingVertical: 10 }}>
         <Progress.Bar progress={0.99} width={null} color="black" />
       </View>
-      <Button
+      {/* <Button
         style={styles.button}
         color={"black"}
         title="Next"
         onPress={() => navigation.navigate("AVFilterScreen")}
-      />
+      /> */}
+      <Pressable
+        style={styles.button}
+        onPress={() => navigation.navigate("AVFilterScreen")}
+      >
+        <Text style={styles.buttonText}>Next</Text>
+      </Pressable>
       {/* <Text>ArtVenture Tutorial Screen 3</Text>
       <Button
         title="Next"
@@ -82,5 +88,12 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "black",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });
