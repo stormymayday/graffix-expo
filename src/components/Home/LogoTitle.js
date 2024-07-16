@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { Image } from "expo-image";
 
-const image = require("../../../assets/Graffix_Logo.svg");
+const image = require("../../../assets/Graffix_Logo_dark.svg");
 
 export function LogoTitle() {
   return (
