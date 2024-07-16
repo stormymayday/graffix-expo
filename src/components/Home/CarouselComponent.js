@@ -9,7 +9,7 @@ export function CarouselComponent({ galleryData, navigation }) {
     <Carousel
       loop
       width={width}
-      height={width}
+      height={300}
       autoPlay={true}
       data={galleryData}
       scrollAnimationDuration={3000}
