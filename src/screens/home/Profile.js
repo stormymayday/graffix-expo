@@ -7,13 +7,65 @@ import {
   StyleSheet,
   ActivityIndicator,
   Text,
+  TouchableOpacity,
 } from "react-native";
 import Collector from "./Collector";
-import Artist from "./Artist"; 
+import Artist from "./Artist";
 import UserDataContext from "../../context/UserDataContext";
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
+
+const CustomTabBar = ({ state, descriptors, navigation }) => {
+  return (
+    <View style={styles.tabBarContainer}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
+
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            onPress={onPress}
+            style={[
+              styles.tab,
+              isFocused ? styles.activeTab : styles.inactiveTab,
+            ]}
+          >
+            <Text
+              style={{
+                color: isFocused ? "#000" : "#525252",
+                fontSize: 16,
+                fontWeight: 700,
+              }}
+            >
+              {label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};
 
 export default function Profile({ navigation }) {
   const [loading, setLoading] = useState(false);
@@ -47,7 +99,7 @@ export default function Profile({ navigation }) {
       )}
       <View style={{ flex: 1, opacity: loading ? 0.2 : 1 }}>
         {userRole === "artist" ? (
-          <Tab.Navigator>
+          <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
             <Tab.Screen
               name="Collector"
               component={Collector}
@@ -107,5 +159,36 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#ffffff",
     fontWeight: "bold",
+  },
+  tabBarContainer: {
+    flexDirection: "row",
+    backgroundColor: "#CECECE",
+    borderRadius: 20,
+    margin: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 49,
+  },
+  tab: {
+    flex: 1,
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 20,
+    height: 49,
+    justifyContent: "center",
+  },
+  activeTab: {
+    backgroundColor: "#fff",
+    shadowColor: "#121212",
+    shadowOffset: {
+      width: 0,
+      height: 16,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 19.7,
+    elevation: 4,
+  },
+  inactiveTab: {
+    backgroundColor: "#CECECE",
   },
 });
