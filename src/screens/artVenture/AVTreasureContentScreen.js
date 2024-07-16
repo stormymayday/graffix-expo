@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
     StyleSheet,
     Text,
@@ -13,11 +13,14 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import graffixAPI from "../../api/graffixAPI";
+import UserDataContext from "../../context/UserDataContext";
 
 // Getting the width of the device screen
 const { width } = Dimensions.get("window");
 
 export default function AVTreasureContentScreen({ navigation, route }) {
+    const { addTreasureToCollection } = useContext(UserDataContext);
+
     // Extracting treasureData from route params
     const { treasureData } = route.params;
 
@@ -51,12 +54,11 @@ export default function AVTreasureContentScreen({ navigation, route }) {
     const handleAddToCollection = async () => {
         setIsLoading(true);
         try {
-            const response = await graffixAPI.post(
-                `/api/v1/treasure/add-to-collection/${treasureData._id}`
-            );
-
+            const response = await addTreasureToCollection(treasureData._id);
             if (response.status === 200) {
                 navigation.navigate("AVSuccessScreen");
+            } else if (response.status === 400) {
+                Alert.alert("You have already collected this treasure.");
             } else {
                 Alert.alert(
                     "Failed to add treasure to collection. Please try again."
@@ -64,9 +66,16 @@ export default function AVTreasureContentScreen({ navigation, route }) {
             }
         } catch (error) {
             console.error("API request error:", error);
-            Alert.alert(
-                "An error occurred while adding the treasure to your collection. Please try again."
-            );
+            if (error.response && error.response.status === 400) {
+                Alert.alert(
+                    "Already Collected",
+                    "You have already collected this treasure."
+                );
+            } else {
+                Alert.alert(
+                    "An error occurred while adding the treasure to your collection. Please try again."
+                );
+            }
         } finally {
             setIsLoading(false);
         }
