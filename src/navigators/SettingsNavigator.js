@@ -18,40 +18,48 @@ const Stack = createNativeStackNavigator();
 const TopTabs = createMaterialTopTabNavigator();
 
 export function SettingsNavigator() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerTitleAlign: "center",
-      }}
-    >
-      <Stack.Screen
-        name="ProfileSettings"
-        component={Profile}
-        options={({ navigation }) => ({
-          title: "Profile",
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Settings")}
-              style={{ marginRight: 10 }}
-            >
-              <Icon name="settings" size={25} color="#000" />
-            </TouchableOpacity>
-          ),
-        })}
-      />
-      <Stack.Screen
-        name="ArtDetailFromProfile"
-        component={ArtDetailFromProfile}
-      />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
-      <Stack.Screen name="Settings" component={Settings} />
-      <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} />
-      <Stack.Screen name="LocationPermission" component={LocationPermission} />
-      <Stack.Screen name="Notifications" component={Notifications} />
-      <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
-      <Stack.Screen name="SelectAndUpload" component={SelectAndUpload} />
-      <Stack.Screen name="ArtworkFormInput" component={ArtworkFormInput} />
-      <Stack.Screen name="ArtworkEdit" component={ArtWorkEdit} />
-    </Stack.Navigator>
-  );
+    return (
+        <Stack.Navigator
+            screenOptions={{
+                headerTitleAlign: "center",
+                headerTintColor: "black",
+                headerBackTitleVisible: false,
+            }}
+        >
+            <Stack.Screen
+                name="ProfileSettings"
+                component={Profile}
+                options={({ navigation }) => ({
+                    title: "Profile",
+                    headerRight: () => (
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate("Settings")}
+                            style={{ marginRight: 10 }}
+                        >
+                            <Icon name="settings" size={25} color="#000" />
+                        </TouchableOpacity>
+                    ),
+                })}
+            />
+            <Stack.Screen
+                name="ArtDetailFromProfile"
+                component={ArtDetailFromProfile}
+            />
+            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} />
+            <Stack.Screen
+                name="LocationPermission"
+                component={LocationPermission}
+            />
+            <Stack.Screen name="Notifications" component={Notifications} />
+            <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+            <Stack.Screen name="SelectAndUpload" component={SelectAndUpload} />
+            <Stack.Screen
+                name="ArtworkFormInput"
+                component={ArtworkFormInput}
+            />
+            <Stack.Screen name="ArtworkEdit" component={ArtWorkEdit} />
+        </Stack.Navigator>
+    );
 }
