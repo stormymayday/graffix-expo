@@ -6,22 +6,18 @@ const UserDataContext = createContext();
 export const UserDataProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await graffixAPI.get("/api/v1/users/current-user");
-        const userDataWithRole = {
-          ...response.data.userWithoutPassword,
-          role: response.data.userWithoutPassword.role || "collector", // Default role is collector if not provided
-        };
-        setUserData(userDataWithRole);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+  const fetchUserData = async () => {
+    try {
+      const response = await graffixAPI.get("/api/v1/users/current-user");
+      const userDataWithRole = {
+        ...response.data.userWithoutPassword,
+        role: response.data.userWithoutPassword.role || "collector", // Default role is collector if not provided
+      };
+      setUserData(userDataWithRole);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   const updateUser = async (updatedUserData) => {
     try {
@@ -40,7 +36,9 @@ export const UserDataProvider = ({ children }) => {
   };
 
   return (
-    <UserDataContext.Provider value={{ userData, updateUser }}>
+    <UserDataContext.Provider
+      value={{ userData, fetchUserData, updateUser}}
+    >
       {children}
     </UserDataContext.Provider>
   );

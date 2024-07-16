@@ -4,31 +4,31 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Button,
   SafeAreaView,
   TouchableOpacity,
   Alert,
   Pressable,
   View,
+  ActivityIndicator,
 } from "react-native";
 import { Image } from "expo-image";
-
-import { bold } from "@cloudinary/url-gen/qualifiers/fontWeight";
-// import { View } from "react-native-reanimated/lib/typescript/Animated";
+import UserDataContext from "../../context/UserDataContext";
 
 const image = require("../../../assets/Graffix_Logo.svg");
 
 export default function Login({ navigation }) {
   const { state, login, clearMessage } = useContext(AuthContext);
+  const { fetchUserData } = useContext(UserDataContext);
 
   const [email, setEmail] = useState("user1@example.com");
   const [password, setPassword] = useState("password123");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (state.loginErrorMessage) {
       const formattedMessage = state.loginErrorMessage
         .split(",")
-        .map((msg, index) => `• ${msg.trim()}`)
+        .map((msg) => `• ${msg.trim()}`)
         .join("\n");
 
       Alert.alert("Login Failed", formattedMessage, [
@@ -41,15 +41,21 @@ export default function Login({ navigation }) {
       ]);
     }
     if (state.loginSuccessMessage) {
-      Alert.alert("Login Successful", state.loginSuccessMessage, [
-        {
-          text: "OK",
-          onPress: () => {
-            clearMessage();
-            navigation.navigate("Onboarding");
+      const handleSuccess = async () => {
+        setLoading(true);
+        await fetchUserData();
+        setLoading(false);
+        Alert.alert("Login Successful", state.loginSuccessMessage, [
+          {
+            text: "OK",
+            onPress: () => {
+              clearMessage();
+              navigation.navigate("Onboarding");
+            },
           },
-        },
-      ]);
+        ]);
+      };
+      handleSuccess();
     }
   }, [state.loginErrorMessage, state.loginSuccessMessage]);
 
@@ -70,9 +76,7 @@ export default function Login({ navigation }) {
         style={styles.input}
         placeholder="email"
         value={email}
-        onChangeText={(newEmail) => {
-          setEmail(newEmail);
-        }}
+        onChangeText={(newEmail) => setEmail(newEmail)}
         autoCapitalize="none"
         autoCorrect={false}
       />
@@ -81,24 +85,19 @@ export default function Login({ navigation }) {
         style={styles.input}
         placeholder="password"
         value={password}
-        onChangeText={(newPassword) => {
-          setPassword(newPassword);
-        }}
+        onChangeText={(newPassword) => setPassword(newPassword)}
         autoCapitalize="none"
         autoCorrect={false}
         secureTextEntry
       />
       <TouchableOpacity
         style={styles.button}
-        onPress={() => {
-          login({
-            email,
-            password,
-          });
-        }}
+        onPress={() => login({ email, password })}
       >
         <Text style={styles.btnText}>Log In</Text>
       </TouchableOpacity>
+
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
 
       <View style={{ flexDirection: "row", justifyContent: "center", gap: 5 }}>
         <Text style={{ textAlign: "center" }}>Don't have an account?</Text>
@@ -106,8 +105,6 @@ export default function Login({ navigation }) {
           <Text style={styles.bold}>Sign Up!</Text>
         </Pressable>
       </View>
-
-      {/* <Button title="" onPress={() => navigation.navigate("SignUp")} /> */}
     </SafeAreaView>
   );
 }
@@ -116,8 +113,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    // alignItems: "center",
-    // justifyContent: "space-between",
     paddingHorizontal: 30,
     paddingVertical: 30,
   },
@@ -147,9 +142,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: "white",
   },
-  errorMessage: {
-    color: "red",
-  },
   bold: {
     fontWeight: "bold",
   },
@@ -158,7 +150,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   image: {
-    // flex: 1,
     height: 100,
     width: "100%",
   },
