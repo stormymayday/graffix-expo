@@ -53,10 +53,12 @@ export function SettingsNavigator() {
             />
             <Stack.Screen name="Notifications" component={Notifications} />
             <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
-            <Stack.Screen name="SelectAndUpload" component={SelectAndUpload} />
+            {/* addArtWork Screens */}
+            <Stack.Screen name="SelectAndUpload" component={SelectAndUpload} options={{ headerTitle: "" }} />
             <Stack.Screen
                 name="ArtworkFormInput"
                 component={ArtworkFormInput}
+                options={{ headerTitle: "Publish ArtWork" }}
             />
             <Stack.Screen name="ArtworkEdit" component={ArtWorkEdit} />
         </Stack.Navigator>
