@@ -12,6 +12,7 @@ import graffixAPI from "../../api/graffixAPI";
 import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect } from "@react-navigation/native";
+import { Favorite, OutlineHeart } from "../../components/Icons/Icons";
 
 export default function Categories({ navigation, route }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -156,11 +157,16 @@ export default function Categories({ navigation, route }) {
                         </Text>
                         <Text>{item.artistName}</Text>
                       </View>
-                      <Ionicons
+                      {/* <Ionicons
                         name={
                           isLiked.includes(item._id) ? "heart" : "heart-outline"
                         }
-                      />
+                      /> */}
+                      {isLiked.includes(item._id) ? (
+                        <Favorite size={16} color={"black"} />
+                      ) : (
+                        <OutlineHeart size={16} />
+                      )}
                     </View>
                   </Pressable>
                 );

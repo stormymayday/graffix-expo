@@ -13,6 +13,7 @@ import { Image } from "expo-image";
 import { useState, useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import graffixAPI from "../../api/graffixAPI";
+import { Search, ChevronForward } from "../../components/Icons/Icons";
 
 export default function SearchResultsScreen({ navigation }) {
   const [artistName, setArtistName] = useState("");
@@ -85,12 +86,15 @@ export default function SearchResultsScreen({ navigation }) {
           placeholder="Search Artists"
           onChangeText={setArtistName}
         />
-        <Ionicons
+        {/* <Ionicons
           name="search"
           size={24}
           style={{ padding: 10 }}
           onPress={fetchData}
-        />
+        /> */}
+        <Pressable onPress={fetchData}>
+          <Search size={24} color={"black"} />
+        </Pressable>
       </View>
       {error ? (
         <View>
@@ -193,10 +197,11 @@ export default function SearchResultsScreen({ navigation }) {
                 }
               >
                 <Text style={{ width: "95%" }}>{item.username}</Text>
-                <Ionicons
+                {/* <Ionicons
                   style={{ alignSelf: "center" }}
                   name="chevron-forward"
-                />
+                /> */}
+                <ChevronForward size={16} color={"black"} />
               </Pressable>
             );
           }}
@@ -291,6 +296,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     alignItems: "center",
+    justifyContent: "space-around",
   },
   error: {
     borderColor: "red",
