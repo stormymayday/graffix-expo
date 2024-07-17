@@ -11,12 +11,14 @@ import {
 import { Feather } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
 
-export default function ArtDetail({ route, navigation }) {
+export default function ArtDetailFromProfile({ route, navigation }) {
   const { item } = route.params;
   const [location, setLocation] = useState(null);
   const [pinLocation, setPinLocation] = useState(null);
-  const title = item.title;
-  navigation.setOptions({ title });
+
+  useEffect(() => {
+    navigation.setOptions({ title: item.title });
+  }, [item.title, navigation]);
 
   useEffect(() => {
     if (item.location) {
@@ -32,16 +34,15 @@ export default function ArtDetail({ route, navigation }) {
       });
     }
   }, [item.location]);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Image source={{ uri: item.imageUrl }} style={styles.image} />
         <View style={styles.titleContainer}>
           <Text style={styles.label}>Title</Text>
-
-      {/* ********** Eidt artVenture/ artwork *************************** */}
           <Pressable
-          // onPress={() => navigation.navigate("")}
+            onPress={() => navigation.navigate("EditScreen", { item })}
           >
             <Feather name="edit" size={18} color="black" />
           </Pressable>
@@ -72,7 +73,6 @@ export default function ArtDetail({ route, navigation }) {
             </>
           )}
         </View>
-
         {item.qrCode && (
           <View style={styles.qrCodeWrapper}>
             <Image source={{ uri: item.qrCode }} style={styles.qrCodeImage} />
@@ -160,9 +160,8 @@ const styles = StyleSheet.create({
   qrCodeWrapper: {
     alignItems: "center",
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
-
   qrCodeImage: {
     width: 200,
     height: 200,

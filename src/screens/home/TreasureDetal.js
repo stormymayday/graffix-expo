@@ -13,8 +13,9 @@ export default function TreasureDetail({ route, navigation }) {
   const { item } = route.params;
   const [location, setLocation] = useState(null);
   const [pinLocation, setPinLocation] = useState(null);
-  const title = item.title;
-  navigation.setOptions({ title });
+  useEffect(() => {
+    navigation.setOptions({ title: item.title });
+  }, [item.title, navigation]);
 
   useEffect(() => {
     if (item.location) {

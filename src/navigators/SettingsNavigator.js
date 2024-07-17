@@ -15,7 +15,6 @@ import ArtworkFormInput from "../screens/addArtWork/artWorkFormInput";
 import ArtWorkEdit from "../screens/home/ArtWorkEdit";
 
 const Stack = createNativeStackNavigator();
-const TopTabs = createMaterialTopTabNavigator();
 
 export function SettingsNavigator() {
     return (
