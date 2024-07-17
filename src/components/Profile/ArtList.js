@@ -1,5 +1,14 @@
 import React from "react";
-import { FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { Image } from "expo-image";
+
+const image = require("../../../assets/Profile/Union.svg");
 
 const ArtList = ({ data, navigation }) => {
   const renderItem = ({ item }) => (
@@ -10,6 +19,17 @@ const ArtList = ({ data, navigation }) => {
       <Image source={{ uri: item.artworkUrl }} style={styles.artImage} />
     </TouchableOpacity>
   );
+
+  if (data.length === 0) {
+    return (
+      <View style={styles.placeholderContainer}>
+        <Image style={styles.placeholderImage} source={image} />
+        <Text style={styles.placeholderText}>
+          Sorry, no post to see yet here.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -41,6 +61,21 @@ const styles = StyleSheet.create({
   row: {
     flex: 1,
     justifyContent: "space-between",
+  },
+  placeholderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+  },
+  placeholderImage: {
+    width: 107.473,
+    height: 85.84,
+    marginBottom: 16,
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: "#7C7C7C",
   },
 });
 

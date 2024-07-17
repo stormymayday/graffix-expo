@@ -16,13 +16,19 @@ import * as Sharing from "expo-sharing";
 import MapView, { Marker } from "react-native-maps";
 import { Picker } from "@react-native-picker/picker";
 
-export default function ArtDetail({ route, navigation }) {
+export default function ArtDetailFromProfile({ route, navigation }) {
   const { item } = route.params;
   const [location, setLocation] = useState(null);
   const [pinLocation, setPinLocation] = useState(null);
+
+  useEffect(() => {
+    navigation.setOptions({ title: item.title });
+  }, [item.title, navigation]);
+
   const [isEditing, setIsEditing] = useState({});
   const [editableItem, setEditableItem] = useState({ ...item });
   let flag = "art";
+
 
   useEffect(() => {
     console.log(item);
@@ -40,6 +46,7 @@ export default function ArtDetail({ route, navigation }) {
       });
     }
   }, [item.location]);
+
 
   const handleFieldEdit = (field) => {
     setIsEditing((prev) => ({ ...prev, [field]: !prev[field] }));
@@ -315,7 +322,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 20,
     marginBottom: 20,
+
     position: "relative",
+
   },
   qrCodeImage: {
     width: 200,
