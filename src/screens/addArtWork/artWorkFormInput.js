@@ -123,7 +123,6 @@ export default function ArtworkFormInput({ route, navigation }) {
       if (QrCodeNeeded) {
         treasureId = response.data.treasure._id;
         setQrCodeValue(treasureId);
-        // Wait for the state to update and QR code to render
         setTimeout(captureQRCode, 1000);
       }
       Alert.alert("Artwork published successfully");
@@ -207,7 +206,7 @@ export default function ArtworkFormInput({ route, navigation }) {
         ) : qrCodeValue ? (
           <View style={styles.qrContainer}>
             <Text style={styles.infoText}>
-              ARtVenture has been published, print and paste the generated QR
+              ArtVenture has been published, print and paste the generated QR
               Code
             </Text>
             <ViewShot
@@ -217,7 +216,7 @@ export default function ArtworkFormInput({ route, navigation }) {
               <QRCode
                 value={qrCodeValue}
                 size={200}
-                logo={{ uri: "/mnt/data/image.png" }}
+                logo={{ uri: selectedImage }}
                 logoSize={50}
                 logoBackgroundColor="transparent"
               />
@@ -226,10 +225,10 @@ export default function ArtworkFormInput({ route, navigation }) {
               <Text style={styles.buttonText}>Save</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.profileButton}
+              style={styles.buttonWhite}
               onPress={() => navigation.navigate("Artist")}
             >
-              <Text style={styles.buttonText}>Profile</Text>
+              <Text style={styles.buttonTextWhite}>Profile</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -374,6 +373,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
+  buttonWhite: {
+    backgroundColor: "white",
+    color: "black",
+    padding: 15,
+    marginVertical: 10,
+    width: "100%",
+    borderRadius: 10,
+    alignItems: "center",
+    borderColor: "black",
+    borderWidth: 1,
+  },
   profileButton: {
     backgroundColor: "#fff",
     borderColor: "#000",
@@ -383,6 +393,10 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     alignItems: "center",
+  },
+  buttonTextWhite: {
+    color: "black",
+    fontSize: 16,
   },
   buttonText: {
     color: "#fff",
