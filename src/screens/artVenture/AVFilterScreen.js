@@ -17,6 +17,8 @@ const categories = [
     "pop art",
     "cubism",
     "expressionism",
+    "realism",
+    "minimalism",
 ];
 
 export default function AVFilterScreen({ navigation }) {
@@ -34,6 +36,11 @@ export default function AVFilterScreen({ navigation }) {
             // If category is not selected, add it
             setSelectedCategories([...selectedCategories, category]);
         }
+    };
+
+    // Function to capitalize the first letter of a string
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
     // Rendering individual category item
@@ -54,7 +61,7 @@ export default function AVFilterScreen({ navigation }) {
                         isSelected && styles.selectedCategoryText,
                     ]}
                 >
-                    {item}
+                    {capitalizeFirstLetter(item)}
                 </Text>
             </TouchableOpacity>
         );
