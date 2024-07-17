@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -8,6 +9,13 @@ import {
 
 export default function HorizontalScrollOptions(props) {
   const { options, handleSelectCategory } = props;
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const handlePress = (option) => {
+    setSelectedOption(option);
+    handleSelectCategory(option);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -19,10 +27,20 @@ export default function HorizontalScrollOptions(props) {
         {options.map((option, index) => (
           <TouchableOpacity
             key={index}
-            style={styles.button}
-            onPress={() => handleSelectCategory(option)}
+            style={[
+              styles.button,
+              selectedOption === option && styles.selectedButton,
+            ]}
+            onPress={() => handlePress(option)}
           >
-            <Text style={styles.buttonText}>{option}</Text>
+            <Text
+              style={[
+                styles.buttonText,
+                selectedOption === option && styles.selectedButtonText,
+              ]}
+            >
+              {option}
+            </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -57,9 +75,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 20,
   },
+  selectedButton: {
+    backgroundColor: "#888",
+  },
   buttonText: {
     color: "#fff",
     fontSize: 16,
+  },
+  selectedButtonText: {
+    color: "#fff",
   },
   bottomLine: {
     height: 2,
