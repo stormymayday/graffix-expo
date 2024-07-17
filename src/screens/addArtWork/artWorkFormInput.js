@@ -8,6 +8,7 @@ import {
   ScrollView,
   Dimensions,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import ImageUpload from "../../components/ImageUpload/ImageUpload";
@@ -40,6 +41,7 @@ export default function ArtworkFormInput({ route, navigation }) {
   const [QrCodeNeeded, setQrCodeNeeded] = useState(!artWork);
   const [location, setLocation] = useState(null);
   const [pinLocation, setPinLocation] = useState(null);
+  const [loading, setLoading] = useState(QrCodeNeeded);
   const viewShotRef = useRef(null);
   let treasureId = "123456";
 
@@ -52,21 +54,27 @@ export default function ArtworkFormInput({ route, navigation }) {
   }
 
   useEffect(() => {
-    (async () => {
-      try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          Alert.alert("Permission to access location was denied");
-          return;
-        }
+    if (QrCodeNeeded) {
+      (async () => {
+        try {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== "granted") {
+            Alert.alert("Permission to access location was denied");
+            return;
+          }
 
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
-      } catch (error) {
-        console.error("Error fetching location: ", error);
-      }
-    })();
-  }, []);
+          let location = await Location.getCurrentPositionAsync({});
+          setLocation(location);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching location: ", error);
+          setLoading(false);
+        }
+      })();
+    } else {
+      setLoading(false);
+    }
+  }, [QrCodeNeeded]);
 
   function handleImage(uri) {
     setSelectedImage(uri);
@@ -115,7 +123,6 @@ export default function ArtworkFormInput({ route, navigation }) {
       if (QrCodeNeeded) {
         treasureId = response.data.treasure._id;
         setQrCodeValue(treasureId);
-        // Wait for the state to update and QR code to render
         setTimeout(captureQRCode, 1000);
       }
       Alert.alert("Artwork published successfully");
@@ -194,10 +201,12 @@ export default function ArtworkFormInput({ route, navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        {qrCodeValue ? (
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : qrCodeValue ? (
           <View style={styles.qrContainer}>
             <Text style={styles.infoText}>
-              ARtVenture has been published, print and paste the generated QR
+              ArtVenture has been published, print and paste the generated QR
               Code
             </Text>
             <ViewShot
@@ -207,7 +216,7 @@ export default function ArtworkFormInput({ route, navigation }) {
               <QRCode
                 value={qrCodeValue}
                 size={200}
-                logo={{ uri: "/mnt/data/image.png" }}
+                logo={{ uri: selectedImage }}
                 logoSize={50}
                 logoBackgroundColor="transparent"
               />
@@ -216,10 +225,10 @@ export default function ArtworkFormInput({ route, navigation }) {
               <Text style={styles.buttonText}>Save</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.profileButton}
+              style={styles.buttonWhite}
               onPress={() => navigation.navigate("Artist")}
             >
-              <Text style={styles.buttonText}>Profile</Text>
+              <Text style={styles.buttonTextWhite}>Profile</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -265,30 +274,37 @@ export default function ArtworkFormInput({ route, navigation }) {
               handleSelectCategory={handleSelectCategory}
               textStyle={styles.categoryText}
             />
-            <View style={styles.locationWrapper}>
-              <Text style={styles.locationLabel}>Location</Text>
-              {location && qrCodeValue && (
-                <MapView
-                  style={styles.map}
-                  initialRegion={{
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                  }}
-                  onPress={(e) => setPinLocation(e.nativeEvent.coordinate)}
-                >
-                  {pinLocation && <Marker coordinate={pinLocation} />}
-                </MapView>
-              )}
-            </View>
+            {QrCodeNeeded && (
+              <View style={styles.locationWrapper}>
+                <Text style={styles.locationLabel}>Location</Text>
+                {location ? (
+                  <MapView
+                    style={styles.map}
+                    initialRegion={{
+                      latitude: location.coords.latitude,
+                      longitude: location.coords.longitude,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
+                    }}
+                    onPress={(e) => setPinLocation(e.nativeEvent.coordinate)}
+                  >
+                    {pinLocation && <Marker coordinate={pinLocation} />}
+                  </MapView>
+                ) : (
+                  <Text style={styles.locationText}>Loading map...</Text>
+                )}
+              </View>
+            )}
             <TouchableOpacity
               style={styles.publishButton}
               onPress={handlePublish}
             >
               <Text style={styles.buttonText}>Publish</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cancelButton}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => navigation.goBack()}
+            >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
@@ -357,6 +373,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
+  buttonWhite: {
+    backgroundColor: "white",
+    color: "black",
+    padding: 15,
+    marginVertical: 10,
+    width: "100%",
+    borderRadius: 10,
+    alignItems: "center",
+    borderColor: "black",
+    borderWidth: 1,
+  },
   profileButton: {
     backgroundColor: "#fff",
     borderColor: "#000",
@@ -366,6 +393,10 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     alignItems: "center",
+  },
+  buttonTextWhite: {
+    color: "black",
+    fontSize: 16,
   },
   buttonText: {
     color: "#fff",
@@ -411,5 +442,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 5,
     color: "grey",
+  },
+  locationText: {
+    textAlign: "center",
+    color: "grey",
+    marginVertical: 10,
   },
 });
