@@ -113,6 +113,7 @@ export default function ArtDetail({ route, navigation }) {
       });
 
       if (!response.ok) throw new Error("Failed to update");
+      console.log("Response:", response);
 
       Alert.alert("Success", "Data updated successfully.");
       navigation.navigate("Artist");
