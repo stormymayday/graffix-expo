@@ -46,7 +46,7 @@ export default function SelectAndUpload(props) {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={handleArtWorkPress}
-          style={styles.radioButton}
+          style={[styles.radioButton, isArtWork && styles.selectedRadioButton]}
         >
           {renderCircle(isArtWork)}
           <Text style={styles.optionText}>ArtWork</Text>
@@ -54,7 +54,7 @@ export default function SelectAndUpload(props) {
 
         <TouchableOpacity
           onPress={handleArtVenturePress}
-          style={styles.radioButton}
+          style={[styles.radioButton, !isArtWork && styles.selectedRadioButton]}
         >
           {renderCircle(!isArtWork)}
           <Text style={styles.optionText}>ArtVenture</Text>
@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
     color: "#202020",
     marginBottom: 40,
   },
-
   buttonContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -110,6 +109,10 @@ const styles = StyleSheet.create({
     height: 44,
     marginBottom: 10,
     justifyContent: "center",
+  },
+  selectedRadioButton: {
+    borderColor: "black",
+    borderWidth: 2,
   },
   circle: {
     width: 20,
