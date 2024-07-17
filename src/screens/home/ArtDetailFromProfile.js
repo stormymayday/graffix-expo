@@ -15,6 +15,7 @@ import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import MapView, { Marker } from "react-native-maps";
 import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "expo-image-picker";
 
 export default function ArtDetail({ route, navigation }) {
   const { item } = route.params;
@@ -22,11 +23,10 @@ export default function ArtDetail({ route, navigation }) {
   const [pinLocation, setPinLocation] = useState(null);
   const [isEditing, setIsEditing] = useState({});
   const [editableItem, setEditableItem] = useState({ ...item });
+  const [newImage, setNewImage] = useState(null);
   let flag = "art";
 
   useEffect(() => {
-    console.log(item);
-
     if (item.location) {
       setLocation({
         latitude: item.location.coordinates[1],
@@ -39,7 +39,15 @@ export default function ArtDetail({ route, navigation }) {
         longitude: item.location.coordinates[0],
       });
     }
-  }, [item.location]);
+
+    if (item.imageUrl) {
+      setEditableItem((prev) => ({ ...prev, artwork: item.imageUrl }));
+    }
+  }, [item.location, item.imageUrl]);
+
+  useEffect(() => {
+    console.log(pinLocation);
+  }, [pinLocation]);
 
   const handleFieldEdit = (field) => {
     setIsEditing((prev) => ({ ...prev, [field]: !prev[field] }));
@@ -66,31 +74,37 @@ export default function ArtDetail({ route, navigation }) {
       flag = "treasure";
     }
     try {
-      let formData = new FormData();
-      let endpoint = `https://graffix-server.onrender.com/api/v1/${flag}/${item._id}`;
-      let headers = {
+      const formData = new FormData();
+      const endpoint = `https://graffix-server.onrender.com/api/v1/${flag}/${item._id}`;
+      const headers = {
         "Content-Type": "multipart/form-data",
       };
 
-      if (flag === "treasure") {
-        formData.append("title", editableItem.title);
-        formData.append("description", editableItem.description);
-        formData.append("category", editableItem.category);
-        formData.append("longitude", pinLocation.longitude);
+      formData.append("title", editableItem.title);
+      formData.append("description", editableItem.description);
+      formData.append("category", editableItem.category);
+      if (item.qrCode) {
+        console.log(pinLocation.latitude, pinLocation.longitude);
+        formData.append("message", editableItem.message);
         formData.append("latitude", pinLocation.latitude);
-      } else {
-        formData.append("title", editableItem.title);
-        formData.append("description", editableItem.description);
-        formData.append("category", editableItem.category);
-
-        if (editableItem.artwork) {
-          formData.append("artwork", {
-            uri: editableItem.artwork,
-            name: "artwork.jpg",
-            type: "image/jpeg",
-          });
-        }
+        formData.append("longitude", pinLocation.longitude);
       }
+
+      if (editableItem.artwork && !location) {
+        formData.append("artwork", {
+          uri: editableItem.artwork,
+          name: "artwork.jpg",
+          type: "image/jpeg",
+        });
+      } else {
+        formData.append("treasure", {
+          uri: editableItem.artwork,
+          name: "treasure.jpg",
+          type: "image/jpeg",
+        });
+      }
+
+      console.log("Form data:", formData);
 
       const response = await fetch(endpoint, {
         method: "PATCH",
@@ -101,6 +115,7 @@ export default function ArtDetail({ route, navigation }) {
       if (!response.ok) throw new Error("Failed to update");
 
       Alert.alert("Success", "Data updated successfully.");
+      navigation.navigate("Artist");
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "Could not update data.");
@@ -129,10 +144,25 @@ export default function ArtDetail({ route, navigation }) {
     }
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setNewImage(result.assets[0].uri);
+      setEditableItem((prev) => ({ ...prev, artwork: result.assets[0].uri }));
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Image source={{ uri: editableItem.imageUrl }} style={styles.image} />
+        <Pressable onPress={pickImage}>
+          <Image source={{ uri: editableItem.artwork }} style={styles.image} />
+        </Pressable>
 
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Title</Text>
@@ -169,6 +199,27 @@ export default function ArtDetail({ route, navigation }) {
         ) : (
           <Text style={styles.description}>{editableItem.description}</Text>
         )}
+        {location && (
+          <>
+            <View style={styles.fieldContainer}>
+              <Text style={styles.label}>Message</Text>
+              <Pressable onPress={() => handleFieldEdit("message")}>
+                <Feather name="edit" size={18} color="black" />
+              </Pressable>
+            </View>
+            {isEditing.message ? (
+              <TextInput
+                style={styles.input}
+                value={editableItem.message}
+                onChangeText={(text) =>
+                  setEditableItem((prev) => ({ ...prev, message: text }))
+                }
+              />
+            ) : (
+              <Text style={styles.message}>{item.message}</Text>
+            )}
+          </>
+        )}
 
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Category</Text>
@@ -186,7 +237,11 @@ export default function ArtDetail({ route, navigation }) {
           >
             <Picker.Item label="Oil" value="oil" />
             <Picker.Item label="Abstract" value="abstract" />
-            <Picker.Item label="Modern" value="modern" />
+            <Picker.Item label="Impressionism" value="impressionism" />
+            <Picker.Item label="Surrealism" value="surrealism" />
+            <Picker.Item label="Pop Art" value="pop art" />
+            <Picker.Item label="Cubism" value="cubism" />
+            <Picker.Item label="Expressionism" value="expressionism" />
           </Picker>
         ) : (
           <View style={styles.artTypeContainer}>
@@ -250,6 +305,18 @@ const styles = StyleSheet.create({
     height: 300,
     marginBottom: 16,
   },
+  imagePlaceholder: {
+    width: "100%",
+    height: 300,
+    marginBottom: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#e0e0e0",
+  },
+  imagePlaceholderText: {
+    color: "#a0a0a0",
+    fontSize: 18,
+  },
   fieldContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -269,6 +336,12 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     textTransform: "capitalize",
     lineHeight: 30,
+  },
+  message: {
+    fontSize: 14,
+    textAlign: "left",
+    marginBottom: 16,
+    marginLeft: 8,
   },
   artTypeContainer: {
     backgroundColor: "#202020",
