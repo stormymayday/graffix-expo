@@ -22,7 +22,7 @@ export default function Artist({ navigation, route }) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("ArtWork");
-
+    const defaultAvatar = require("../../../assets/Profile/defaultAvatar.png");
     const fetchUserData = useCallback(async (userId) => {
         if (!userId) return;
 
@@ -113,88 +113,90 @@ export default function Artist({ navigation, route }) {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.profileContainer}>
-                <Pressable onPress={() => navigation.navigate("EditProfile")}>
-                    <Image
-                        source={{ uri: userData.avatar }}
-                        style={styles.avatar}
-                    />
-                </Pressable>
-
-                <View style={styles.infoContainer}>
-                    <View style={styles.header}>
-                        <Pressable
-                            onPress={() => navigation.navigate("EditProfile")}
-                        >
-                            <Text style={styles.name}>{userData.username}</Text>
-                        </Pressable>
-                        <Pressable
-                            onPress={() => navigation.navigate("EditProfile")}
-                        >
-                            <Feather name="edit" size={18} color="black" />
-                        </Pressable>
-                    </View>
-
-                    <Text style={styles.pronouns}>
-                        {userData.pronouns ? userData.pronouns : ""}
-                    </Text>
-
-                    <Text style={styles.description}>{userData.bio}</Text>
-                </View>
-            </View>
-
-            <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    marginBottom: 16,
-                }}
-            >
-                <TouchableOpacity onPress={() => setActiveTab("ArtWork")}>
-                    <Text
-                        style={
-                            activeTab === "ArtWork"
-                                ? styles.activeTabText
-                                : styles.inactiveTabText
-                        }
-                    >
-                        ArtWork
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setActiveTab("ArtVenture")}>
-                    <Text
-                        style={
-                            activeTab === "ArtVenture"
-                                ? styles.activeTabText
-                                : styles.inactiveTabText
-                        }
-                    >
-                        ArtVenture
-                    </Text>
-                </TouchableOpacity>
-            </View>
-
-            <FlatList
-                data={activeTab === "ArtWork" ? artWorks : treasures}
-                renderItem={
-                    activeTab === "ArtWork"
-                        ? renderArtworkItem
-                        : renderTreasureItem
-                }
-                // keyExtractor={(item) => item._id.toString()}
-                numColumns={2}
-                columnWrapperStyle={styles.row}
-                contentContainerStyle={{ paddingBottom: 16 }}
+      <SafeAreaView style={styles.container}>
+        <View style={styles.profileContainer}>
+          <Pressable onPress={() => navigation.navigate("EditArtistProfile")}>
+            <Image
+              source={
+                userData.avatar
+                  ? { uri: userData.avatar }
+                  : userData.defaultAvatar
+              }
+              style={styles.avatar}
             />
+          </Pressable>
 
-            <TouchableOpacity
-                style={styles.fab}
-                onPress={() => navigation.navigate("SelectAndUpload")}
+          <View style={styles.infoContainer}>
+            <View style={styles.header}>
+              <Pressable
+                onPress={() => navigation.navigate("EditArtistProfile")}
+              >
+                <Text style={styles.name}>{userData.username}</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => navigation.navigate("EditArtistProfile")}
+              >
+                <Feather name="edit" size={18} color="black" />
+              </Pressable>
+            </View>
+
+            <Text style={styles.pronouns}>
+              {userData.pronouns ? userData.pronouns : ""}
+            </Text>
+
+            <Text style={styles.description}>{userData.bio}</Text>
+          </View>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            marginBottom: 16,
+          }}
+        >
+          <TouchableOpacity onPress={() => setActiveTab("ArtWork")}>
+            <Text
+              style={
+                activeTab === "ArtWork"
+                  ? styles.activeTabText
+                  : styles.inactiveTabText
+              }
             >
-                <Feather name="plus" size={24} color="white" />
-            </TouchableOpacity>
-        </SafeAreaView>
+              ArtWork
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveTab("ArtVenture")}>
+            <Text
+              style={
+                activeTab === "ArtVenture"
+                  ? styles.activeTabText
+                  : styles.inactiveTabText
+              }
+            >
+              ArtVenture
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={activeTab === "ArtWork" ? artWorks : treasures}
+          renderItem={
+            activeTab === "ArtWork" ? renderArtworkItem : renderTreasureItem
+          }
+          // keyExtractor={(item) => item._id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={{ paddingBottom: 16 }}
+        />
+
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => navigation.navigate("SelectAndUpload")}
+        >
+          <Feather name="plus" size={24} color="white" />
+        </TouchableOpacity>
+      </SafeAreaView>
     );
 }
 

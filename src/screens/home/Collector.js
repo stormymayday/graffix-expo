@@ -18,7 +18,7 @@ export default function Collector({ navigation, route }) {
     const [likedArtwork, setLikedArtwork] = useState([]);
     const [collectedTreasures, setCollectedTreasures] = useState([]);
     const [selectedTab, setSelectedTab] = useState("favourite");
-
+  console.log(userData)
     useEffect(() => {
         if (!userData) return;
 
@@ -88,76 +88,70 @@ export default function Collector({ navigation, route }) {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.profileContainer}>
-                <Pressable onPress={() => navigation.navigate("EditProfile")}>
-                    <Image
-                        source={{ uri: userData.avatar }}
-                        style={styles.avatar}
-                    />
-                </Pressable>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.profileContainer}>
+          <Pressable onPress={() => navigation.navigate("EditProfile")}>
+            <Image
+              source={
+                userData.avatar ? { uri: userData.avatar } : userData.defaultAvatar
+              }
+              style={styles.avatar}
+            />
+          </Pressable>
 
-                <View style={styles.infoContainer}>
-                    <View style={styles.header}>
-                        <Pressable
-                            onPress={() => navigation.navigate("EditProfile")}
-                        >
-                            <Text style={styles.name}>{userData.username}</Text>
-                        </Pressable>
-                        <Pressable
-                            onPress={() => navigation.navigate("EditProfile")}
-                        >
-                            <Feather name="edit" size={18} color="black" />
-                        </Pressable>
-                    </View>
-
-                    <Text style={styles.pronouns}>
-                        {userData.pronouns ? userData.pronouns : ""}
-                    </Text>
-
-                    <Text style={styles.description}>{userData.bio}</Text>
-                </View>
+          <View style={styles.infoContainer}>
+            <View style={styles.header}>
+              <Pressable onPress={() => navigation.navigate("EditProfile")}>
+                <Text style={styles.name}>{userData.username}</Text>
+              </Pressable>
+              <Pressable onPress={() => navigation.navigate("EditProfile")}>
+                <Feather name="edit" size={18} color="black" />
+              </Pressable>
             </View>
 
-            <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    marginBottom: 16,
-                }}
+            <Text style={styles.pronouns}>
+              {userData.pronouns ? userData.pronouns : ""}
+            </Text>
+
+            <Text style={styles.description}>{userData.bio}</Text>
+          </View>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            marginBottom: 16,
+          }}
+        >
+          <TouchableOpacity onPress={() => setSelectedTab("favourite")}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: selectedTab === "favourite" ? "bold" : "normal",
+              }}
             >
-                <TouchableOpacity onPress={() => setSelectedTab("favourite")}>
-                    <Text
-                        style={{
-                            fontSize: 16,
-                            fontWeight:
-                                selectedTab === "favourite" ? "bold" : "normal",
-                        }}
-                    >
-                        Favourite
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setSelectedTab("collection")}>
-                    <Text
-                        style={{
-                            fontSize: 16,
-                            fontWeight:
-                                selectedTab === "collection"
-                                    ? "bold"
-                                    : "normal",
-                        }}
-                    >
-                        Collection
-                    </Text>
-                </TouchableOpacity>
-            </View>
+              Favourite
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setSelectedTab("collection")}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: selectedTab === "collection" ? "bold" : "normal",
+              }}
+            >
+              Collection
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-            {selectedTab === "favourite" ? (
-                <ArtList data={likedArtwork} navigation={navigation} />
-            ) : (
-                <ArtList data={collectedTreasures} navigation={navigation} />
-            )}
-        </SafeAreaView>
+        {selectedTab === "favourite" ? (
+          <ArtList data={likedArtwork} navigation={navigation} />
+        ) : (
+          <ArtList data={collectedTreasures} navigation={navigation} />
+        )}
+      </SafeAreaView>
     );
 }
 
