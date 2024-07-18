@@ -3,7 +3,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   StyleSheet,
   FlatList,
@@ -13,25 +12,25 @@ import {
 import { Feather } from "@expo/vector-icons";
 import graffixAPI from "../../api/graffixAPI";
 import UserDataContext from "../../context/UserDataContext";
+import { Image } from "expo-image";
 
 export default function Artist({ navigation, route }) {
   const { userData, updateUser } = useContext(UserDataContext);
   const [artWorks, setArtWorks] = useState([]);
-
   const [treasures, setTreasures] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("ArtWork");
+  const defaultAvatar = require("../../../assets/Profile/defaultAvatar.png");
+  const image = require("../../../assets/Profile/Union.svg");
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState("ArtWork");
-    const defaultAvatar = require("../../../assets/Profile/defaultAvatar.png");
-    const fetchUserData = useCallback(async (userId) => {
-        if (!userId) return;
+  const fetchUserData = useCallback(async (userId) => {
+    if (!userId) return;
 
     setIsLoading(true);
 
     try {
       // Fetching artworks
       const artResponse = await graffixAPI.get(`/api/v1/art/artist/${userId}`);
-
       const artWorkData = artResponse.data;
 
       setArtWorks(
@@ -50,7 +49,6 @@ export default function Artist({ navigation, route }) {
       const treasureResponse = await graffixAPI.get(
         `/api/v1/treasure/artist/${userId}`
       );
-      // Storing treasures in state
       const treasureData = treasureResponse.data;
       setTreasures(
         treasureData.map((treasure) => ({
@@ -65,7 +63,6 @@ export default function Artist({ navigation, route }) {
           message: treasure.message,
         }))
       );
-      // Console log for debugging
       console.log("Fetched treasures:", treasures);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -94,100 +91,109 @@ export default function Artist({ navigation, route }) {
   const renderTreasureItem = ({ item }) => (
     <TouchableOpacity
       style={styles.treasureContainer}
-      // Need to Implement the navigation:
       onPress={() => navigation.navigate("ArtDetailFromProfile", { item })}
     >
       <Image source={{ uri: item.imageUrl }} style={styles.treasureImage} />
     </TouchableOpacity>
   );
 
-  if (!userData || isLoading) {
+  if (isLoading) {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.profileContainer}>
-          <Pressable onPress={() => navigation.navigate("EditArtistProfile")}>
-            <Image
-              source={
-                userData.avatar
-                  ? { uri: userData.avatar }
-                  : userData.defaultAvatar
-              }
-              style={styles.avatar}
-            />
-          </Pressable>
-
-          <View style={styles.infoContainer}>
-            <View style={styles.header}>
-              <Pressable
-                onPress={() => navigation.navigate("EditArtistProfile")}
-              >
-                <Text style={styles.name}>{userData.username}</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => navigation.navigate("EditArtistProfile")}
-              >
-                <Feather name="edit" size={18} color="black" />
-              </Pressable>
-            </View>
-
-            <Text style={styles.pronouns}>
-              {userData.pronouns ? userData.pronouns : ""}
-            </Text>
-
-            <Text style={styles.description}>{userData.bio}</Text>
-          </View>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            marginBottom: 16,
-          }}
-        >
-          <TouchableOpacity onPress={() => setActiveTab("ArtWork")}>
-            <Text
-              style={
-                activeTab === "ArtWork"
-                  ? styles.activeTabText
-                  : styles.inactiveTabText
-              }
-            >
-              ArtWork
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setActiveTab("ArtVenture")}>
-            <Text
-              style={
-                activeTab === "ArtVenture"
-                  ? styles.activeTabText
-                  : styles.inactiveTabText
-              }
-            >
-              ArtVenture
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <FlatList
-          data={activeTab === "ArtWork" ? artWorks : treasures}
-          renderItem={
-            activeTab === "ArtWork" ? renderArtworkItem : renderTreasureItem
-          }
-          // keyExtractor={(item) => item._id.toString()}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          contentContainerStyle={{ paddingBottom: 16 }}
-        />
-
-        <TouchableOpacity
-          style={styles.fab}
-          onPress={() => navigation.navigate("SelectAndUpload")}
-        >
-          <Feather name="plus" size={24} color="white" />
-        </TouchableOpacity>
+        <Text>Loading...</Text>
       </SafeAreaView>
     );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.profileContainer}>
+        <Pressable onPress={() => navigation.navigate("EditArtistProfile")}>
+          <Image
+            source={userData.avatar ? { uri: userData.avatar } : defaultAvatar}
+            style={styles.avatar}
+          />
+        </Pressable>
+
+        <View style={styles.infoContainer}>
+          <View style={styles.header}>
+            <Pressable onPress={() => navigation.navigate("EditArtistProfile")}>
+              <Text style={styles.name}>{userData.username}</Text>
+            </Pressable>
+            <Pressable onPress={() => navigation.navigate("EditArtistProfile")}>
+              <Feather name="edit" size={18} color="black" />
+            </Pressable>
+          </View>
+          <Text style={styles.pronouns}>
+            {userData.pronouns ? userData.pronouns : ""}
+          </Text>
+          <Text style={styles.description}>{userData.bio}</Text>
+        </View>
+      </View>
+      <View style={styles.tabContainer}>
+        <TouchableOpacity onPress={() => setActiveTab("ArtWork")}>
+          <Text
+            style={
+              activeTab === "ArtWork"
+                ? styles.activeTabText
+                : styles.inactiveTabText
+            }
+          >
+            ArtWork
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setActiveTab("ArtVenture")}>
+          <Text
+            style={
+              activeTab === "ArtVenture"
+                ? styles.activeTabText
+                : styles.inactiveTabText
+            }
+          >
+            ArtVenture
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {artWorks.length === 0 && activeTab === "ArtWork" && (
+        <View style={styles.placeholderContainer}>
+          <Image style={styles.placeholderImage} source={image} />
+          <Text style={styles.placeholderText}>
+            Sorry, no artwork yet. Let's upload your artwork!
+          </Text>
+        </View>
+      )}
+      {treasures.length === 0 && activeTab === "ArtVenture" && (
+        <View style={styles.placeholderContainer}>
+          <Image style={styles.placeholderImage} source={image} />
+          <Text style={styles.placeholderText}>
+            Sorry, no artVenture yet. Let's create your artVenture!
+          </Text>
+        </View>
+      )}
+
+      {artWorks.length > 0 ||
+        (treasures.length > 0 && (
+          <FlatList
+            data={activeTab === "ArtWork" ? artWorks : treasures}
+            renderItem={
+              activeTab === "ArtWork" ? renderArtworkItem : renderTreasureItem
+            }
+            keyExtractor={(item) => item._id.toString()}
+            numColumns={2}
+            columnWrapperStyle={styles.row}
+            contentContainerStyle={{ paddingBottom: 16 }}
+          />
+        ))}
+
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate("SelectAndUpload")}
+      >
+        <Feather name="plus" size={24} color="white" />
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -254,7 +260,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  // New Styles
   tabContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -287,5 +292,23 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 14,
     fontWeight: "bold",
+  },
+  placeholderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+  },
+  placeholderImage: {
+    width: 107.473,
+    height: 107.473,
+    resizeMode: "contain",
+  },
+  placeholderText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#9B9B9B",
+    marginTop: 8,
   },
 });
