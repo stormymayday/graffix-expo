@@ -98,50 +98,54 @@ export default function EditProfile({ navigation }) {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.profileContainer}>
-                    <TouchableOpacity onPress={selectImage}>
-                        <Image
-                            source={{ uri: avatar }}
-                            style={styles.profileImage}
-                        />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.inputContainer}>
-                    <View style={styles.iconLabelContainer}>
-                        <Ionicons
-                            name="person"
-                            size={20}
-                            color="black"
-                            style={styles.icon}
-                        />
-                        <Text style={styles.label}>Name</Text>
-                    </View>
-                    <TextInput
-                        style={styles.input}
-                        value={name}
-                        onChangeText={setName}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <View style={styles.iconLabelContainer}>
-                        <Ionicons
-                            name="transgender"
-                            size={20}
-                            color="black"
-                            style={styles.icon}
-                        />
-                        <Text style={styles.label}>Pronouns</Text>
-                    </View>
-                    <TextInput
-                        style={styles.input}
-                        value={pronouns}
-                        onChangeText={setPronouns}
-                    />
-                </View>
+      <SafeAreaView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.profileContainer}>
+            <TouchableOpacity onPress={selectImage}>
+              <Image
+                source={
+                  avatar
+                    ? { uri: avatar }
+                    : userData.defaultAvatar
+                }
+                style={styles.profileImage}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputContainer}>
+            <View style={styles.iconLabelContainer}>
+              <Ionicons
+                name="person"
+                size={20}
+                color="black"
+                style={styles.icon}
+              />
+              <Text style={styles.label}>Name</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <View style={styles.iconLabelContainer}>
+              <Ionicons
+                name="transgender"
+                size={20}
+                color="black"
+                style={styles.icon}
+              />
+              <Text style={styles.label}>Pronouns</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              value={pronouns}
+              onChangeText={setPronouns}
+            />
+          </View>
 
-                {/* <View style={styles.inputContainer}>
+          {/* <View style={styles.inputContainer}>
                     <View style={styles.iconLabelContainer}>
                         <Ionicons
                             name="location"
@@ -164,80 +168,77 @@ export default function EditProfile({ navigation }) {
                     />
                 </View> */}
 
-                <View style={styles.inputContainer}>
-                    <View style={styles.iconLabelContainer}>
-                        <Ionicons
-                            name="information-circle"
-                            size={20}
-                            color="black"
-                            style={styles.icon}
-                        />
-                        <Text style={styles.label}>Bio</Text>
-                    </View>
-                    <TextInput
-                        style={[styles.input, styles.bioInput]}
-                        value={bio}
-                        onChangeText={setBio}
-                        multiline
-                        numberOfLines={4}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <View style={styles.iconLabelContainer}>
-                        <Ionicons
-                            name="logo-instagram"
-                            size={20}
-                            color="black"
-                            style={styles.icon}
-                        />
-                        <Text style={styles.label}>Instagram</Text>
-                    </View>
-                    <TextInput
-                        style={styles.input}
-                        value={instagram}
-                        onChangeText={setInstagram}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <View style={styles.iconLabelContainer}>
-                        <Ionicons
-                            name="logo-behance"
-                            size={20}
-                            color="black"
-                            style={styles.icon}
-                        />
-                        <Text style={styles.label}>Behance</Text>
-                    </View>
-                    <TextInput
-                        style={styles.input}
-                        value={behance}
-                        onChangeText={setBehance}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <View style={styles.iconLabelContainer}>
-                        <Ionicons
-                            name="globe"
-                            size={20}
-                            color="black"
-                            style={styles.icon}
-                        />
-                        <Text style={styles.label}>Website</Text>
-                    </View>
-                    <TextInput
-                        style={styles.input}
-                        value={website}
-                        onChangeText={setWebsite}
-                    />
-                </View>
-                <TouchableOpacity
-                    style={styles.saveButton}
-                    onPress={saveChanges}
-                >
-                    <Text style={styles.saveButtonText}>Save</Text>
-                </TouchableOpacity>
-            </ScrollView>
-        </SafeAreaView>
+          <View style={styles.inputContainer}>
+            <View style={styles.iconLabelContainer}>
+              <Ionicons
+                name="information-circle"
+                size={20}
+                color="black"
+                style={styles.icon}
+              />
+              <Text style={styles.label}>Bio</Text>
+            </View>
+            <TextInput
+              style={[styles.input, styles.bioInput]}
+              value={bio}
+              onChangeText={setBio}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <View style={styles.iconLabelContainer}>
+              <Ionicons
+                name="logo-instagram"
+                size={20}
+                color="black"
+                style={styles.icon}
+              />
+              <Text style={styles.label}>Instagram</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              value={instagram}
+              onChangeText={setInstagram}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <View style={styles.iconLabelContainer}>
+              <Ionicons
+                name="logo-behance"
+                size={20}
+                color="black"
+                style={styles.icon}
+              />
+              <Text style={styles.label}>Behance</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              value={behance}
+              onChangeText={setBehance}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <View style={styles.iconLabelContainer}>
+              <Ionicons
+                name="globe"
+                size={20}
+                color="black"
+                style={styles.icon}
+              />
+              <Text style={styles.label}>Website</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              value={website}
+              onChangeText={setWebsite}
+            />
+          </View>
+          <TouchableOpacity style={styles.saveButton} onPress={saveChanges}>
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
     );
 }
 

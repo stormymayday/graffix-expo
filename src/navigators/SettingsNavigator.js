@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import EditProfile from "../screens/home/EditProfile";
+import EditArtistProfile from "../screens/home/EditArtistProfile";
 import Profile from "../screens/home/Profile";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ArtDetailFromProfile from "../screens/home/ArtDetailFromProfile";
