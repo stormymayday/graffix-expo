@@ -13,6 +13,7 @@ import { Image } from "expo-image";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect } from "@react-navigation/native";
 import { Favorite, OutlineHeart } from "../../components/Icons/Icons";
+import { center } from "@cloudinary/url-gen/qualifiers/textAlignment";
 
 export default function Categories({ navigation, route }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -133,42 +134,45 @@ export default function Categories({ navigation, route }) {
               bounces={false}
               numColumns={numColumns}
               data={categoriesData.slice(1)}
+              contentContainerStyle={styles.center}
               renderItem={({ item }) => {
                 return (
-                  <Pressable
-                    style={styles.card}
-                    onPress={() => navigation.navigate("ArtDetail", { item })}
-                  >
-                    <Image
-                      style={[styles.image, styles.cardImage]}
-                      source={item.artworkUrl}
-                      contentFit="cover"
-                      transition={1000}
-                    />
-                    <View style={styles.flexSection}>
-                      <View>
-                        <Text
-                          style={{
-                            textTransform: "capitalize",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {item.title}
-                        </Text>
-                        <Text>{item.artistName}</Text>
-                      </View>
-                      {/* <Ionicons
+                  <View style={{ width: '50%' }}>
+                    <Pressable
+                      style={styles.card}
+                      onPress={() => navigation.navigate("ArtDetail", { item })}
+                    >
+                      <Image
+                        style={[styles.image, styles.cardImage]}
+                        source={item.artworkUrl}
+                        contentFit="cover"
+                        transition={1000}
+                      />
+                      <View style={styles.flexSection}>
+                        <View>
+                          <Text
+                            style={{
+                              textTransform: "capitalize",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {item.title}
+                          </Text>
+                          <Text>{item.artistName}</Text>
+                        </View>
+                        {/* <Ionicons
                         name={
                           isLiked.includes(item._id) ? "heart" : "heart-outline"
                         }
                       /> */}
-                      {isLiked.includes(item._id) ? (
-                        <Favorite size={16} color={"black"} />
-                      ) : (
-                        <OutlineHeart size={16} />
-                      )}
-                    </View>
-                  </Pressable>
+                        {isLiked.includes(item._id) ? (
+                          <Favorite size={16} color={"black"} />
+                        ) : (
+                          <OutlineHeart size={16} />
+                        )}
+                      </View>
+                    </Pressable>
+                  </View>
                 );
               }}
               ItemSeparatorComponent={<View style={{ width: 16 }} />}
@@ -234,15 +238,15 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   card: {
-    width: 160,
-    height: 160,
-    margin: 5,
+    width: "100%",
+    height: 200,
+    padding: 10
   },
   section: {
     paddingVertical: 16,
   },
   cardImage: {
-    borderRadius: 5,
+    borderRadius: 8,
   },
   artVentureBox: {
     flex: 1,
@@ -255,5 +259,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     backgroundColor: "lightgray",
-  },
+  }
 });
