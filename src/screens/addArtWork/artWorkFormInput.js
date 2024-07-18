@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import logo from "../../../assets/LogoQr.png";
 import {
   StyleSheet,
   View,
@@ -215,8 +216,8 @@ export default function ArtworkFormInput({ route, navigation }) {
             >
               <QRCode
                 value={qrCodeValue}
-                size={200}
-                logo={{ uri: selectedImage }}
+                size={250}
+                logo={logo}
                 logoSize={50}
                 logoBackgroundColor="transparent"
               />

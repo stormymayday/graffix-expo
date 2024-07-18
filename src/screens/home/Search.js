@@ -8,6 +8,7 @@ import {
   Button,
   FlatList,
   Pressable,
+  Dimensions
 } from "react-native";
 import { Image } from "expo-image";
 import { useState, useEffect } from "react";
@@ -16,6 +17,7 @@ import graffixAPI from "../../api/graffixAPI";
 import { Search, ChevronForward } from "../../components/Icons/Icons";
 
 export default function SearchResultsScreen({ navigation }) {
+
   const [artistName, setArtistName] = useState("");
   const [artistsData, setArtistsData] = useState([]);
   const [randomArtistsData, setRandomArtistsData] = useState([]);
@@ -154,7 +156,7 @@ export default function SearchResultsScreen({ navigation }) {
                   <Image
                     style={styles.image}
                     source={randomArtistsData[0].avatar}
-                    contentFit="fill"
+                    contentFit="cover"
                     transition={1000}
                   />
                   <Text style={styles.trendingCardTitle}>
@@ -171,7 +173,7 @@ export default function SearchResultsScreen({ navigation }) {
                   <Image
                     style={styles.image}
                     source={randomArtistsData[1].avatar}
-                    contentFit="fill"
+                    contentFit="cover"
                     transition={1000}
                   />
                   <Text style={styles.trendingCardTitle}>
@@ -218,11 +220,12 @@ export default function SearchResultsScreen({ navigation }) {
                           artist: randomArtistsData[0],
                         })
                       }
+                    // style={{ width: "100%" }}
                     >
                       <Image
                         style={styles.image}
                         source={randomArtistsData[0].avatar}
-                        contentFit="fill"
+                        contentFit="cover"
                         transition={1000}
                       />
                       <Text style={styles.trendingCardTitle}>
@@ -239,7 +242,7 @@ export default function SearchResultsScreen({ navigation }) {
                       <Image
                         style={styles.image}
                         source={randomArtistsData[1].avatar}
-                        contentFit="fill"
+                        contentFit="cover"
                         transition={1000}
                       />
                       <Text style={styles.trendingCardTitle}>
@@ -287,10 +290,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
   },
-  image: {
-    flex: 1,
-    width: "100%",
-  },
   searchBar: {
     flexDirection: "row",
     borderWidth: 1,
@@ -308,8 +307,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   image: {
-    height: 100,
-    width: 100,
+    height: 150,
+    width: 150,
     borderRadius: 5,
   },
   trendingBox: {
