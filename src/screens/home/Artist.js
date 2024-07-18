@@ -15,7 +15,7 @@ import UserDataContext from "../../context/UserDataContext";
 import { Image } from "expo-image";
 
 export default function Artist({ navigation, route }) {
-  const { userData, updateUser } = useContext(UserDataContext);
+  const { userData } = useContext(UserDataContext);
   const [artWorks, setArtWorks] = useState([]);
   const [treasures, setTreasures] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,7 +63,6 @@ export default function Artist({ navigation, route }) {
           message: treasure.message,
         }))
       );
-      console.log("Fetched treasures:", treasures);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -95,6 +94,13 @@ export default function Artist({ navigation, route }) {
     >
       <Image source={{ uri: item.imageUrl }} style={styles.treasureImage} />
     </TouchableOpacity>
+  );
+
+  const renderPlaceholder = (message) => (
+    <View style={styles.placeholderContainer}>
+      <Image style={styles.placeholderImage} source={image} />
+      <Text style={styles.placeholderText}>{message}</Text>
+    </View>
   );
 
   if (isLoading) {
@@ -155,36 +161,31 @@ export default function Artist({ navigation, route }) {
         </TouchableOpacity>
       </View>
 
-      {artWorks.length === 0 && activeTab === "ArtWork" && (
-        <View style={styles.placeholderContainer}>
-          <Image style={styles.placeholderImage} source={image} />
-          <Text style={styles.placeholderText}>
-            Sorry, no artwork yet. Let's upload your artwork!
-          </Text>
-        </View>
+      {activeTab === "ArtWork" ? (
+        <FlatList
+          data={artWorks}
+          renderItem={renderArtworkItem}
+          keyExtractor={(item) => item._id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={{ paddingBottom: 16, flexGrow: 1 }}
+          ListEmptyComponent={renderPlaceholder(
+            "Sorry, no artwork yet. Let's upload your artwork!"
+          )}
+        />
+      ) : (
+        <FlatList
+          data={treasures}
+          renderItem={renderTreasureItem}
+          keyExtractor={(item) => item._id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={{ paddingBottom: 16, flexGrow: 1 }}
+          ListEmptyComponent={renderPlaceholder(
+            "Sorry, no artVenture yet. Let's create your artVenture!"
+          )}
+        />
       )}
-      {treasures.length === 0 && activeTab === "ArtVenture" && (
-        <View style={styles.placeholderContainer}>
-          <Image style={styles.placeholderImage} source={image} />
-          <Text style={styles.placeholderText}>
-            Sorry, no artVenture yet. Let's create your artVenture!
-          </Text>
-        </View>
-      )}
-
-      {artWorks.length > 0 ||
-        (treasures.length > 0 && (
-          <FlatList
-            data={activeTab === "ArtWork" ? artWorks : treasures}
-            renderItem={
-              activeTab === "ArtWork" ? renderArtworkItem : renderTreasureItem
-            }
-            keyExtractor={(item) => item._id.toString()}
-            numColumns={2}
-            columnWrapperStyle={styles.row}
-            contentContainerStyle={{ paddingBottom: 16 }}
-          />
-        ))}
 
       <TouchableOpacity
         style={styles.fab}
@@ -288,11 +289,6 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: 8,
   },
-  treasureTitle: {
-    marginTop: 8,
-    fontSize: 14,
-    fontWeight: "bold",
-  },
   placeholderContainer: {
     flex: 1,
     justifyContent: "center",
@@ -305,10 +301,9 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   placeholderText: {
+    marginTop: 16,
     fontSize: 16,
-    fontWeight: "bold",
+    color: "gray",
     textAlign: "center",
-    color: "#9B9B9B",
-    marginTop: 8,
   },
 });
