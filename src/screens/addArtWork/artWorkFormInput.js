@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import logo from "../../../assets/LogoQr.png";
 import {
   StyleSheet,
@@ -23,6 +23,12 @@ import * as Location from "expo-location";
 
 export default function ArtworkFormInput({ route, navigation }) {
   const { artWork } = route.params;
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: artWork ? "Publish ArtWork" : "Create ArtVenture",
+    });
+  }, [navigation]);
 
   const [categories, setCategories] = useState([
     "abstract",
