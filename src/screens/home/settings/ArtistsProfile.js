@@ -32,9 +32,9 @@ export default function ArtistsProfile({ navigation }) {
         </View>
         <Switch
           style={{ width: "15%" }}
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
+          trackColor={{ false: "#EC7673", true: "#EC7673" }}
+          thumbColor={isEnabled ? "#f4f3f4" : "#f4f3f4"}
+          ios_backgroundColor="#f4f3f4"
           onValueChange={toggleSwitch}
           value={isEnabled}
         />
