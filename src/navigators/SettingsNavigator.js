@@ -48,7 +48,7 @@ export function SettingsNavigator() {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="EditArtistProfile" component={EditArtistProfile} />
       <Stack.Screen name="Settings" component={Settings} />
-      <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} />
+      <Stack.Screen name="ArtistsProfile" component={ArtistsProfile} options={{ headerTitle: "" }} />
       <Stack.Screen
         name="LocationPermission"
         component={LocationPermission}

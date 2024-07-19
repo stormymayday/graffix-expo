@@ -12,6 +12,8 @@ import { useContext, useEffect, useState } from "react";
 import { Context as AuthContext } from "../../context/AuthContext";
 import { ModalComponent } from "../../components/Settings/ModalComponent";
 
+import { Logout, Profile, ChevronForward } from "../../components/Icons/Icons";
+
 export default function Settings({ navigation }) {
     const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -96,51 +98,18 @@ export default function Settings({ navigation }) {
                                             fontSize: 20,
                                         }}
                                     >
-                                        <Ionicons
-                                            name={item.icon}
-                                            style={{
-                                                padding: 10,
-                                                fontSize: 20,
-                                            }}
-                                        />
+                                        {item.description == "Artist Profile" ? <Profile size={20} /> : <Logout size={20} />}
                                         &nbsp;
                                         {item.description}
                                     </Text>
                                 </View>
-                                <Ionicons
-                                    name="chevron-forward"
-                                    style={{ padding: 10, fontSize: 20 }}
-                                />
+                                <ChevronForward size={16} />
                             </View>
                         </Pressable>
                     );
                 }}
                 ItemSeparatorComponent={<View style={{ height: 16 }} />}
             />
-            {/* <Modal
-        visible={isModalVisible}
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalInnerContainer}>
-            <Text style={styles.modalText}>
-              Are you sure you want to log out?
-            </Text>
-            <View style={styles.modalButtonsContainer}>
-              <Pressable
-                style={styles.button}
-                onPress={() => setIsModalVisible(false)}
-              >
-                <Text style={{ color: "gray" }}>Cancel</Text>
-              </Pressable>
-              <View style={styles.separator}></View>
-              <Pressable style={styles.button} onPress={() => logout()}>
-                <Text style={{ color: "red" }}>Log Out</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
             <ModalComponent
                 logout={logout}
                 isModalVisible={isModalVisible}

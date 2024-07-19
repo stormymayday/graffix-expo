@@ -6,6 +6,8 @@ const mapPinIcon = require("../../../assets/Icons/map_pin.svg");
 const outlineHeartIcon = require("../../../assets/Icons/outline_heart.svg");
 const globeIcon = require("../../../assets/Icons/Position.svg");
 const searchIcon = require("../../../assets/Search/Filled.svg");
+const logout = require("../../../assets/Icons/logout.svg");
+const profileIcon = require("../../../assets/Icons/profile-filled.svg");
 
 export function ChevronForward({ size, color }) {
   return (
@@ -59,6 +61,24 @@ export function Search({ size, color }) {
   return (
     <Image
       source={searchIcon}
+      style={{ width: size, height: size, tintColor: color }}
+    />
+  );
+}
+
+export function Logout({ size, color }) {
+  return (
+    <Image
+      source={logout}
+      style={{ width: size, height: size, tintColor: color }}
+    />
+  );
+}
+
+export function Profile({ size, color }) {
+  return (
+    <Image
+      source={profileIcon}
       style={{ width: size, height: size, tintColor: color }}
     />
   );
