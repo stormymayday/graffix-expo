@@ -31,8 +31,8 @@ export function CarouselComponent({ galleryData, navigation }) {
                             contentFit="cover"
                             transition={1000}
                         />
+                        <View style={styles.overlay} />
                     </View>
-                    <View style={styles.overlay} />
                     <View style={styles.artDescription}>
                         <Text style={styles.white}>Art of the Day</Text>
                         <Text style={[styles.artworkName, styles.white]}>
