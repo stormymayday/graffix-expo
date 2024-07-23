@@ -76,7 +76,7 @@ export default function Settings({ navigation }) {
     ];
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Settings and Privacy</Text>
+            <Text style={styles.title}>Settings</Text>
             <FlatList
                 data={data}
                 renderItem={({ item }) => {
@@ -98,7 +98,12 @@ export default function Settings({ navigation }) {
                                             fontSize: 20,
                                         }}
                                     >
-                                        {item.description == "Artist Profile" ? <Profile size={20} /> : <Logout size={20} />}
+                                        {item.description ==
+                                        "Artist Profile" ? (
+                                            <Profile size={20} />
+                                        ) : (
+                                            <Logout size={20} />
+                                        )}
                                         &nbsp;
                                         {item.description}
                                     </Text>
