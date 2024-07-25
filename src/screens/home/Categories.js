@@ -31,7 +31,7 @@ export default function Categories({ navigation, route }) {
 
         try {
             const artResponse = await graffixAPI.get(
-                `https://graffix-server.onrender.com/api/v1/art/category/${route.params.category}`
+                `/api/v1/art/category/${route.params.category}`
             );
 
             // Fetch user data (for liked artworks)
