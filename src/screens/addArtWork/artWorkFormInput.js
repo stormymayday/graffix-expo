@@ -25,6 +25,7 @@ import axios from "axios";
 import ViewShot from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
 import { Context as AuthContext } from "../../context/AuthContext";
+import graffixAPI from "../../api/graffixAPI";
 
 export default function ArtworkFormInput({ route, navigation }) {
     const { artWork } = route.params;
@@ -110,8 +111,8 @@ export default function ArtworkFormInput({ route, navigation }) {
         }
 
         try {
-            const response = await axios.post(
-                `https://graffix-server.onrender.com/api/v1/${flagApi}`,
+            const response = await graffixAPI.post(
+                `/api/v1/${flagApi}`,
                 formData,
                 {
                     headers: {
@@ -186,8 +187,8 @@ export default function ArtworkFormInput({ route, navigation }) {
 
         try {
             console.log("Treasure ID is: " + treasureId);
-            const response = await axios.patch(
-                `https://graffix-server.onrender.com/api/v1/treasure/${treasureId}`,
+            const response = await graffixAPI.patch(
+                `/api/v1/treasure/${treasureId}`,
                 formData,
                 {
                     headers: {
