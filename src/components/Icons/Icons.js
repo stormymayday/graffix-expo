@@ -33,7 +33,7 @@ export function MapPin({ size, color }) {
     <Image
       source={mapPinIcon}
       contentFit="contain"
-      style={{ width: size, height: size, tintColor: color }}
+      style={{ width: size, height: size, tintColor: color, marginBottom: -5 }}
     />
   );
 }
